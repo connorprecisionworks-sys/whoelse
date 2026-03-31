@@ -1,220 +1,283 @@
-.page {
+/* ── FONTS ──────────────────────────── */
+:root {
+  --w95font: 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
+  --w95mono: 'Courier New', 'Lucida Console', monospace;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── DESKTOP ────────────────────────── */
+.desktop95 {
+  width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  position: relative;
+  /* Classic W95 teal — tinted with Who Else gold */
+  background: #007b7b;
+  background-image:
+    radial-gradient(ellipse 70% 70% at 50% 50%, #007070 0%, #005858 100%);
+  cursor: none;
+  user-select: none;
+  padding-bottom: 36px;
+}
+
+/* ── CURSOR ─────────────────────────── */
+.w95cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-1px, -1px);
+  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.5));
+}
+
+/* ── ICON COLUMN ────────────────────── */
+.iconColumn {
+  position: absolute;
+  top: 12px;
+  left: 12px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  background: #080706;
+  gap: 6px;
+  z-index: 10;
 }
 
-/* ── TICKER ─────────────────────────── */
-.tickerWrap {
-  overflow: hidden;
-  height: 26px;
-  background: #c49a22;
+/* ── DESKTOP ICON ───────────────────── */
+.deskIcon {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  flex-shrink: 0;
+  gap: 4px;
+  padding: 6px 4px;
+  width: 72px;
+  cursor: default;
+  border: 1px solid transparent;
 }
-.tickerTrack {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  animation: ticker 28s linear infinite;
-}
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-33.333%); }
-}
-.tickerItem {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.48rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: #080706;
-  padding: 0 1.4rem;
-}
-.tickerSep { margin-left: 1.4rem; opacity: 0.45; }
 
-/* ── NAV ────────────────────────────── */
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.75rem 2rem;
-  border-bottom: 1px solid rgba(245,241,234,0.07);
-  flex-shrink: 0;
-  transition: background 0.25s;
+.deskIcon:hover {
+  border: 1px dotted rgba(255,255,255,0.5);
 }
-.navScrolled {
-  background: rgba(8,7,6,0.92);
-  backdrop-filter: blur(14px);
-}
-.navLogo {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
-  color: rgba(245,241,234,0.9);
-}
-.navLinks {
-  display: flex;
-  align-items: center;
-  gap: 1.8rem;
-}
-.navItem {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.46rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(245,241,234,0.28);
-}
-.navCta {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.46rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: #c49a22;
-  background: none;
-  border: 1px solid rgba(196,154,34,0.3);
-  padding: 0.35rem 0.9rem;
-  cursor: crosshair;
-  transition: background 0.15s, color 0.15s;
-}
-.navCta:hover { background: #c49a22; color: #080706; }
 
-/* ── WORDMARK — full width across top ── */
-.wordmark {
-  display: flex;
-  width: 100%;
-  line-height: 0.82;
-  flex-shrink: 0;
+.deskIconSel {
+  background: #000080;
+  border: 1px dotted rgba(255,255,255,0.8) !important;
 }
-.who, .else {
-  font-family: 'Bebas Neue', sans-serif;
-  font-size: 26.5vw;
-  letter-spacing: -0.02em;
-  line-height: 0.82;
-  width: 50%;
+
+.deskIconImg {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deskIconLabel {
+  font-family: var(--w95font);
+  font-size: 11px;
+  color: #fff;
   text-align: center;
-  display: block;
-}
-.who {
-  color: transparent;
-  -webkit-text-stroke: 1.5px rgba(245,241,234,0.82);
-}
-.else { color: #f5f1ea; }
-
-/* ── PHRASE ─────────────────────────── */
-.phraseRow {
-  padding: 0.5rem 2rem 0;
-  min-height: 1.6rem;
-  flex-shrink: 0;
-}
-.phrase {
-  font-family: 'Fraunces', serif;
-  font-size: clamp(0.65rem, 1.3vw, 0.95rem);
-  font-style: italic;
-  font-weight: 700;
-  color: rgba(245,241,234,0.5);
-  display: inline-block;
-  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.16,1,0.3,1);
-}
-.phraseIn  { opacity: 1; transform: translateY(0); }
-.phraseOut { opacity: 0; transform: translateY(-7px); }
-
-/* ── SPACER — pushes trophy down ───── */
-.spacer { flex: 1; }
-
-/* ── TROPHY STAGE ───────────────────── */
-.stage {
-  position: relative;
-  height: 230px;
-  flex-shrink: 0;
-}
-.canvas {
-  position: absolute;
-  inset: 0;
+  line-height: 1.2;
+  text-shadow: 1px 1px 1px #000, -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000;
+  word-break: break-word;
   width: 100%;
-  height: 100%;
-  display: block;
-  cursor: crosshair;
 }
 
-/* ── BOTTOM META BAR ────────────────── */
-.heroBtm {
+.deskIconSel .deskIconLabel {
+  background: #000080;
+  color: #fff;
+}
+
+/* ── WATERMARK ──────────────────────── */
+.w95watermark {
+  position: absolute;
+  bottom: 50px;
+  right: 20px;
+  text-align: right;
+  pointer-events: none;
+}
+
+.w95wmTitle {
+  font-family: var(--w95font);
+  font-size: 28px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.08);
+  letter-spacing: 0.1em;
+  line-height: 1;
+}
+
+.w95wmSub {
+  font-family: var(--w95font);
+  font-size: 11px;
+  color: rgba(255,255,255,0.06);
+  margin-top: 2px;
+}
+
+/* ── FILE ICON (inside folder) ──────── */
+.fileIcon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 6px;
+  width: 72px;
+  cursor: default;
+  border: 1px solid transparent;
+}
+
+.fileIcon:hover {
+  background: rgba(0,0,128,0.1);
+  border: 1px dotted #000080;
+}
+
+.fileIconLabel {
+  font-family: var(--w95font);
+  font-size: 11px;
+  color: #000;
+  text-align: center;
+  line-height: 1.3;
+  word-break: break-all;
+  width: 100%;
+}
+
+/* ── W95 BUTTON ─────────────────────── */
+.w95btn {
+  font-family: var(--w95font);
+  font-size: 11px;
+  min-width: 72px;
+  padding: 3px 10px;
+  background: #c0c0c0;
+  border-top: 2px solid #ffffff;
+  border-left: 2px solid #ffffff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  cursor: default;
+  color: #000;
+}
+
+.w95btn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #ffffff;
+  border-bottom: 2px solid #ffffff;
+}
+
+.w95btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
+
+/* ── WINDOW BUTTONS ─────────────────── */
+.w95winbtn {
+  width: 16px;
+  height: 14px;
+  background: #c0c0c0;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #404040;
+  border-bottom: 1px solid #404040;
+  font-size: 9px;
+  font-family: var(--w95font);
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  padding: 0.6rem 2rem;
-  border-top: 1px solid rgba(245,241,234,0.06);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.42rem;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(245,241,234,0.18);
+  justify-content: center;
+  cursor: default;
+  color: #000;
+  padding: 0;
+  line-height: 1;
   flex-shrink: 0;
 }
-.btmDot { opacity: 0.35; }
 
-/* ── HINT ───────────────────────────── */
-.hint {
-  position: fixed;
-  left: -300px;
-  bottom: 2rem;
-  background: #0d0c0a;
-  border: 1px solid rgba(196,154,34,0.4);
-  border-left: none;
-  padding: 0.65rem 1rem 0.65rem 1.2rem;
+.w95winbtn:active {
+  border-top: 1px solid #404040;
+  border-left: 1px solid #404040;
+  border-right: 1px solid #fff;
+  border-bottom: 1px solid #fff;
+}
+
+.w95winbtnClose {
+  font-weight: 700;
+  font-size: 10px;
+}
+
+/* ── START BUTTON ───────────────────── */
+.startBtn {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  transition: left 0.5s cubic-bezier(0.16,1,0.3,1);
-  z-index: 200;
-  max-width: 260px;
-}
-.hintShow { left: 0; }
-
-.hintArrow {
-  font-size: 0.85rem;
-  color: #c49a22;
+  gap: 5px;
+  padding: 2px 8px;
+  height: 28px;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  font-family: var(--w95font);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: default;
   flex-shrink: 0;
-  animation: bounceX 0.8s ease-in-out infinite alternate;
+  color: #000;
 }
-@keyframes bounceX {
-  from { transform: translateX(0); }
-  to   { transform: translateX(4px); }
-}
-.hintText {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.46rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: rgba(245,241,234,0.55);
-  line-height: 1.7;
-}
-.hintText strong {
-  color: #c49a22;
-  display: block;
-  font-weight: 600;
-}
-.hintClose {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.65rem;
-  color: rgba(245,241,234,0.28);
-  background: none;
-  border: none;
-  cursor: crosshair;
-  padding: 0.1rem 0.3rem;
-  flex-shrink: 0;
-  transition: color 0.15s;
-}
-.hintClose:hover { color: #f5f1ea; }
 
-/* ── RESPONSIVE ─────────────────────── */
-@media (max-width: 600px) {
-  .nav { padding: 0.65rem 1.2rem; }
-  .navItem { display: none; }
-  .heroBtm { flex-wrap: wrap; }
-  .btmDot { display: none; }
-  .stage { height: 190px; }
+.startBtn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
 }
+
+/* ── TASKBAR TASK BUTTON ────────────── */
+.taskBtn {
+  height: 26px;
+  padding: 0 8px;
+  background: #c0c0c0;
+  border-top: 2px solid #fff;
+  border-left: 2px solid #fff;
+  border-right: 2px solid #808080;
+  border-bottom: 2px solid #808080;
+  font-family: var(--w95font);
+  font-size: 11px;
+  cursor: default;
+  color: #000;
+  text-align: left;
+}
+
+.taskBtn:active {
+  border-top: 2px solid #808080;
+  border-left: 2px solid #808080;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+}
+
+/* ── START MENU ITEM ────────────────── */
+.startMenuItem {
+  display: flex;
+  align-items: center;
+  padding: 5px 12px;
+  cursor: default;
+  font-family: var(--w95font);
+  font-size: 11px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.startMenuItem:hover {
+  background: #000080;
+  color: #fff;
+}
+
+/* ── SCROLLBARS ─────────────────────── */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c0c0c0 #808080;
+}
+
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track { background: #c0c0c0; }
+::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-top: 1px solid #fff;
+  border-left: 1px solid #fff;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+}
+::-webkit-scrollbar-button { background: #c0c0c0; height: 16px; width: 16px; }
