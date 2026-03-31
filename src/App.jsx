@@ -55,33 +55,225 @@ function ExeIco() {
   return <svg width="28" height="28" viewBox="0 0 32 32"><rect x="2" y="1" width="22" height="28" rx="1" fill="#fffef8"/><rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth=".8"/><path d="M18 1L24 7L18 7Z" fill="#ddd"/><circle cx="24" cy="24" r="8" fill="#c93030"/><text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="sans-serif" fontWeight="900">▶</text></svg>
 }
 
+// ─── EMAILJS CONFIG — fill these in ─────────────────────────
+const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
+const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
+const EMAILJS_PUBLIC_KEY  = 'YOUR_PUBLIC_KEY'
+
 function SignupExe({ onClose }) {
-  const [lines, setLines] = useState([])
+  const [step, setStep] = useState('install')
   const [prog, setProg] = useState(0)
-  const ref = useRef(null)
-  const LOG = ['C:\\WHOELSE> Initializing installer...','Checking faith protocols.......... OK','Connecting to Genesis Studios..... OK','Allocating cohort slot............ OK','Installing purpose.dll............ OK','Writing registry entries.......... OK','Installation complete!','Launching application form...']
+  const [lines, setLines] = useState([])
+  const logRef = useRef(null)
+  const [err, setErr] = useState('')
+  const [form, setForm] = useState({
+    name: '', email: '', school: '', gradYear: '',
+    links: '', interests: '', pastWork: '', goals: '',
+    parentPermission: false,
+  })
+
+  const LOG = [
+    'C:\\WHOELSE> Initializing...',
+    'Checking faith protocols.......... OK',
+    'Connecting to Genesis Studios..... OK',
+    'Allocating cohort slot............ OK',
+    'Loading application form.......... OK',
+    'Ready.',
+  ]
+
   useEffect(() => {
+    if (step !== 'install') return
     let i = 0
     const t = setInterval(() => {
-      if (i < LOG.length) { setLines(l=>[...l,LOG[i]]); setProg(Math.round((i+1)/LOG.length*100)); i++; if(ref.current) ref.current.scrollTop=9999 }
-      else { clearInterval(t); setTimeout(()=>{ window.open(SIGNUP_URL,'_blank'); onClose() }, 700) }
-    }, 400)
+      if (i < LOG.length) {
+        setLines(l => [...l, LOG[i]])
+        setProg(Math.round((i + 1) / LOG.length * 100))
+        i++
+        if (logRef.current) logRef.current.scrollTop = 9999
+      } else { clearInterval(t); setTimeout(() => setStep('form'), 500) }
+    }, 340)
     return () => clearInterval(t)
-  }, [])
-  return (
-    <div style={{padding:14,display:'flex',flexDirection:'column',gap:10,minWidth:340}}>
-      <div style={{fontFamily:'var(--wf)',fontSize:11,fontWeight:700,color:'#c93030'}}>WHO_ELSE Setup Wizard</div>
-      <div ref={ref} style={{...S,background:'#000',color:'#ccc',fontFamily:'var(--wm)',fontSize:11,padding:'6px 8px',height:120,overflowY:'auto',lineHeight:1.7}}>
-        {lines.map((l,i)=><div key={i} style={{color:i===lines.length-1?'#c49a22':'#ccc'}}>{l}</div>)}
+  }, [step])
+
+  async function handleSubmit() {
+    if (!form.name || !form.email || !form.school || !form.gradYear || !form.pastWork || !form.goals) {
+      setErr('Please fill in all required fields.'); return
+    }
+    if (!form.parentPermission) {
+      setErr('Parent/guardian permission is required.'); return
+    }
+    setErr(''); setStep('sending')
+    try {
+      if (!window.emailjs) {
+        await new Promise((res, rej) => {
+          const s = document.createElement('script')
+          s.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js'
+          s.onload = res; s.onerror = rej
+          document.head.appendChild(s)
+        })
+        window.emailjs.init(EMAILJS_PUBLIC_KEY)
+      }
+      await window.emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        from_name:    form.name,
+        from_email:   form.email,
+        school:       form.school,
+        grad_year:    form.gradYear,
+        links:        form.links || '—',
+        interests:    form.interests || '—',
+        past_work:    form.pastWork,
+        goals:        form.goals,
+        parent_ok:    form.parentPermission ? 'Yes — confirmed' : 'No',
+      })
+      setStep('done')
+    } catch (e) { console.error(e); setStep('error') }
+  }
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  const inputStyle = { width: '100%', fontFamily: 'var(--wm)', fontSize: 10, padding: '3px 5px', ...S, background: '#fff', color: '#000', outline: 'none', border: 'none' }
+  const taStyle   = { ...inputStyle, resize: 'vertical', lineHeight: 1.55 }
+
+  function Field({ label, k, placeholder, required, type = 'text' }) {
+    return (
+      <div style={{ marginBottom: 7 }}>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 10, marginBottom: 2, color: '#000' }}>
+          {label}{required && <span style={{ color: '#c93030' }}> *</span>}
+        </div>
+        <input type={type} value={form[k]} placeholder={placeholder}
+          onChange={e => set(k, e.target.value)} style={inputStyle} />
+      </div>
+    )
+  }
+
+  function TextArea({ label, k, placeholder, required, rows = 2 }) {
+    return (
+      <div style={{ marginBottom: 7 }}>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 10, marginBottom: 2, color: '#000' }}>
+          {label}{required && <span style={{ color: '#c93030' }}> *</span>}
+        </div>
+        <textarea value={form[k]} placeholder={placeholder} rows={rows}
+          onChange={e => set(k, e.target.value)} style={taStyle} />
+      </div>
+    )
+  }
+
+  // ── INSTALL ──
+  if (step === 'install') return (
+    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 400 }}>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#c93030' }}>WHO_ELSE — Loading Application</div>
+      <div ref={logRef} style={{ ...S, background: '#000', color: '#ccc', fontFamily: 'var(--wm)', fontSize: 11, padding: '6px 8px', height: 100, overflowY: 'auto', lineHeight: 1.7 }}>
+        {lines.map((l, i) => <div key={i} style={{ color: i === lines.length - 1 ? '#c49a22' : '#ccc' }}>{l}</div>)}
       </div>
       <div>
-        <div style={{fontFamily:'var(--wf)',fontSize:11,marginBottom:3}}>Installing: {prog}%</div>
-        <div style={{...S,height:14,background:'#c0c0c0',padding:2}}>
-          <div style={{height:'100%',width:`${prog}%`,background:'linear-gradient(90deg,#000080,#1084d0)',transition:'width .3s'}}/>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 10, marginBottom: 2 }}>Loading: {prog}%</div>
+        <div style={{ ...S, height: 12, background: '#c0c0c0', padding: 2 }}>
+          <div style={{ height: '100%', width: `${prog}%`, background: 'linear-gradient(90deg,#000080,#1084d0)', transition: 'width .3s' }} />
         </div>
       </div>
-      <div style={{display:'flex',justifyContent:'flex-end'}}>
-        <button onClick={onClose} style={{fontFamily:'var(--wf)',fontSize:11,padding:'3px 14px',background:'#c0c0c0',...R,cursor:'default'}}>Cancel</button>
+    </div>
+  )
+
+  // ── FORM ──
+  if (step === 'form') return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 440 }}>
+      {/* form header */}
+      <div style={{ padding: '8px 14px 6px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#000080' }}>WHO ELSE — Cohort 01 Application</div>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#555', marginTop: 1 }}>Fields marked <span style={{ color: '#c93030' }}>*</span> are required</div>
+      </div>
+
+      {/* scrollable fields */}
+      <div style={{ flex: 1, overflowY: 'auto', padding: '10px 14px 4px' }}>
+
+        {/* row: name + email */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 0 }}>
+          <Field label="Full Name" k="name" placeholder="Your full name" required />
+          <Field label="Email Address" k="email" placeholder="you@email.com" required type="email" />
+        </div>
+
+        {/* row: school + grad year */}
+        <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 8 }}>
+          <Field label="School" k="school" placeholder="e.g. Austin High School" required />
+          <Field label="Graduation Year" k="gradYear" placeholder="e.g. 2027" required />
+        </div>
+
+        <Field label="Links" k="links" placeholder="GitHub, portfolio, anything you've shipped — URLs welcome" />
+
+        <TextArea label="Interests" k="interests" placeholder="What topics, skills, or areas light you up? (design, code, business, faith, etc)" rows={2} />
+
+        <TextArea label="What have you built or done in the past?" k="pastWork" placeholder="Projects, clubs, jobs, anything you've created or shipped..." required rows={3} />
+
+        <TextArea label="What do you hope to get out of Who Else?" k="goals" placeholder="Be honest. What are you looking for?" required rows={3} />
+
+        {/* parent permission */}
+        <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginBottom: 8, marginTop: 2 }}>
+          <input type="checkbox" id="perm" checked={form.parentPermission}
+            onChange={e => set('parentPermission', e.target.checked)}
+            style={{ marginTop: 2, cursor: 'default', accentColor: '#000080' }} />
+          <label htmlFor="perm" style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#000', lineHeight: 1.5, cursor: 'default' }}>
+            <span style={{ color: '#c93030' }}>* </span>
+            I confirm that a parent or guardian is aware of and permits my participation in Who Else Collective.
+          </label>
+        </div>
+
+        {err && <div style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#c93030', marginBottom: 6 }}>{err}</div>}
+      </div>
+
+      {/* footer buttons */}
+      <div style={{ padding: '6px 14px 10px', borderTop: '1px solid #808080', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#777' }}>Genesis Studios @ ACU · Who Else Collective</div>
+        <div style={{ display: 'flex', gap: 6 }}>
+          <button onClick={onClose} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 12px', background: '#c0c0c0', ...R, cursor: 'default' }}>Cancel</button>
+          <button onClick={handleSubmit} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 18px', background: '#c0c0c0', ...R, cursor: 'default', fontWeight: 700 }}>Submit Application →</button>
+        </div>
+      </div>
+    </div>
+  )
+
+  // ── SENDING ──
+  if (step === 'sending') return (
+    <div style={{ padding: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, minWidth: 320 }}>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 11, color: '#000' }}>Submitting your application...</div>
+      <div style={{ ...S, width: '100%', height: 12, background: '#c0c0c0', padding: 2 }}>
+        <div style={{ height: '100%', width: '70%', background: 'linear-gradient(90deg,#000080,#1084d0)' }} />
+      </div>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#555' }}>Connecting to Genesis Studios...</div>
+    </div>
+  )
+
+  // ── DONE ──
+  if (step === 'done') return (
+    <div style={{ padding: 28, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, minWidth: 340 }}>
+      <div style={{ fontSize: 32, lineHeight: 1 }}>✓</div>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 13, fontWeight: 700, color: '#000080' }}>Application Received.</div>
+      <div style={{ ...S, padding: '8px 12px', background: '#fff', width: '100%' }}>
+        <div style={{ fontFamily: 'var(--wm)', fontSize: 10, color: '#000', lineHeight: 1.7 }}>
+          C:\WHOELSE{'>'} application.exe --submit<br />
+          <span style={{ color: '#007b00' }}>SUCCESS</span> — Application sent to Genesis Studios<br />
+          <span style={{ color: '#007b00' }}>SUCCESS</span> — Cohort slot reserved<br />
+          <span style={{ color: '#c49a22' }}>PENDING</span> — Awaiting review...<br />
+          <br />
+          We'll be in touch, {form.name.split(' ')[0] || 'friend'}.
+        </div>
+      </div>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#555', textAlign: 'center', maxWidth: 280, lineHeight: 1.6 }}>
+        Who else will pioneer the future?<br />You just answered.
+      </div>
+      <button onClick={onClose} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '4px 24px', background: '#c0c0c0', ...R, cursor: 'default', marginTop: 4 }}>Close</button>
+    </div>
+  )
+
+  // ── ERROR ──
+  return (
+    <div style={{ padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, minWidth: 320 }}>
+      <div style={{ fontSize: 24 }}>⚠</div>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#c93030' }}>Submission Failed</div>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#444', textAlign: 'center', lineHeight: 1.6, maxWidth: 260 }}>
+        Check your EmailJS credentials in App.jsx.<br />Your answers are not lost — hit Back to try again.
+      </div>
+      <div style={{ display: 'flex', gap: 6, marginTop: 4 }}>
+        <button onClick={() => setStep('form')} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 14px', background: '#c0c0c0', ...R, cursor: 'default' }}>← Back</button>
+        <button onClick={onClose} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 14px', background: '#c0c0c0', ...R, cursor: 'default' }}>Cancel</button>
       </div>
     </div>
   )
@@ -176,6 +368,20 @@ function WhoElseOS() {
   }
   function close(id){setWins(ws=>ws.filter(w=>w.id!==id))}
   const ICONS=[{id:'about',l:'About',Ico:FolIco},{id:'signup',l:'SIGNUP.EXE',Ico:ExeIco},{id:'members',l:'Members',Ico:FolIco},{id:'mission',l:'Mission',Ico:FolIco},{id:'genesis',l:'Genesis',Ico:FolIco},{id:'faq',l:'FAQ.txt',Ico:TxtIco},{id:'contact',l:'Contact',Ico:TxtIco}]
+
+  // icon grid positions — spread across desktop in a natural scattered grid
+  const ICON_POS = [
+    // col 1 (left edge)
+    { id:'about',   x:10,  y:8   },
+    { id:'members', x:10,  y:88  },
+    { id:'mission', x:10,  y:168 },
+    { id:'genesis', x:10,  y:248 },
+    // col 2
+    { id:'signup',  x:90,  y:8   },
+    // right side
+    { id:'faq',     x:10,  y:328 },
+    { id:'contact', x:90,  y:88  },
+  ]
   const timers=useRef({})
   function deskClick(e,id){
     e.stopPropagation();setSel(id)
@@ -188,13 +394,17 @@ function WhoElseOS() {
         <div style={{fontFamily:'var(--wf)',fontSize:16,fontWeight:700,color:'#fff',letterSpacing:'.08em'}}>WHO ELSE OS</div>
         <div style={{fontFamily:'var(--wf)',fontSize:8,color:'#fff'}}>Genesis Studios © 2025</div>
       </div>
-      <div style={{position:'absolute',top:8,left:8,display:'flex',flexDirection:'column',gap:3}} onClick={e=>e.stopPropagation()}>
-        {ICONS.map(({id,l,Ico})=>(
-          <div key={id} onClick={e=>deskClick(e,id)}
-            style={{display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'4px 2px',width:56,border:sel===id?'1px dotted rgba(255,255,255,.8)':'1px solid transparent',background:sel===id?'#000080':'transparent',cursor:'default'}}>
-            <Ico/><span style={{fontFamily:'var(--wf)',fontSize:9,color:'#fff',textAlign:'center',lineHeight:1.2,textShadow:'1px 1px 1px #000,-1px -1px 1px #000',wordBreak:'break-word',width:'100%'}}>{l}</span>
-          </div>
-        ))}
+      {/* icons spread across desktop */}
+      <div style={{position:'absolute',inset:0,pointerEvents:'none'}} onClick={e=>e.stopPropagation()}>
+        {ICONS.map(({id,l,Ico})=>{
+          const pos = ICON_POS.find(p=>p.id===id)||{x:8,y:8}
+          return (
+            <div key={id} onClick={e=>{e.stopPropagation();deskClick(e,id)}}
+              style={{position:'absolute',left:pos.x,top:pos.y,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'4px 2px',width:68,border:sel===id?'1px dotted rgba(255,255,255,.8)':'1px solid transparent',background:sel===id?'#000080':'transparent',cursor:'default',pointerEvents:'auto'}}>
+              <Ico/><span style={{fontFamily:'var(--wf)',fontSize:9,color:'#fff',textAlign:'center',lineHeight:1.2,textShadow:'1px 1px 1px #000,-1px -1px 1px #000',wordBreak:'break-word',width:'100%'}}>{l}</span>
+            </div>
+          )
+        })}
       </div>
       {wins.map(w=>(
         <OsWin key={w.id} title={w.title} icon={w.icon} zIndex={w.z} ix={w.x} iy={w.y} w={w.w} h={w.h} onClose={()=>close(w.id)} onFocus={()=>focus(w.id)}>
@@ -202,7 +412,7 @@ function WhoElseOS() {
         </OsWin>
       ))}
       {signup&&(
-        <OsWin title="WHO_ELSE Setup" icon="⚙️" zIndex={topZ+50} ix={50} iy={36} w={390} h={220} onClose={()=>setSignup(false)} onFocus={()=>{}}>
+        <OsWin title="WHO ELSE — Application" icon="⚙️" zIndex={topZ+50} ix={60} iy={18} w={480} h={540} onClose={()=>setSignup(false)} onFocus={()=>{}}>
           <SignupExe onClose={()=>setSignup(false)}/>
         </OsWin>
       )}
