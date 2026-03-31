@@ -55,6 +55,36 @@ function ExeIco() {
   return <svg width="28" height="28" viewBox="0 0 32 32"><rect x="2" y="1" width="22" height="28" rx="1" fill="#fffef8"/><rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth=".8"/><path d="M18 1L24 7L18 7Z" fill="#ddd"/><circle cx="24" cy="24" r="8" fill="#c93030"/><text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="sans-serif" fontWeight="900">▶</text></svg>
 }
 
+// ─── FORM FIELD COMPONENTS (must be outside SignupExe to avoid remount on keystroke) ───
+const inputStyle = { width:'100%', fontFamily:'var(--wm)', fontSize:10, padding:'3px 5px', borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff', background:'#fff', color:'#000', outline:'none', border:'none' }
+const taStyle = { ...inputStyle, resize:'vertical', lineHeight:1.55 }
+
+function FormField({ label, value, onChange, placeholder, required, type='text' }) {
+  return (
+    <div style={{ marginBottom:7 }}>
+      <div style={{ fontFamily:'var(--wf)', fontSize:10, marginBottom:2, color:'#000' }}>
+        {label}{required && <span style={{ color:'#c93030' }}> *</span>}
+      </div>
+      <input type={type} value={value} placeholder={placeholder}
+        onChange={onChange}
+        style={{ width:'100%', fontFamily:'var(--wm)', fontSize:10, padding:'3px 5px', background:'#fff', color:'#000', outline:'none', borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff' }} />
+    </div>
+  )
+}
+
+function FormTextArea({ label, value, onChange, placeholder, required, rows=2 }) {
+  return (
+    <div style={{ marginBottom:7 }}>
+      <div style={{ fontFamily:'var(--wf)', fontSize:10, marginBottom:2, color:'#000' }}>
+        {label}{required && <span style={{ color:'#c93030' }}> *</span>}
+      </div>
+      <textarea value={value} placeholder={placeholder} rows={rows}
+        onChange={onChange}
+        style={{ width:'100%', fontFamily:'var(--wm)', fontSize:10, padding:'3px 5px', background:'#fff', color:'#000', outline:'none', resize:'vertical', lineHeight:1.55, borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff' }} />
+    </div>
+  )
+}
+
 // ─── EMAILJS CONFIG — fill these in ─────────────────────────
 const EMAILJS_SERVICE_ID  = 'YOUR_SERVICE_ID'
 const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID'
@@ -130,33 +160,6 @@ function SignupExe({ onClose }) {
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
 
-  const inputStyle = { width: '100%', fontFamily: 'var(--wm)', fontSize: 10, padding: '3px 5px', ...S, background: '#fff', color: '#000', outline: 'none', border: 'none' }
-  const taStyle   = { ...inputStyle, resize: 'vertical', lineHeight: 1.55 }
-
-  function Field({ label, k, placeholder, required, type = 'text' }) {
-    return (
-      <div style={{ marginBottom: 7 }}>
-        <div style={{ fontFamily: 'var(--wf)', fontSize: 10, marginBottom: 2, color: '#000' }}>
-          {label}{required && <span style={{ color: '#c93030' }}> *</span>}
-        </div>
-        <input type={type} value={form[k]} placeholder={placeholder}
-          onChange={e => set(k, e.target.value)} style={inputStyle} />
-      </div>
-    )
-  }
-
-  function TextArea({ label, k, placeholder, required, rows = 2 }) {
-    return (
-      <div style={{ marginBottom: 7 }}>
-        <div style={{ fontFamily: 'var(--wf)', fontSize: 10, marginBottom: 2, color: '#000' }}>
-          {label}{required && <span style={{ color: '#c93030' }}> *</span>}
-        </div>
-        <textarea value={form[k]} placeholder={placeholder} rows={rows}
-          onChange={e => set(k, e.target.value)} style={taStyle} />
-      </div>
-    )
-  }
-
   // ── INSTALL ──
   if (step === 'install') return (
     <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 400 }}>
@@ -176,36 +179,23 @@ function SignupExe({ onClose }) {
   // ── FORM ──
   if (step === 'form') return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minWidth: 440 }}>
-      {/* form header */}
       <div style={{ padding: '8px 14px 6px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
         <div style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#000080' }}>WHO ELSE — Cohort 01 Application</div>
         <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#555', marginTop: 1 }}>Fields marked <span style={{ color: '#c93030' }}>*</span> are required</div>
       </div>
-
-      {/* scrollable fields */}
       <div style={{ flex: 1, overflowY: 'auto', padding: '10px 14px 4px' }}>
-
-        {/* row: name + email */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 0 }}>
-          <Field label="Full Name" k="name" placeholder="Your full name" required />
-          <Field label="Email Address" k="email" placeholder="you@email.com" required type="email" />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          <FormField label="Full Name" value={form.name} onChange={e=>set('name',e.target.value)} placeholder="Your full name" required />
+          <FormField label="Email Address" value={form.email} onChange={e=>set('email',e.target.value)} placeholder="you@email.com" required type="email" />
         </div>
-
-        {/* row: school + grad year */}
         <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: 8 }}>
-          <Field label="School" k="school" placeholder="e.g. Austin High School" required />
-          <Field label="Graduation Year" k="gradYear" placeholder="e.g. 2027" required />
+          <FormField label="School" value={form.school} onChange={e=>set('school',e.target.value)} placeholder="e.g. Austin High School" required />
+          <FormField label="Graduation Year" value={form.gradYear} onChange={e=>set('gradYear',e.target.value)} placeholder="e.g. 2027" required />
         </div>
-
-        <Field label="Links" k="links" placeholder="GitHub, portfolio, anything you've shipped — URLs welcome" />
-
-        <TextArea label="Interests" k="interests" placeholder="What topics, skills, or areas light you up? (design, code, business, faith, etc)" rows={2} />
-
-        <TextArea label="What have you built or done in the past?" k="pastWork" placeholder="Projects, clubs, jobs, anything you've created or shipped..." required rows={3} />
-
-        <TextArea label="What do you hope to get out of Who Else?" k="goals" placeholder="Be honest. What are you looking for?" required rows={3} />
-
-        {/* parent permission */}
+        <FormField label="Links" value={form.links} onChange={e=>set('links',e.target.value)} placeholder="GitHub, portfolio, anything you've shipped — URLs welcome" />
+        <FormTextArea label="Interests" value={form.interests} onChange={e=>set('interests',e.target.value)} placeholder="What topics, skills, or areas light you up?" rows={2} />
+        <FormTextArea label="What have you built or done in the past?" value={form.pastWork} onChange={e=>set('pastWork',e.target.value)} placeholder="Projects, clubs, jobs, anything you've created or shipped..." required rows={3} />
+        <FormTextArea label="What do you hope to get out of Who Else?" value={form.goals} onChange={e=>set('goals',e.target.value)} placeholder="Be honest. What are you looking for?" required rows={3} />
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 7, marginBottom: 8, marginTop: 2 }}>
           <input type="checkbox" id="perm" checked={form.parentPermission}
             onChange={e => set('parentPermission', e.target.checked)}
@@ -215,11 +205,8 @@ function SignupExe({ onClose }) {
             I confirm that a parent or guardian is aware of and permits my participation in Who Else Collective.
           </label>
         </div>
-
         {err && <div style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#c93030', marginBottom: 6 }}>{err}</div>}
       </div>
-
-      {/* footer buttons */}
       <div style={{ padding: '6px 14px 10px', borderTop: '1px solid #808080', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
         <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#777' }}>Genesis Studios · Who Else Collective</div>
         <div style={{ display: 'flex', gap: 6 }}>
@@ -682,6 +669,57 @@ function PcCanvas({ onScreenClick }) {
   return <canvas ref={canvasRef} width={720} height={420} className={styles.pcCanvas} />
 }
 
+// ─── COMMUNITY PAGE ──────────────────────────────────────────
+function CommunityPage({ onBack }) {
+  return (
+    <div className={styles.communityPage}>
+      <div className={styles.communityInner}>
+        <div className={styles.communityBadge}>MEMBERS ONLY</div>
+        <div className={styles.communityWordmark}>
+          <span className={styles.who}>WHO</span>
+          <span className={styles.else}>ELSE</span>
+        </div>
+        <h1 className={styles.communityTitle}>Community Dashboard</h1>
+        <p className={styles.communitySub}>
+          This is where the Who Else community lives — mission drops, member profiles,
+          Genesis Studios pipeline, cohort activity, and more.
+        </p>
+        <div className={styles.communityPlaceholder}>
+          <div className={styles.cpIcon}>⊞</div>
+          <div className={styles.cpText}>Coming Soon</div>
+          <div className={styles.cpSub}>
+            Authentication, member profiles, mission drops, and the full dashboard
+            will be wired here. This page will become the heartbeat of the collective.
+          </div>
+          <div className={styles.cpStack}>
+            {['Supabase Auth', 'Member Profiles', 'Mission Drops', 'Genesis Pipeline', 'Cohort Feed'].map(t => (
+              <span key={t} className={styles.cpTag}>{t}</span>
+            ))}
+          </div>
+        </div>
+        <button className={styles.communityBack} onClick={onBack}>← Back to desktop</button>
+      </div>
+    </div>
+  )
+}
+
+// ─── ACCOUNT NAV ─────────────────────────────────────────────
+function AccountNav({ onSignIn, onSignUp }) {
+  const [open, setOpen] = useState(false)
+  return (
+    <div className={styles.accountNav}>
+      <div className={styles.accountNavInner}>
+        {/* brand micro */}
+        <span className={styles.navBrand}>WHO ELSE</span>
+        <div style={{ flex: 1 }} />
+        {/* account buttons */}
+        <button className={styles.navSignIn} onClick={onSignIn}>Sign In</button>
+        <button className={styles.navSignUp} onClick={onSignUp}>Apply →</button>
+      </div>
+    </div>
+  )
+}
+
 function usePhrase() {
   const [idx, setIdx] = useState(0)
   const [out, setOut] = useState(false)
@@ -696,56 +734,110 @@ function usePhrase() {
 }
 
 export default function App() {
-  const [phase, setPhase] = useState('landing')
+  // intro: 'logo' → after 2.4s animates to 'reveal' (PC zooms in) → 'landing'
+  // then 'os' or 'community'
+  const [phase, setPhase] = useState('logo')
   const { phrase, out } = usePhrase()
+
+  // kick off intro sequence
+  useEffect(() => {
+    // show logo for 1.6s, then trigger zoom-in of PC
+    const t1 = setTimeout(() => setPhase('reveal'), 1600)
+    // after zoom animation completes show full landing
+    const t2 = setTimeout(() => setPhase('landing'), 1600 + 1200)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
+  }, [])
+
+  const goToOS = () => setPhase('os')
+  const goToCommunity = () => setPhase('community')
+  const goBack = () => setPhase('landing')
 
   return (
     <div className={styles.page}>
       <GrainCanvas />
 
-      {phase === 'landing' && (
-        <div className={styles.landing}>
+      {/* ── ACCOUNT NAV — always visible on landing / reveal ── */}
+      {(phase === 'landing' || phase === 'reveal') && (
+        <AccountNav onSignIn={goToCommunity} onSignUp={goToOS} />
+      )}
+
+      {/* ── LOGO INTRO ── just the wordmark + phrase, centered, no PC */}
+      {(phase === 'logo' || phase === 'reveal') && (
+        <div className={`${styles.intro} ${phase === 'reveal' ? styles.introReveal : ''}`}>
           <div className={styles.room} />
 
-          {/* WHO ELSE big wordmark */}
+          {/* wordmark */}
           <div className={styles.wordmarkWrap}>
             <span className={styles.who}>WHO</span>
             <span className={styles.else}>ELSE</span>
           </div>
 
-          {/* rotating phrase block */}
+          {/* phrase */}
           <div className={styles.phraseBlock}>
             <span className={styles.phraseTag}>a faith-driven innovation collective</span>
             <div className={styles.phraseRow}>
               <span className={styles.phraseDash}>—</span>
-              <span className={`${styles.phraseText} ${out ? styles.phraseOut : styles.phraseIn}`}>
-                {phrase}
-              </span>
+              <span className={`${styles.phraseText} ${out ? styles.phraseOut : styles.phraseIn}`}>{phrase}</span>
               <span className={styles.phraseQ}>?</span>
             </div>
           </div>
 
-          {/* PC */}
-          <div className={styles.pcWrap}>
-            <PcCanvas onScreenClick={() => setPhase('open')} />
-          </div>
-
-          {/* Sign In button — skips to OS directly */}
-          <div className={styles.signInWrap}>
-            <button className={styles.signInBtn} onClick={() => setPhase('open')}>
-              <span className={styles.signInIcon}>⊞</span>
-              Sign In to Who Else OS
-            </button>
-            <span className={styles.signInSub}>or click the monitor screen above</span>
+          {/* PC + sign in — slides up during reveal */}
+          <div className={`${styles.pcRevealWrap} ${phase === 'reveal' ? styles.pcRevealIn : ''}`}>
+            <div className={styles.pcWrap}>
+              <PcCanvas onScreenClick={goToOS} />
+            </div>
+            <div className={styles.signInWrap}>
+              <button className={styles.signInBtn} onClick={goToCommunity}>
+                <span className={styles.signInIcon}>⊞</span>
+                Sign In to Dashboard
+              </button>
+              <span className={styles.signInSub}>or click the monitor to explore the OS</span>
+            </div>
           </div>
         </div>
       )}
 
-      {phase === 'open' && (
+      {/* ── FULL LANDING (after intro) ── */}
+      {phase === 'landing' && (
+        <div className={styles.landing}>
+          <div className={styles.room} />
+          <div className={styles.wordmarkWrap}>
+            <span className={styles.who}>WHO</span>
+            <span className={styles.else}>ELSE</span>
+          </div>
+          <div className={styles.phraseBlock}>
+            <span className={styles.phraseTag}>a faith-driven innovation collective</span>
+            <div className={styles.phraseRow}>
+              <span className={styles.phraseDash}>—</span>
+              <span className={`${styles.phraseText} ${out ? styles.phraseOut : styles.phraseIn}`}>{phrase}</span>
+              <span className={styles.phraseQ}>?</span>
+            </div>
+          </div>
+          <div className={styles.pcWrap}>
+            <PcCanvas onScreenClick={goToOS} />
+          </div>
+          <div className={styles.signInWrap}>
+            <button className={styles.signInBtn} onClick={goToCommunity}>
+              <span className={styles.signInIcon}>⊞</span>
+              Sign In to Dashboard
+            </button>
+            <span className={styles.signInSub}>or click the monitor to explore the OS</span>
+          </div>
+        </div>
+      )}
+
+      {/* ── WHO ELSE OS ── */}
+      {phase === 'os' && (
         <div className={styles.osFullscreen}>
           <WhoElseOS />
-          <button className={styles.exitBtn} onClick={() => setPhase('landing')}>← back to desktop</button>
+          <button className={styles.exitBtn} onClick={goBack}>← back to desktop</button>
         </div>
+      )}
+
+      {/* ── COMMUNITY DASHBOARD ── */}
+      {phase === 'community' && (
+        <CommunityPage onBack={goBack} />
       )}
     </div>
   )
