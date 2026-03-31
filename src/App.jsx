@@ -292,78 +292,208 @@ function WhoElseOS() {
   )
 }
 
-// ─── CRT SVG ─────────────────────────────────────────────────
+// ─── HIGH-QUALITY ISOMETRIC CRT SETUP ────────────────────────
 function CrtSvg() {
   return (
-    <svg viewBox="0 0 240 210" className={styles.crtSvg} xmlns="http://www.w3.org/2000/svg">
-      {/* shadow */}
-      <ellipse cx="100" cy="205" rx="95" ry="7" fill="rgba(0,0,0,0.55)" />
-      {/* tower */}
-      <rect x="148" y="88" width="78" height="108" rx="5" fill="#2c2c2a" />
-      <rect x="148" y="88" width="78" height="108" rx="5" fill="none" stroke="#3a3a38" strokeWidth="1" />
-      <rect x="154" y="95" width="66" height="9" rx="2" fill="#1e1e1c" />
-      <circle cx="210" cy="99" r="5" fill="#c93030" opacity="0.85" />
-      <circle cx="210" cy="99" r="2.5" fill="#ff5555" />
-      <rect x="154" y="118" width="35" height="7" rx="1.5" fill="#111" stroke="#444" strokeWidth=".5" />
-      <rect x="154" y="130" width="28" height="4" rx="1" fill="#1a1a18" />
-      <rect x="154" y="138" width="28" height="4" rx="1" fill="#1a1a18" />
-      {/* monitor body */}
-      <rect x="5" y="24" width="130" height="100" rx="9" fill="#2e2e2c" />
-      <rect x="5" y="24" width="130" height="100" rx="9" fill="none" stroke="#454543" strokeWidth="1.2" />
-      {/* bezel inner shadow */}
-      <rect x="13" y="32" width="114" height="80" rx="5" fill="#111" />
-      {/* screen */}
-      <rect x="16" y="35" width="108" height="74" rx="3" fill="#001a12" />
-      {/* screen glow */}
-      <rect x="16" y="35" width="108" height="74" rx="3" fill="url(#sg)" />
-      {/* scanlines */}
-      <rect x="16" y="35" width="108" height="74" rx="3" fill="url(#sl)" opacity=".25" />
-      {/* OS UI on screen */}
-      <rect x="16" y="35" width="108" height="10" fill="#008080" />
-      <text x="22" y="43" fill="#fff" fontSize="5.5" fontFamily="Courier New,monospace" fontWeight="700">WHO ELSE OS  v1.0</text>
-      {/* taskbar strip */}
-      <rect x="16" y="99" width="108" height="10" fill="#c0c0c0" />
-      <rect x="18" y="101" width="26" height="6" rx="1" fill="#d4d0c8" stroke="#808080" strokeWidth=".5" />
-      <text x="31" y="106" textAnchor="middle" fill="#000" fontSize="4" fontFamily="Courier New,monospace" fontWeight="700">⊞ Start</text>
-      <text x="116" y="106" textAnchor="middle" fill="#000" fontSize="4" fontFamily="Courier New,monospace">12:00</text>
-      {/* fake folder icons */}
-      {[0, 1, 2].map(i => (
-        <g key={i} transform={`translate(${22 + i * 18}, 50)`}>
-          <rect width="13" height="10" rx="1" fill="#c49a22" opacity=".8" />
-          <rect y="3" width="13" height="10" rx="1" fill="#daa520" opacity=".9" />
-        </g>
-      ))}
-      {/* screen reflection */}
-      <path d="M16 35L50 35L36 55L16 50Z" fill="rgba(255,255,255,.025)" />
-      {/* monitor chin */}
-      <rect x="5" y="124" width="130" height="12" rx="0" fill="#2a2a28" />
-      <circle cx="70" cy="130" r="3.5" fill="#00cc66" opacity=".7" />
-      <circle cx="70" cy="130" r="2" fill="#00ff88" />
-      {/* neck */}
-      <rect x="55" y="136" width="30" height="16" rx="2" fill="#272725" />
-      {/* base */}
-      <rect x="28" y="150" width="84" height="9" rx="3" fill="#222" />
-      <rect x="32" y="145" width="76" height="7" rx="2" fill="#2c2c2a" />
-      {/* keyboard */}
-      <rect x="5" y="172" width="118" height="26" rx="3" fill="#2c2c2a" stroke="#3a3a38" strokeWidth=".8" />
-      {[0,1,2].map(row => Array.from({length:12}).map((_, col) => (
-        <rect key={`${row}-${col}`} x={9 + col * 9} y={175 + row * 7} width="7" height="5" rx="1" fill="#1e1e1c" stroke="#2e2e2c" strokeWidth=".4"/>
-      )))}
-      {/* mouse */}
-      <rect x="132" y="175" width="24" height="32" rx="11" fill="#2c2c2a" stroke="#3a3a38" strokeWidth=".8" />
-      <line x1="144" y1="175" x2="144" y2="193" stroke="#222" strokeWidth=".8" />
-      {/* defs */}
+    <svg viewBox="0 0 300 340" className={styles.crtSvg} xmlns="http://www.w3.org/2000/svg">
       <defs>
-        <radialGradient id="sg" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#00ff88" stopOpacity=".1" />
-          <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
+        <linearGradient id="monTop" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#3a3835"/><stop offset="50%" stopColor="#454340"/><stop offset="100%" stopColor="#2a2826"/>
+        </linearGradient>
+        <linearGradient id="monFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#3c3a38"/><stop offset="100%" stopColor="#242220"/>
+        </linearGradient>
+        <linearGradient id="monSide" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#201e1c"/><stop offset="100%" stopColor="#141210"/>
+        </linearGradient>
+        <radialGradient id="screenGlow" cx="50%" cy="45%" r="55%">
+          <stop offset="0%" stopColor="#00e87a" stopOpacity="0.22"/>
+          <stop offset="55%" stopColor="#00aa55" stopOpacity="0.09"/>
+          <stop offset="100%" stopColor="#003322" stopOpacity="0"/>
         </radialGradient>
-        <pattern id="sl" patternUnits="userSpaceOnUse" width="1" height="4">
-          <rect width="1" height="2" fill="#000" opacity="1" />
-        </pattern>
+        <linearGradient id="box1top" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#c8ac5a"/><stop offset="100%" stopColor="#a08830"/>
+        </linearGradient>
+        <linearGradient id="box1front" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#bc982e"/><stop offset="100%" stopColor="#8c6e18"/>
+        </linearGradient>
+        <linearGradient id="box1side" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#7c6014"/><stop offset="100%" stopColor="#5c480c"/>
+        </linearGradient>
+        <linearGradient id="box2top" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#caae62"/><stop offset="100%" stopColor="#a28a3c"/>
+        </linearGradient>
+        <linearGradient id="box2front" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#ba9a34"/><stop offset="100%" stopColor="#8a7020"/>
+        </linearGradient>
+        <linearGradient id="box2side" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#7e641a"/><stop offset="100%" stopColor="#5c4c10"/>
+        </linearGradient>
+        <linearGradient id="towerTop" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#343230"/><stop offset="100%" stopColor="#242220"/>
+        </linearGradient>
+        <linearGradient id="towerFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#302e2c"/><stop offset="100%" stopColor="#1e1c1a"/>
+        </linearGradient>
+        <linearGradient id="towerSide" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#1c1a18"/><stop offset="100%" stopColor="#100e0c"/>
+        </linearGradient>
       </defs>
+
+      {/* ── FLOOR SHADOW ── */}
+      <ellipse cx="148" cy="334" rx="135" ry="9" fill="rgba(0,0,0,0.6)"/>
+
+      {/* ── BOXES ── */}
+      {/* Box 1 large */}
+      <polygon points="30,250 108,226 152,250 74,274" fill="url(#box1top)"/>
+      <polygon points="30,250 74,274 74,322 30,298" fill="url(#box1front)"/>
+      <polygon points="74,274 152,250 152,298 74,322" fill="url(#box1side)"/>
+      <polygon points="46,254 108,232 108,238 46,260" fill="rgba(190,165,80,0.35)"/>
+      <line x1="74" y1="274" x2="74" y2="322" stroke="rgba(0,0,0,0.18)" strokeWidth="1"/>
+      <line x1="30" y1="250" x2="152" y2="250" stroke="rgba(255,255,255,0.06)" strokeWidth="0.6"/>
+
+      {/* Box 2 small, front-right */}
+      <polygon points="112,232 168,216 200,232 144,248" fill="url(#box2top)"/>
+      <polygon points="112,232 144,248 144,288 112,272" fill="url(#box2front)"/>
+      <polygon points="144,248 200,232 200,272 144,288" fill="url(#box2side)"/>
+      <polygon points="124,236 168,222 168,227 124,241" fill="rgba(185,160,75,0.3)"/>
+
+      {/* ── TOWER ── */}
+      <polygon points="192,172 256,152 284,168 220,188" fill="url(#towerTop)"/>
+      <polygon points="192,172 220,188 220,302 192,286" fill="url(#towerFront)"/>
+      <polygon points="220,188 284,168 284,282 220,302" fill="url(#towerSide)"/>
+      {/* drive bays */}
+      <rect x="195" y="198" width="21" height="6" rx="1" fill="#181614" stroke="#0e0c0a" strokeWidth="0.5"/>
+      <rect x="195" y="207" width="21" height="5" rx="1" fill="#181614" stroke="#0e0c0a" strokeWidth="0.5"/>
+      {/* power btn */}
+      <circle cx="205" cy="222" r="5" fill="#1c1a18" stroke="#0e0c0a" strokeWidth="0.8"/>
+      <circle cx="205" cy="222" r="3" fill="#c93030"/>
+      <circle cx="205" cy="222" r="1.5" fill="#ff4444"/>
+      {/* led */}
+      <rect x="195" y="232" width="12" height="2" rx="1" fill="#00cc66" opacity="0.65"/>
+      {/* vents */}
+      {[248,256,264,272,280].map(y => (
+        <line key={y} x1="195" y1={y} x2="215" y2={y} stroke="#0e0c0a" strokeWidth="0.8" opacity="0.7"/>
+      ))}
+      {/* side vents */}
+      {[196,204,212,220,228].map((y,i) => (
+        <polygon key={i} points={`${234+i*4},${y} ${254+i*4},${y-6} ${254+i*4},${y-3} ${234+i*4},${y+3}`}
+          fill="none" stroke="rgba(0,0,0,0.45)" strokeWidth="0.7"/>
+      ))}
+
+      {/* ── MONITOR ── */}
+      {/* top face */}
+      <polygon points="56,76 166,44 210,68 100,100" fill="url(#monTop)"/>
+      {/* front face */}
+      <polygon points="56,76 100,100 100,216 56,192" fill="url(#monFront)"/>
+      {/* right face */}
+      <polygon points="100,100 210,68 210,184 100,216" fill="url(#monSide)"/>
+      {/* top highlight edge */}
+      <polygon points="56,76 166,44 168,48 58,80" fill="rgba(255,255,255,0.05)"/>
+
+      {/* bezel recess front */}
+      <polygon points="62,92 96,106 96,200 62,186" fill="#1a1816"/>
+      {/* screen glass */}
+      <polygon points="66,96 92,108 92,194 66,182" fill="#001c10"/>
+      {/* phosphor glow */}
+      <polygon points="66,96 92,108 92,194 66,182" fill="url(#screenGlow)"/>
+      {/* scanlines */}
+      {Array.from({length:14}).map((_,i) => (
+        <line key={i} x1="66" y1={100+i*6.7} x2="92" y2={110+i*6.2}
+          stroke="rgba(0,0,0,0.1)" strokeWidth="0.7"/>
+      ))}
+      {/* OS taskbar */}
+      <polygon points="66,186 92,194 92,200 66,192" fill="#c0c0c0"/>
+      <polygon points="68,187 76,189 76,193 68,191" fill="#d0ccc8"/>
+      {/* folder icons */}
+      {[0,1,2].map(i => (
+        <polygon key={i}
+          points={`${68+i*7},${104+i*0.5} ${74+i*7},${106+i*0.5} ${74+i*7},${112+i*0.5} ${68+i*7},${110+i*0.5}`}
+          fill="#c49a22" opacity="0.8"/>
+      ))}
+      {/* header bar */}
+      <polygon points="66,96 92,108 92,111 66,99" fill="#007070"/>
+      {/* glass reflection */}
+      <polygon points="66,96 76,100 70,116 66,113" fill="rgba(255,255,255,0.035)"/>
+
+      {/* monitor side bezel detail */}
+      {[112,120,128,136].map((y,i) => (
+        <line key={i} x1={148+i*4} y1={y-2} x2={205-i*2} y2={y-12}
+          stroke="rgba(0,0,0,0.25)" strokeWidth="1.1"/>
+      ))}
+
+      {/* monitor chin front */}
+      <polygon points="56,212 100,228 100,216 56,200" fill="#222020"/>
+      <polygon points="56,212 100,228 56,228" fill="#1a1818"/>
+      {/* power LED on chin */}
+      <circle cx="78" cy="220" r="2.5" fill="#00ff88"/>
+      <circle cx="78" cy="220" r="1.5" fill="#88ffcc" opacity="0.8"/>
+
+      {/* neck iso */}
+      <polygon points="72,224 82,228 82,244 72,240" fill="#252220"/>
+      <polygon points="82,228 104,222 104,238 82,244" fill="#1c1a18"/>
+      <polygon points="72,224 104,216 104,222 82,228 72,224" fill="#2c2a28"/>
+
+      {/* base iso */}
+      <polygon points="48,240 116,220 138,232 70,252" fill="#2a2826"/>
+      <polygon points="48,240 70,252 70,262 48,250" fill="#1e1c1a"/>
+      <polygon points="70,252 138,232 138,242 70,262" fill="#161412"/>
+
+      {/* ── KEYBOARD ── */}
+      <polygon points="22,282 148,248 168,260 42,294" fill="#2e2c2a"/>
+      <polygon points="22,282 42,294 42,302 22,290" fill="#222020"/>
+      <polygon points="42,294 168,260 168,268 42,302" fill="#1c1a18"/>
+      {/* keys */}
+      {[0,1,2,3].map(row =>
+        Array.from({length:10}).map((_,col) => (
+          <polygon key={`${row}-${col}`}
+            points={`${28+col*12+row*1.4},${278-row*8+col*0.4} ${37+col*12+row*1.4},${275-row*8+col*0.4} ${37+col*12+row*1.4},${280-row*8+col*0.4} ${28+col*12+row*1.4},${283-row*8+col*0.4}`}
+            fill="#1c1a18" stroke="rgba(0,0,0,0.35)" strokeWidth="0.3"/>
+        ))
+      )}
+      <polygon points="54,290 108,274 108,280 54,296" fill="#1c1a18" stroke="rgba(0,0,0,0.3)" strokeWidth="0.3"/>
+
+      {/* ── MOUSE ── */}
+      <ellipse cx="192" cy="278" rx="16" ry="22" fill="#2c2a28" transform="rotate(-12 192 278)"/>
+      <ellipse cx="192" cy="278" rx="16" ry="22" fill="none" stroke="#1a1818" strokeWidth="0.8" transform="rotate(-12 192 278)"/>
+      <line x1="184" y1="268" x2="200" y2="265" stroke="#1a1818" strokeWidth="0.8"/>
+      <rect x="189" y="268" width="5" height="8" rx="2" fill="#1a1818" transform="rotate(-12 191 272)"/>
+
+      {/* ── CABLES ── */}
+      <path d="M100 216 Q112 234 140 248" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M92 180 Q106 202 128 214 Q148 222 165 244" fill="none" stroke="#0d0d0d" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   )
+}
+
+// ─── FILM GRAIN ──────────────────────────────────────────────
+function GrainCanvas() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const canvas = ref.current
+    const ctx = canvas.getContext('2d')
+    let raf
+    function resize() {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+    }
+    resize()
+    window.addEventListener('resize', resize)
+    function draw() {
+      const w = canvas.width, h = canvas.height
+      const img = ctx.createImageData(w, h)
+      const d = img.data
+      for (let i = 0; i < d.length; i += 4) {
+        const v = Math.random() * 255 | 0
+        d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 26
+      }
+      ctx.putImageData(img, 0, 0)
+      raf = requestAnimationFrame(draw)
+    }
+    draw()
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', resize) }
+  }, [])
+  return <canvas ref={ref} className={styles.grain} />
 }
 
 // ─── MAIN SCENE ───────────────────────────────────────────────
@@ -374,8 +504,7 @@ export default function App() {
   function clickComputer() {
     if (phase !== 'wall') return
     setPhase('dollying')
-    // after dolly animation completes, snap to zoomed
-    setTimeout(() => setPhase('zoomed'), 2200)
+    setTimeout(() => setPhase('zoomed'), 2400)
   }
 
   function exitOS() {
@@ -385,7 +514,10 @@ export default function App() {
   return (
     <div className={styles.scene}>
 
-      {/* ── PERSPECTIVE CONTAINER — this is what dollies ── */}
+      {/* Film grain fixed over everything */}
+      <GrainCanvas />
+
+      {/* ── PERSPECTIVE CONTAINER ── */}
       <div className={`${styles.world} ${phase === 'dollying' ? styles.worldDolly : ''} ${phase === 'zoomed' ? styles.worldZoomed : ''}`}>
 
         {/* BRICK WALL */}
@@ -401,13 +533,14 @@ export default function App() {
           />
         </div>
 
-        {/* SPOTLIGHT — cone of light over the computer area */}
+        {/* SPOTLIGHT cone from ceiling */}
         <div className={styles.spotlight} aria-hidden="true" />
-
-        {/* GROUND LIGHT POOL — warm puddle under CRT */}
+        {/* warm ground pool under light */}
         <div className={styles.groundLight} aria-hidden="true" />
+        {/* tiny fixture dot at ceiling */}
+        <div className={styles.spotlightFixture} aria-hidden="true" />
 
-        {/* CRT COMPUTER — bottom left */}
+        {/* CRT COMPUTER */}
         <div
           className={`${styles.crt} ${phase !== 'wall' ? styles.crtFade : ''}`}
           onClick={clickComputer}
@@ -417,18 +550,14 @@ export default function App() {
           <CrtSvg />
         </div>
 
-      </div>{/* /world */}
+      </div>
 
-      {/* ── MONITOR FRAME OVERLAY — shown when zoomed ── */}
+      {/* ── MONITOR FRAME OVERLAY ── */}
       {phase === 'zoomed' && (
         <div className={styles.overlay}>
-          {/* brick still visible as background */}
           <div className={styles.overlayBrick} />
-
-          {/* CRT monitor housing */}
           <div className={styles.monitor}>
             <div className={styles.monitorBezel}>
-              {/* screen contains the full OS */}
               <div className={styles.monitorScreen}>
                 <WhoElseOS />
               </div>
@@ -440,7 +569,6 @@ export default function App() {
             <div className={styles.monitorNeck} />
             <div className={styles.monitorBase} />
           </div>
-
           <button className={styles.exitBtn} onClick={exitOS}>← BACK TO WALL</button>
         </div>
       )}
