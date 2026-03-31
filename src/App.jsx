@@ -3,6 +3,19 @@ import styles from './App.module.css'
 
 const SIGNUP_URL = 'https://YOUR-SIGNUP-URL-HERE.com'
 
+const PHRASES = [
+  'but us to pioneer the future',
+  'to be trusted with this technology',
+  'to create what comes next',
+  'should be trusted to lead',
+  'will build for Kingdom glory',
+  'is ready to answer the call',
+  'will accept this responsibility',
+  'will shape the next generation',
+  'can carry this forward',
+  'but us to begin',
+]
+
 const FILES = {
   about: {
     'README.txt': `WHO ELSE COLLECTIVE\n-------------------\n\nWho else should be trusted to pioneer\nthe future of technology?\n\nFAITH-DRIVEN  · FOUNDER-FIRST\nBUILD IN PUBLIC · LEGACY OVER EXIT\n\nFOUNDED : 2025\nLOCATION: Austin, TX\nBACKED  : Genesis Studios @ ACU`,
@@ -33,32 +46,13 @@ const R = { borderTop:'2px solid #fff', borderLeft:'2px solid #fff', borderRight
 const S = { borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff' }
 
 function TxtIco() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 28 28">
-      <rect x="2" y="1" width="18" height="24" rx="1" fill="#fffef8"/><rect x="2" y="1" width="18" height="24" rx="1" fill="none" stroke="#888" strokeWidth=".8"/>
-      <path d="M16 1L20 5L16 5Z" fill="#ddd"/><path d="M16 1L16 5L20 5" fill="none" stroke="#888" strokeWidth=".8"/>
-      <rect x="4" y="9" width="11" height="1" fill="#aaa"/><rect x="4" y="12" width="9" height="1" fill="#aaa"/><rect x="4" y="15" width="10" height="1" fill="#aaa"/>
-    </svg>
-  )
+  return <svg width="28" height="28" viewBox="0 0 28 28"><rect x="2" y="1" width="18" height="24" rx="1" fill="#fffef8"/><rect x="2" y="1" width="18" height="24" rx="1" fill="none" stroke="#888" strokeWidth=".8"/><path d="M16 1L20 5L16 5Z" fill="#ddd"/><path d="M16 1L16 5L20 5" fill="none" stroke="#888" strokeWidth=".8"/><rect x="4" y="9" width="11" height="1" fill="#aaa"/><rect x="4" y="12" width="9" height="1" fill="#aaa"/><rect x="4" y="15" width="10" height="1" fill="#aaa"/></svg>
 }
 function FolIco() {
-  return (
-    <svg width="32" height="28" viewBox="0 0 32 28">
-      <path d="M1 7Q1 5 3 5L11 5L14 8L29 8Q31 8 31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#c49a22" opacity=".9"/>
-      <path d="M1 10L31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#daa520"/>
-      <path d="M1 10L31 10" stroke="rgba(255,255,255,.5)" strokeWidth=".8"/>
-    </svg>
-  )
+  return <svg width="32" height="28" viewBox="0 0 32 28"><path d="M1 7Q1 5 3 5L11 5L14 8L29 8Q31 8 31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#c49a22" opacity=".9"/><path d="M1 10L31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#daa520"/><path d="M1 10L31 10" stroke="rgba(255,255,255,.5)" strokeWidth=".8"/></svg>
 }
 function ExeIco() {
-  return (
-    <svg width="28" height="28" viewBox="0 0 32 32">
-      <rect x="2" y="1" width="22" height="28" rx="1" fill="#fffef8"/><rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth=".8"/>
-      <path d="M18 1L24 7L18 7Z" fill="#ddd"/>
-      <circle cx="24" cy="24" r="8" fill="#c93030"/>
-      <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="sans-serif" fontWeight="900">▶</text>
-    </svg>
-  )
+  return <svg width="28" height="28" viewBox="0 0 32 32"><rect x="2" y="1" width="22" height="28" rx="1" fill="#fffef8"/><rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth=".8"/><path d="M18 1L24 7L18 7Z" fill="#ddd"/><circle cx="24" cy="24" r="8" fill="#c93030"/><text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="sans-serif" fontWeight="900">▶</text></svg>
 }
 
 function SignupExe({ onClose }) {
@@ -70,7 +64,7 @@ function SignupExe({ onClose }) {
     let i = 0
     const t = setInterval(() => {
       if (i < LOG.length) { setLines(l=>[...l,LOG[i]]); setProg(Math.round((i+1)/LOG.length*100)); i++; if(ref.current) ref.current.scrollTop=9999 }
-      else { clearInterval(t); setTimeout(()=>{window.open(SIGNUP_URL,'_blank');onClose()},700) }
+      else { clearInterval(t); setTimeout(()=>{ window.open(SIGNUP_URL,'_blank'); onClose() }, 700) }
     }, 400)
     return () => clearInterval(t)
   }, [])
@@ -106,7 +100,7 @@ function Notepad({ content, filename }) {
 }
 
 function FolderBody({ folderKey, onOpenFile }) {
-  const files = FILES[folderKey]||{}
+  const files = FILES[folderKey] || {}
   return (
     <div style={{display:'flex',flexDirection:'column',height:'100%'}}>
       <div style={{display:'flex',gap:4,padding:'2px 6px',borderBottom:'1px solid #808080',flexShrink:0}}>
@@ -181,11 +175,7 @@ function WhoElseOS() {
     setWins(ws=>[...ws,{id,title:`${name} — Notepad`,icon:'📄',type:'note',content,filename:name,x:60+off,y:54+off,z,w:380,h:280}])
   }
   function close(id){setWins(ws=>ws.filter(w=>w.id!==id))}
-  const ICONS=[
-    {id:'about',l:'About',Ico:FolIco},{id:'signup',l:'SIGNUP.EXE',Ico:ExeIco},
-    {id:'members',l:'Members',Ico:FolIco},{id:'mission',l:'Mission',Ico:FolIco},
-    {id:'genesis',l:'Genesis',Ico:FolIco},{id:'faq',l:'FAQ.txt',Ico:TxtIco},{id:'contact',l:'Contact',Ico:TxtIco},
-  ]
+  const ICONS=[{id:'about',l:'About',Ico:FolIco},{id:'signup',l:'SIGNUP.EXE',Ico:ExeIco},{id:'members',l:'Members',Ico:FolIco},{id:'mission',l:'Mission',Ico:FolIco},{id:'genesis',l:'Genesis',Ico:FolIco},{id:'faq',l:'FAQ.txt',Ico:TxtIco},{id:'contact',l:'Contact',Ico:TxtIco}]
   const timers=useRef({})
   function deskClick(e,id){
     e.stopPropagation();setSel(id)
@@ -238,8 +228,7 @@ function WhoElseOS() {
 function GrainCanvas() {
   const ref = useRef(null)
   useEffect(()=>{
-    const canvas=ref.current,ctx=canvas.getContext('2d')
-    let raf
+    const canvas=ref.current,ctx=canvas.getContext('2d'); let raf
     function resize(){canvas.width=window.innerWidth;canvas.height=window.innerHeight}
     resize(); window.addEventListener('resize',resize)
     function draw(){
@@ -253,17 +242,200 @@ function GrainCanvas() {
   return <canvas ref={ref} className={styles.grain}/>
 }
 
+// ── CANVAS PC DRAWING ────────────────────────────────────────
+function usePC(canvasRef, onScreenClick) {
+  const boundsRef = useRef({})
+
+  useEffect(()=>{
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const W = 720, H = 420
+
+    function grad(x1,y1,x2,y2,stops){
+      const g=ctx.createLinearGradient(x1,y1,x2,y2)
+      stops.forEach(([p,c])=>g.addColorStop(p,c)); return g
+    }
+    function rgrad(cx,cy,r,stops){
+      const g=ctx.createRadialGradient(cx,cy,0,cx,cy,r)
+      stops.forEach(([p,c])=>g.addColorStop(p,c)); return g
+    }
+    function face(pts,fill,stroke='rgba(0,0,0,.4)',lw=.8){
+      ctx.beginPath(); ctx.moveTo(pts[0][0],pts[0][1])
+      for(let i=1;i<pts.length;i++) ctx.lineTo(pts[i][0],pts[i][1])
+      ctx.closePath()
+      if(fill){ctx.fillStyle=fill;ctx.fill()}
+      if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke()}
+    }
+
+    function drawDesk(){
+      face([[0,300],[720,300],[720,420],[0,420]],grad(0,300,0,420,[[0,'#3a2e1e'],[1,'#1a1208']]),null)
+      face([[0,300],[720,300],[720,306],[0,306]],grad(0,300,0,306,[[0,'rgba(255,200,100,0.1)'],[1,'transparent']]),null)
+    }
+    function drawShadow(){
+      ctx.save(); ctx.translate(360,308); ctx.scale(1,0.16)
+      ctx.beginPath(); ctx.arc(0,0,300,0,Math.PI*2)
+      ctx.fillStyle='rgba(0,0,0,0.42)'; ctx.fill(); ctx.restore()
+    }
+    function drawCable(){
+      ctx.strokeStyle='#141416'; ctx.lineWidth=2.2; ctx.lineCap='round'
+      ctx.beginPath(); ctx.moveTo(282,338); ctx.bezierCurveTo(240,356,190,346,168,296); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(282,343); ctx.bezierCurveTo(234,364,185,356,160,306); ctx.stroke()
+    }
+
+    function drawTower(){
+      const tx=42,ty=82,tw=108,th=208,d=28
+      face([[tx,ty],[tx+tw,ty],[tx+tw+d,ty-16],[tx+d,ty-16]],grad(tx,ty-16,tx,ty,[[0,'#323234'],[.5,'#3c3c3e'],[1,'#242426']]))
+      face([[tx+tw,ty],[tx+tw+d,ty-16],[tx+tw+d,ty+th-16],[tx+tw,ty+th]],grad(tx+tw,ty,tx+tw+d,ty,[[0,'#1c1c1e'],[1,'#101012']]))
+      face([[tx,ty],[tx+tw,ty],[tx+tw,ty+th],[tx,ty+th]],grad(tx,ty,tx,ty+th,[[0,'#2a2a2c'],[.35,'#252526'],[1,'#1a1a1c']]))
+      face([[tx,ty],[tx+3,ty],[tx+3,ty+th],[tx,ty+th]],grad(tx,ty,tx+3,ty,[[0,'rgba(255,255,255,.05)'],[1,'transparent']]),null)
+      // drive bay
+      const dby=ty+24
+      face([[tx+7,dby],[tx+tw-7,dby],[tx+tw-7,dby+13],[tx+7,dby+13]],grad(tx+7,dby,tx+7,dby+13,[[0,'#111'],[1,'#0a0a0a']]))
+      ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.8;ctx.beginPath();ctx.moveTo(tx+7,dby+6.5);ctx.lineTo(tx+tw-7,dby+6.5);ctx.stroke()
+      face([[tx+7,dby+17],[tx+tw-7,dby+17],[tx+tw-7,dby+26],[tx+7,dby+26]],grad(tx+7,dby+17,tx+7,dby+26,[[0,'#0e0e0e'],[1,'#0a0a0a']]))
+      // power button
+      const pbx=tx+20,pby=ty+58
+      ctx.beginPath();ctx.arc(pbx,pby,8.5,0,Math.PI*2);ctx.fillStyle='#1e1e20';ctx.fill()
+      ctx.strokeStyle='rgba(255,255,255,.09)';ctx.lineWidth=.8;ctx.stroke()
+      ctx.strokeStyle='rgba(100,220,140,.75)';ctx.lineWidth=1.5
+      ctx.beginPath();ctx.arc(pbx,pby,4.5,Math.PI*.28,Math.PI*1.72);ctx.moveTo(pbx,pby-5.5);ctx.lineTo(pbx,pby-1.5);ctx.stroke()
+      // usb
+      for(let i=0;i<3;i++) face([[tx+11+i*16,ty+80],[tx+22+i*16,ty+80],[tx+22+i*16,ty+88],[tx+11+i*16,ty+88]],'#111','rgba(255,255,255,.05)',.5)
+      // vents
+      ctx.fillStyle='rgba(0,0,0,.65)'
+      for(let r=0;r<6;r++) for(let c=0;c<7;c++){ctx.beginPath();ctx.arc(tx+14+c*13,ty+108+r*14,2.2,0,Math.PI*2);ctx.fill()}
+      for(let i=0;i<9;i++){const vy=ty+8+i*20;face([[tx+tw+3,vy],[tx+tw+d-3,vy-9],[tx+tw+d-3,vy-4],[tx+tw+3,vy+5]],'rgba(0,0,0,.38)',null)}
+
+      // ── STICKY NOTE ──
+      const nx=tx+tw-38, ny=ty+145
+      ctx.save()
+      ctx.translate(nx,ny); ctx.rotate(-0.06)
+      ctx.shadowColor='rgba(0,0,0,0.35)'; ctx.shadowBlur=6; ctx.shadowOffsetX=2; ctx.shadowOffsetY=3
+      const ng=grad(0,0,0,52,[[0,'#f5e98a'],[.3,'#f0e070'],[1,'#e8d555']])
+      ctx.fillStyle=ng; ctx.beginPath(); ctx.roundRect(0,0,44,52,1); ctx.fill()
+      ctx.shadowColor='transparent'
+      // fold corner
+      ctx.beginPath();ctx.moveTo(32,0);ctx.lineTo(44,0);ctx.lineTo(44,12);ctx.fillStyle='rgba(0,0,0,.1)';ctx.fill()
+      ctx.beginPath();ctx.moveTo(32,0);ctx.lineTo(44,12);ctx.lineTo(32,12);ctx.fillStyle='#d4c94a';ctx.fill()
+      // ruled lines
+      ctx.strokeStyle='rgba(0,0,0,.1)';ctx.lineWidth=.8
+      for(let l=0;l<3;l++){ctx.beginPath();ctx.moveTo(4,18+l*12);ctx.lineTo(40,18+l*12);ctx.stroke()}
+      // handwritten text — use Caveat if loaded, else cursive
+      ctx.font='bold 13px Caveat, cursive'; ctx.fillStyle='rgba(60,40,10,.85)'
+      ctx.fillText('4/4/26',5,16)
+      ctx.font='9px Caveat, cursive'; ctx.fillStyle='rgba(60,40,10,.6)'
+      ctx.fillText('launch',5,29); ctx.fillText('day ✓',5,40)
+      ctx.restore()
+    }
+
+    function drawMonitor(){
+      const sx=280,sy=65,sw=280,sh=198,d=14,tilt=6
+      const scx=sx+sw/2+5
+      face([[scx-13,sy+sh],[scx-13,sy+sh+38],[scx+13,sy+sh+38],[scx+13,sy+sh]],grad(scx-13,0,scx+13,0,[[0,'#1e1e1e'],[1,'#161616']]))
+      face([[scx-26,sy+sh+36],[scx+30,sy+sh+36],[scx+30,sy+sh+44],[scx-26,sy+sh+44]],grad(0,sy+sh+36,0,sy+sh+44,[[0,'#2a2a2a'],[1,'#1a1a1a']]))
+      face([[scx-42,sy+sh+42],[scx+46,sy+sh+42],[scx+46,sy+sh+48],[scx-42,sy+sh+48]],'#222',null)
+      face([[sx+tilt,sy],[sx+sw-tilt,sy],[sx+sw-tilt+d,sy-10],[sx+tilt+d,sy-10]],grad(sx,sy-10,sx,sy,[[0,'#303032'],[1,'#242426']]))
+      face([[sx+sw-tilt,sy],[sx+sw-tilt+d,sy-10],[sx+sw+d,sy+sh-10],[sx+sw,sy+sh]],grad(sx+sw,sy,sx+sw+d,sy,[[0,'#1c1c1e'],[1,'#101012']]))
+      face([[sx,sy],[sx+sw,sy],[sx+sw,sy+sh],[sx,sy+sh]],grad(sx,sy,sx,sy+sh,[[0,'#2c2c2e'],[.5,'#262628'],[1,'#1e1e20']]))
+      face([[sx,sy],[sx+sw,sy],[sx+sw,sy+2.5],[sx,sy+2.5]],grad(sx,sy,sx,sy+2.5,[[0,'rgba(255,255,255,.06)'],[1,'transparent']]),null)
+      const bx=sx+13,by=sy+11,bw=sw-26,bh=sh-34
+      face([[bx,by],[bx+bw,by],[bx+bw,by+bh],[bx,by+bh]],'#0e0e10')
+      const scX=bx+4,scY=by+4,scW=bw-8,scH=bh-8
+      face([[scX,scY],[scX+scW,scY],[scX+scW,scY+scH],[scX,scY+scH]],grad(scX,scY,scX,scY+scH,[[0,'#007878'],[.5,'#006868'],[1,'#005a5a']]))
+      boundsRef.current = {x:scX,y:scY,w:scW,h:scH}
+      // taskbar
+      face([[scX,scY+scH-18],[scX+scW,scY+scH-18],[scX+scW,scY+scH],[scX,scY+scH]],'#c0c0c0',null)
+      face([[scX+2,scY+scH-16],[scX+34,scY+scH-16],[scX+34,scY+scH-3],[scX+2,scY+scH-3]],'#d0ccc8')
+      ctx.fillStyle='#000';ctx.font='bold 6px Courier New';ctx.fillText('⊞ Start',scX+4,scY+scH-7)
+      ctx.textAlign='right';ctx.fillStyle='#000';ctx.font='5.5px Courier New'
+      ctx.fillText(new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}),scX+scW-2,scY+scH-7)
+      ctx.textAlign='left'
+      for(let i=0;i<4;i++){const ix=scX+7,iy=scY+8+i*28;ctx.fillStyle='#c49a22';ctx.fillRect(ix,iy,16,11);ctx.fillStyle='#daa520';ctx.fillRect(ix,iy+3,16,10);ctx.fillStyle='rgba(255,255,255,.55)';ctx.font='4.5px Courier New';ctx.fillText(['About','Signup','Members','Mission'][i],ix-1,iy+24)}
+      face([[scX+28,scY+7],[scX+scW-6,scY+7],[scX+scW-6,scY+scH-24],[scX+28,scY+scH-24]],'#ececec','#999',.5)
+      face([[scX+28,scY+7],[scX+scW-6,scY+7],[scX+scW-6,scY+17],[scX+28,scY+17]],'#000080')
+      ctx.fillStyle='#fff';ctx.font='bold 5.5px Courier New';ctx.fillText('WHO ELSE OS  v1.0',scX+31,scY+15)
+      face([[scX+scW-18,scY+8],[scX+scW-8,scY+8],[scX+scW-8,scY+16],[scX+scW-18,scY+16]],'#c0c0c0','#808080',.4)
+      ctx.fillStyle='#000';ctx.font='6px sans-serif';ctx.fillText('✕',scX+scW-16,scY+15)
+      ctx.save();ctx.beginPath();ctx.rect(scX,scY,scW,scH);ctx.clip()
+      const rg=ctx.createLinearGradient(scX,scY,scX+scW*.45,scY+scH*.6)
+      rg.addColorStop(0,'rgba(255,255,255,.045)');rg.addColorStop(1,'rgba(255,255,255,0)')
+      ctx.fillStyle=rg;ctx.fillRect(scX,scY,scW,scH);ctx.restore()
+      face([[sx,sy+sh],[sx+sw,sy+sh],[sx+sw,sy+sh+11],[sx,sy+sh+11]],grad(sx,sy+sh,sx,sy+sh+11,[[0,'#282828'],[1,'#1c1c1a']]))
+      ctx.beginPath();ctx.arc(sx+sw/2,sy+sh+5.5,2.5,0,Math.PI*2);ctx.fillStyle='rgba(80,220,120,.8)';ctx.fill()
+    }
+
+    function drawKeyboard(){
+      const kx=245,ky=290,kw=258,kh=20,d=10
+      face([[kx,ky],[kx+kw,ky],[kx+kw+d,ky-6],[kx+d,ky-6]],grad(kx,ky-6,kx,ky,[[0,'#303032'],[1,'#262628']]))
+      face([[kx,ky],[kx+kw,ky],[kx+kw,ky+kh],[kx,ky+kh]],grad(kx,ky,kx,ky+kh,[[0,'#262628'],[1,'#1a1a1c']]))
+      face([[kx+kw,ky],[kx+kw+d,ky-6],[kx+kw+d,ky+kh-6],[kx+kw,ky+kh]],'#161618')
+      const rows=[{n:14,x:kx+6,y:ky-3.5,rw:16},{n:13,x:kx+10,y:ky+2.5,rw:17},{n:12,x:kx+14,y:ky+8.5,rw:18}]
+      rows.forEach(({n,x,y,rw})=>{for(let i=0;i<n;i++) face([[x+i*(rw+1.5),y],[x+i*(rw+1.5)+rw,y],[x+i*(rw+1.5)+rw+1,y-3],[x+i*(rw+1.5)+1,y-3]],'#1e1e20','rgba(0,0,0,.5)',.3)})
+      face([[kx+66,ky+14.5],[kx+192,ky+14.5],[kx+193,ky+11.5],[kx+67,ky+11.5]],'#1e1e20','rgba(0,0,0,.5)',.3)
+    }
+
+    function drawMouse(){
+      const mx=552,my=286; ctx.save(); ctx.translate(mx,my)
+      const sg=rgrad(8,12,28,[[0,'rgba(0,0,0,.38)'],[1,'rgba(0,0,0,0)']]); ctx.fillStyle=sg; ctx.fillRect(-18,2,50,38)
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.bezierCurveTo(-2,-2,26,-4,28,0); ctx.bezierCurveTo(32,6,30,28,14,32); ctx.bezierCurveTo(-2,28,-4,12,0,0); ctx.closePath()
+      ctx.fillStyle=grad(-2,0,28,30,[[0,'#2e2e30'],[1,'#1c1c1e']]); ctx.fill()
+      ctx.strokeStyle='rgba(255,255,255,.055)';ctx.lineWidth=.7;ctx.stroke()
+      ctx.strokeStyle='rgba(0,0,0,.35)';ctx.lineWidth=.9;ctx.beginPath();ctx.moveTo(14,1);ctx.lineTo(14,14);ctx.stroke()
+      ctx.beginPath();ctx.roundRect(11,5,6,9,3);ctx.fillStyle='#1a1a1c';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=.5;ctx.stroke()
+      ctx.strokeStyle='#141416';ctx.lineWidth=2.5;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(14,-1);ctx.bezierCurveTo(14,-18,0,-28,-28,-26);ctx.stroke()
+      ctx.restore()
+    }
+
+    drawDesk(); drawShadow(); drawCable(); drawTower(); drawMonitor(); drawKeyboard(); drawMouse()
+
+    // click handler
+    function handleClick(e) {
+      const rect = canvas.getBoundingClientRect()
+      const sx = W / rect.width, sy = H / rect.height
+      const cx = (e.clientX - rect.left) * sx
+      const cy = (e.clientY - rect.top) * sy
+      const b = boundsRef.current
+      if (cx>=b.x && cx<=b.x+b.w && cy>=b.y && cy<=b.y+b.h) onScreenClick()
+    }
+    function handleMove(e) {
+      const rect = canvas.getBoundingClientRect()
+      const sx = W / rect.width, sy = H / rect.height
+      const cx = (e.clientX - rect.left) * sx
+      const cy = (e.clientY - rect.top) * sy
+      const b = boundsRef.current
+      canvas.style.cursor = (cx>=b.x && cx<=b.x+b.w && cy>=b.y && cy<=b.y+b.h) ? 'pointer' : 'default'
+    }
+    canvas.addEventListener('click', handleClick)
+    canvas.addEventListener('mousemove', handleMove)
+    return () => { canvas.removeEventListener('click', handleClick); canvas.removeEventListener('mousemove', handleMove) }
+  }, [onScreenClick])
+
+  return boundsRef
+}
+
+function PcCanvas({ onScreenClick }) {
+  const canvasRef = useRef(null)
+  usePC(canvasRef, onScreenClick)
+  return <canvas ref={canvasRef} width={720} height={420} className={styles.pcCanvas} />
+}
+
+function usePhrase() {
+  const [idx, setIdx] = useState(0)
+  const [out, setOut] = useState(false)
+  useEffect(()=>{
+    const t = setInterval(()=>{
+      setOut(true)
+      setTimeout(()=>{ setIdx(i=>(i+1)%PHRASES.length); setOut(false) }, 330)
+    }, 2800)
+    return ()=>clearInterval(t)
+  },[])
+  return { phrase: PHRASES[idx], out }
+}
+
 export default function App() {
-  const [phase, setPhase] = useState('landing') // 'landing' | 'open'
-  const [hovered, setHovered] = useState(false)
-
-  function handleClickScreen() {
-    setPhase('open')
-  }
-
-  function handleExit() {
-    setPhase('landing')
-  }
+  const [phase, setPhase] = useState('landing')
+  const { phrase, out } = usePhrase()
 
   return (
     <div className={styles.page}>
@@ -271,63 +443,39 @@ export default function App() {
 
       {phase === 'landing' && (
         <div className={styles.landing}>
-
-          {/* ── ROOM BG ── */}
           <div className={styles.room} />
 
-          {/* ── WORDMARK ── */}
-          <div className={styles.topBar}>
-            <div className={styles.wordmark}>
-              <span className={styles.who}>WHO</span>
-              <span className={styles.else}>ELSE</span>
-            </div>
-            <p className={styles.tagline}>— a faith-driven innovation collective</p>
+          {/* WHO ELSE big wordmark */}
+          <div className={styles.wordmarkWrap}>
+            <span className={styles.who}>WHO</span>
+            <span className={styles.else}>ELSE</span>
           </div>
 
-          {/* ── PC SCENE ── */}
-          {/* 
-            The PC image has the monitor screen at:
-            left: 43%, top: 21.8%, width: 32.6%, height: 54.1%
-            We overlay the live OS exactly over that region.
-          */}
-          <div className={styles.pcWrap}
-            onMouseEnter={() => setHovered(true)}
-            onMouseLeave={() => setHovered(false)}
-          >
-            {/* Live OS embedded on screen — sits BEHIND the pc image */}
-            <div className={styles.screenEmbed} onClick={handleClickScreen}>
-              <WhoElseOS />
+          {/* rotating phrase block */}
+          <div className={styles.phraseBlock}>
+            <span className={styles.phraseTag}>a faith-driven innovation collective</span>
+            <div className={styles.phraseRow}>
+              <span className={styles.phraseDash}>—</span>
+              <span className={`${styles.phraseText} ${out ? styles.phraseOut : styles.phraseIn}`}>
+                {phrase}
+              </span>
+              <span className={styles.phraseQ}>?</span>
             </div>
-
-            {/* Click hint overlay */}
-            {!hovered && (
-              <div className={styles.screenHint}>
-                <span>click the screen</span>
-              </div>
-            )}
-
-            {/* PC 3D model image — on top, pointer-events none everywhere except transparent areas */}
-            <img
-              src="/pc.png"
-              alt="PC Setup"
-              className={styles.pcImg}
-              draggable={false}
-            />
-
-            {/* invisible click target over just the monitor screen area */}
-            <div className={styles.screenClickZone} onClick={handleClickScreen} />
           </div>
 
+          {/* PC */}
+          <div className={styles.pcWrap}>
+            <PcCanvas onScreenClick={() => setPhase('open')} />
+          </div>
         </div>
       )}
 
       {phase === 'open' && (
         <div className={styles.osFullscreen}>
           <WhoElseOS />
-          <button className={styles.exitBtn} onClick={handleExit}>← back to desktop</button>
+          <button className={styles.exitBtn} onClick={() => setPhase('landing')}>← back to desktop</button>
         </div>
       )}
-
     </div>
   )
 }

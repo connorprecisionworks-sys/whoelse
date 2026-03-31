@@ -2,294 +2,156 @@
   --wf: 'MS Sans Serif', Tahoma, Arial, sans-serif;
   --wm: 'Courier New', 'Lucida Console', monospace;
 }
-
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { overflow: hidden; }
 
-/* ── PAGE ─────────────────────────── */
 .page {
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
+  width: 100vw; height: 100vh;
+  overflow: hidden; position: relative;
   background: #0c0b0a;
+  font-family: var(--wf);
 }
 
-/* ── GRAIN ────────────────────────── */
 .grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 9998;
-  opacity: 0.28;
-  mix-blend-mode: overlay;
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9998;
+  opacity: 0.28; mix-blend-mode: overlay;
 }
 
-/* ── LANDING ──────────────────────── */
+/* ── LANDING ── */
 .landing {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  gap: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  gap: 0; padding: 12px 0 20px;
 }
 
-/* ── ROOM ─────────────────────────── */
 .room {
-  position: absolute;
-  inset: 0;
-  /* dark studio room: subtle wall/floor */
-  background:
-    linear-gradient(180deg,
-      #111010 0%,
-      #141210 55%,
-      #1a1510 55%,
-      #0e0c08 100%
-    );
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #111010 0%, #141210 55%, #1a1510 55%, #0e0c08 100%);
 }
 .room::before {
-  content: '';
-  position: absolute;
-  left: 0; right: 0; top: 55%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,200,100,0.07) 50%, transparent 100%);
+  content: ''; position: absolute; left: 0; right: 0; top: 55%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,200,100,0.07), transparent);
 }
 .room::after {
-  content: '';
-  position: absolute;
-  inset: 0;
+  content: ''; position: absolute; inset: 0;
   background:
     radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255,220,160,0.04) 0%, transparent 60%),
     radial-gradient(ellipse 100% 100% at 50% 50%, transparent 45%, rgba(0,0,0,0.6) 100%);
 }
 
-/* ── TOP BAR: wordmark + tagline ──── */
-.topBar {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 1rem;
+/* ── WORDMARK ── */
+.wordmarkWrap {
+  position: relative; z-index: 2;
+  display: flex; align-items: baseline; gap: 0;
+  line-height: 0.82; margin-bottom: 0;
   animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
 }
-
-.wordmark {
-  display: flex;
-  align-items: baseline;
-  line-height: 0.85;
-}
-
 .who {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3rem, 9vw, 7rem);
-  letter-spacing: -0.02em;
+  font-size: clamp(4rem, 14vw, 10rem);
+  letter-spacing: -0.02em; line-height: 0.82;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgba(245,241,234,0.7);
-  line-height: 0.85;
+  -webkit-text-stroke: 2px rgba(245,241,234,0.82);
 }
-
 .else {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3rem, 9vw, 7rem);
-  letter-spacing: -0.02em;
-  color: #f5f1ea;
-  line-height: 0.85;
-  position: relative;
+  font-size: clamp(4rem, 14vw, 10rem);
+  letter-spacing: -0.02em; line-height: 0.82;
+  color: #f5f1ea; position: relative;
 }
-
 .else::after {
-  content: '';
-  position: absolute;
-  bottom: -1px; left: 0;
-  width: 100%;
-  height: clamp(3px, 0.55vw, 5px);
+  content: ''; position: absolute; bottom: -2px; left: 0;
+  width: 100%; height: clamp(5px, 1vw, 9px);
   background: #c93030;
-  clip-path: polygon(0 70%,4% 5%,8% 80%,12% 10%,16% 90%,20% 5%,24% 76%,28% 0%,32% 84%,36% 16%,40% 80%,44% 8%,48% 72%,52% 0%,56% 80%,60% 18%,64% 88%,68% 6%,72% 74%,76% 22%,80% 86%,84% 4%,88% 68%,92% 28%,96% 72%,100% 42%,100% 100%,0 100%);
+  clip-path: polygon(0 70%,2.5% 0%,5% 80%,7.5% 10%,10% 90%,12.5% 5%,15% 78%,17.5% 0%,20% 85%,22.5% 15%,25% 82%,27.5% 8%,30% 72%,32.5% 0%,35% 80%,37.5% 18%,40% 88%,42.5% 5%,45% 76%,47.5% 14%,50% 84%,52.5% 2%,55% 78%,57.5% 20%,60% 88%,62.5% 6%,65% 72%,67.5% 18%,70% 86%,72.5% 4%,75% 76%,77.5% 22%,80% 84%,82.5% 8%,85% 68%,87.5% 26%,90% 80%,92.5% 10%,95% 70%,97.5% 30%,100% 55%,100% 100%,0 100%);
 }
 
-.tagline {
-  font-family: 'Fraunces', serif;
-  font-size: clamp(0.6rem, 1.1vw, 0.85rem);
-  font-style: italic;
-  font-weight: 700;
-  color: rgba(245,241,234,0.38);
-  margin-top: 0.3rem;
+/* ── PHRASE BLOCK ── */
+.phraseBlock {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2px; margin: 8px 0 10px;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.2s both;
 }
-
-/* ── PC WRAP ──────────────────────── */
-.pcWrap {
-  position: relative;
-  z-index: 2;
-  width: min(820px, 92vw);
-  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both;
-  /* aspect ratio matches the 814x458 image */
-  aspect-ratio: 814 / 458;
-}
-
-/* 
-  The OS is embedded BEHIND the PC image.
-  Screen area in the image: left=43%, top=21.8%, width=32.6%, height=54.2%
-  
-  The screen in the image is at a slight angle (perspective).
-  We use CSS transform to skew it to match the monitor perspective.
-  The monitor face is roughly frontal with ~5deg horizontal tilt.
-*/
-.screenEmbed {
-  position: absolute;
-  /* position exactly over the monitor screen area */
-  left: 43.2%;
-  top: 22%;
-  width: 32.4%;
-  height: 53.8%;
-  border-radius: 2px;
-  overflow: hidden;
-  cursor: pointer;
-  z-index: 1;
-  /* subtle perspective warp to match the monitor's slight angle */
-  transform: perspective(600px) rotateY(-6deg) rotateX(2deg);
-  transform-origin: center center;
-  /* scanlines over the OS */
-  background: #007b7b;
-}
-
-.screenEmbed::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 3px,
-    rgba(0,0,0,0.05) 3px,
-    rgba(0,0,0,0.05) 4px
-  );
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* click hint inside screen area */
-.screenHint {
-  position: absolute;
-  left: 43.2%;
-  top: 22%;
-  width: 32.4%;
-  height: 53.8%;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  transform: perspective(600px) rotateY(-6deg) rotateX(2deg);
-  transform-origin: center center;
-}
-
-.screenHint span {
+.phraseTag {
   font-family: 'JetBrains Mono', monospace;
-  font-size: clamp(0.35rem, 0.9vw, 0.6rem);
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(196,154,34,0.75);
-  background: rgba(0,0,0,0.4);
-  padding: 0.3em 0.7em;
-  border: 1px solid rgba(196,154,34,0.25);
-  backdrop-filter: blur(2px);
-  animation: hintPulse 2s ease-in-out infinite;
+  font-size: clamp(0.42rem, 0.75vw, 0.58rem);
+  letter-spacing: 0.35em; text-transform: uppercase;
+  color: rgba(245,241,234,0.32);
 }
-
-@keyframes hintPulse {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1; }
+.phraseRow {
+  display: flex; align-items: baseline; gap: 0.4rem;
+  min-height: 1.8em;
 }
+.phraseDash {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(0.75rem, 2vw, 1.35rem);
+  font-style: italic; font-weight: 700;
+  color: rgba(245,241,234,0.28);
+}
+.phraseText {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(0.75rem, 2vw, 1.35rem);
+  font-style: italic; font-weight: 700;
+  color: rgba(245,241,234,0.72);
+  display: inline-block;
+  transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.16,1,0.3,1);
+}
+.phraseIn  { opacity: 1; transform: translateY(0); }
+.phraseOut { opacity: 0; transform: translateY(-8px); }
+.phraseQ {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(0.75rem, 2vw, 1.35rem);
+  font-style: italic; font-weight: 700;
+  color: #c93030;
+  animation: blink 1.1s step-end infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
 
-/* PC photo — sits on top of the OS embed */
-.pcImg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  /* pointer-events: none lets clicks pass through to screenClickZone */
-  pointer-events: none;
-  z-index: 2;
+/* ── PC CANVAS ── */
+.pcWrap {
+  position: relative; z-index: 2;
+  width: min(720px, 96vw);
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+}
+.pcCanvas {
+  width: 100%; height: auto; display: block;
   filter: drop-shadow(0 24px 60px rgba(0,0,0,0.8));
-  display: block;
 }
 
-/* invisible click zone precisely over monitor screen */
-.screenClickZone {
-  position: absolute;
-  left: 40%;
-  top: 19%;
-  width: 36%;
-  height: 59%;
-  z-index: 4;
-  cursor: pointer;
-  /* debug: background: rgba(255,0,0,0.1); */
-}
-
-/* ── OS FULLSCREEN ────────────────── */
+/* ── OS FULLSCREEN ── */
 .osFullscreen {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
+  position: fixed; inset: 0; z-index: 100;
   animation: osIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
 }
-
 @keyframes osIn {
   from { opacity: 0; transform: scale(0.97); }
   to   { opacity: 1; transform: scale(1); }
 }
 
-/* ── EXIT BUTTON ──────────────────── */
+/* ── EXIT BUTTON ── */
 .exitBtn {
-  position: fixed;
-  top: 14px;
-  left: 14px;
-  z-index: 9999;
+  position: fixed; top: 14px; left: 14px; z-index: 9999;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  background: rgba(0,0,0,0.6);
-  color: rgba(245,241,234,0.6);
+  font-size: 0.52rem; letter-spacing: 0.22em; text-transform: uppercase;
+  background: rgba(0,0,0,0.6); color: rgba(245,241,234,0.6);
   border: 1px solid rgba(245,241,234,0.14);
-  padding: 0.45rem 1rem;
-  cursor: pointer;
-  backdrop-filter: blur(6px);
-  transition: all 0.15s;
+  padding: 0.45rem 1rem; cursor: pointer;
+  backdrop-filter: blur(6px); transition: all 0.15s;
   animation: fadeIn 0.4s ease 0.3s both;
 }
+.exitBtn:hover { background: rgba(0,0,0,0.8); color: #f5f1ea; border-color: rgba(245,241,234,0.35); }
 
-.exitBtn:hover {
-  background: rgba(0,0,0,0.8);
-  color: #f5f1ea;
-  border-color: rgba(245,241,234,0.35);
-}
+/* ── MISC ── */
+.fi:hover { background: rgba(0,0,128,0.12) !important; border-color: #000080 !important; }
 
-/* ── FILE ICON HOVER ──────────────── */
-.fi:hover {
-  background: rgba(0,0,128,0.12) !important;
-  border-color: #000080 !important;
-}
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
 
-/* ── ANIMATIONS ───────────────────── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-/* ── RESPONSIVE ───────────────────── */
-@media (max-width: 600px) {
-  .pcWrap { width: 99vw; }
-  .topBar { margin-bottom: 0.5rem; }
+@media(max-width:600px){
+  .pcWrap{width:99vw}
+  .phraseBlock{margin:6px 0 8px}
 }
