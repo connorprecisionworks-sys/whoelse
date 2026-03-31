@@ -540,14 +540,76 @@ export default function App() {
         {/* tiny fixture dot at ceiling */}
         <div className={styles.spotlightFixture} aria-hidden="true" />
 
-        {/* CRT COMPUTER */}
+        {/* CRT COMPUTER — photo image in cardboard box */}
         <div
           className={`${styles.crt} ${phase !== 'wall' ? styles.crtFade : ''}`}
           onClick={clickComputer}
         >
           <div className={styles.crtGlow} />
           <div className={styles.crtHint}>click to enter ↓</div>
-          <CrtSvg />
+
+          {/* Screen glow overlay */}
+          <div className={styles.screenGlow} />
+
+          {/* The real computer photo — black bg already stripped */}
+          <img
+            src="/computer.png"
+            alt="CRT Computer"
+            className={styles.crtImg}
+            draggable={false}
+          />
+
+          {/* Cardboard box SVG underneath */}
+          <svg className={styles.crtBox} viewBox="0 0 440 180" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="bt" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#c8a84a"/><stop offset="100%" stopColor="#9e7e28"/>
+              </linearGradient>
+              <linearGradient id="bf" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#b8942e"/><stop offset="100%" stopColor="#7e6018"/>
+              </linearGradient>
+              <linearGradient id="bs" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#8a6e1e"/><stop offset="100%" stopColor="#5e4c10"/>
+              </linearGradient>
+              <linearGradient id="bi" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#d4b050" stopOpacity="0.4"/><stop offset="100%" stopColor="#8a6820" stopOpacity="0.15"/>
+              </linearGradient>
+            </defs>
+
+            {/* main box body */}
+            {/* top flap — open/torn */}
+            <polygon points="60,40 230,10 310,40 140,70" fill="url(#bt)"/>
+            {/* front face */}
+            <polygon points="60,40 140,70 140,165 60,135" fill="url(#bf)"/>
+            {/* side face */}
+            <polygon points="140,70 310,40 310,135 140,165" fill="url(#bs)"/>
+
+            {/* inner box visible from top */}
+            <polygon points="75,50 225,22 295,48 145,76" fill="#6a5018" opacity="0.6"/>
+
+            {/* brown packing paper crumpled in box */}
+            <path d="M80 62 Q110 55 130 65 Q155 58 175 67 Q200 60 220 68 Q240 55 265 64 Q285 56 295 62" 
+              fill="none" stroke="#a07830" strokeWidth="6" strokeLinecap="round" opacity="0.7"/>
+            <path d="M85 72 Q115 64 140 74 Q165 66 190 75 Q215 67 245 73 Q268 65 290 71"
+              fill="none" stroke="#8a6420" strokeWidth="5" strokeLinecap="round" opacity="0.5"/>
+
+            {/* tape strips */}
+            <polygon points="155,12 235,22 235,27 155,17" fill="rgba(200,180,100,0.45)"/>
+            <polygon points="60,40 140,70 140,76 60,46" fill="rgba(200,180,100,0.35)"/>
+
+            {/* box edge wear/creases */}
+            <line x1="140" y1="70" x2="140" y2="165" stroke="rgba(0,0,0,0.2)" strokeWidth="1.5"/>
+            <line x1="60" y1="40" x2="310" y2="40" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8"/>
+
+            {/* bottom shadow */}
+            <ellipse cx="185" cy="170" rx="155" ry="12" fill="rgba(0,0,0,0.45)"/>
+
+            {/* small cable dangling out of box */}
+            <path d="M290 90 Q330 85 360 100 Q390 112 410 108 Q430 104 435 115"
+              fill="none" stroke="#2a2824" strokeWidth="3" strokeLinecap="round"/>
+            <path d="M435 115 Q438 120 436 130"
+              fill="none" stroke="#2a2824" strokeWidth="3" strokeLinecap="round"/>
+          </svg>
         </div>
 
       </div>
