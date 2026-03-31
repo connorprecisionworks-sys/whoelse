@@ -5,24 +5,25 @@
 }
 
 :root {
-  --black:   #080706;
-  --white:   #f5f1ea;
-  --gold:    #c49a22;
-  --gold-lt: #e0b84a;
-  --gold-dk: #7a5e0e;
-  --red:     #9b1f1f;
-  --red-lt:  #c93030;
-  --muted:   rgba(245, 241, 234, 0.45);
-  --border:  rgba(245, 241, 234, 0.1);
+  --black:    #080706;
+  --white:    #f5f1ea;
+  --off:      #ede8de;
+  --gold:     #c49a22;
+  --gold-lt:  #e0b84a;
+  --gold-dk:  #7a5e0e;
+  --red:      #9b1f1f;
+  --red-lt:   #c93030;
+  --muted:    rgba(245, 241, 234, 0.42);
+  --border:   rgba(245, 241, 234, 0.09);
 
-  --display: 'Bebas Neue', sans-serif;
-  --serif:   'Fraunces', serif;
-  --mono:    'JetBrains Mono', monospace;
+  --display:  'Bebas Neue', sans-serif;
+  --serif:    'Fraunces', serif;
+  --mono:     'JetBrains Mono', monospace;
 }
 
 html {
-  scroll-behavior: smooth;
   font-size: 16px;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -38,3 +39,5 @@ body {
   background: var(--gold);
   color: var(--black);
 }
+
+button { cursor: crosshair; }
