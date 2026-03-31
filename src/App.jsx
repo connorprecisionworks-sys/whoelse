@@ -18,7 +18,7 @@ const PHRASES = [
 
 const FILES = {
   about: {
-    'README.txt': `WHO ELSE COLLECTIVE\n-------------------\n\nWho else should be trusted to pioneer\nthe future of technology?\n\nFAITH-DRIVEN  · FOUNDER-FIRST\nBUILD IN PUBLIC · LEGACY OVER EXIT\n\nFOUNDED : 2025\nLOCATION: Austin, TX\nBACKED  : Genesis Studios @ ACU`,
+    'README.txt': `WHO ELSE COLLECTIVE\n-------------------\n\nWho else should be trusted to pioneer\nthe future of technology?\n\nFAITH-DRIVEN  · FOUNDER-FIRST\nBUILD IN PUBLIC · LEGACY OVER EXIT\n\nFOUNDED : 2025\nLOCATION: Austin, TX\nBACKED  : Genesis Studios`,
     'Mission.txt': `MISSION\n-------\n\nGenesis Studios & Who Else exist to prove\nthat faith and innovation are co-architects\nof the future.\n\nPioneering the Future for Kingdom Glory.`,
     'Pillars.txt': `PILLARS\n-------\n\n01 FAITH-DRIVEN — The why before the what.\n02 FOUNDER-FIRST — Character before capital.\n03 BUILD IN PUBLIC — The work is the testimony.\n04 LEGACY OVER EXIT — Build what lasts.`,
   },
@@ -31,14 +31,14 @@ const FILES = {
     'Values.txt': `VALUES\n------\n\nFAITH       Build from belief.\nINNOVATION  Build what never existed.\nCOMMUNITY   Iron sharpens iron.\nEXCELLENCE  Half-built ships sink.\nIMPACT      Kingdom glory is the metric.`,
   },
   genesis: {
-    'About.txt': `GENESIS STUDIOS @ ACU\n---------------------\n\nThe VC studio arm of Austin Christian\nUniversity.\n\nWe back Who Else members who prove\nthemselves.\n\nReal funding. Real mentorship.`,
+    'About.txt': `GENESIS STUDIOS\n---------------------\n\nA faith-driven venture capital studio.\n\nWe back Who Else members who prove\nthemselves.\n\nReal funding. Real mentorship.`,
     'Partnership.txt': `GENESIS x WHO ELSE\n------------------\n\nWho Else is a talent pipeline for\nGenesis Studios.\n\nTop performers enter the Genesis pipeline\nfor direct mentorship and capital.`,
   },
   faq: {
     'FAQ.txt': `FAQ\n---\n\nQ: WHO CAN JOIN?\nA: Any student who builds things.\n\nQ: EXPERIENCE NEEDED?\nA: No. You need drive.\n\nQ: IS IT FREE?\nA: Yes. Resources unlock through participation.\n\nQ: HOW TO APPLY?\nA: Run SIGNUP.EXE on the desktop.`,
   },
   contact: {
-    'Contact.txt': `CONTACT\n-------\n\nGENERAL: hello@whoelse.co\nGENESIS: genesis@acu.edu\nPRESS  : press@whoelse.co\n\nInstagram: @whoelse.collective\nTwitter  : @whoelse\n\nAustin Christian University · Austin, Texas`,
+    'Contact.txt': `CONTACT\n-------\n\nGENERAL: hello@whoelse.co\nGENESIS: genesis@genesistudios.co\nPRESS  : press@whoelse.co\n\nInstagram: @whoelse.collective\nTwitter  : @whoelse\n\nGenesis Studios · Austin, Texas`,
   },
 }
 
@@ -221,7 +221,7 @@ function SignupExe({ onClose }) {
 
       {/* footer buttons */}
       <div style={{ padding: '6px 14px 10px', borderTop: '1px solid #808080', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#777' }}>Genesis Studios @ ACU · Who Else Collective</div>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#777' }}>Genesis Studios · Who Else Collective</div>
         <div style={{ display: 'flex', gap: 6 }}>
           <button onClick={onClose} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 12px', background: '#c0c0c0', ...R, cursor: 'default' }}>Cancel</button>
           <button onClick={handleSubmit} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 18px', background: '#c0c0c0', ...R, cursor: 'default', fontWeight: 700 }}>Submit Application →</button>
@@ -369,43 +369,95 @@ function WhoElseOS() {
   function close(id){setWins(ws=>ws.filter(w=>w.id!==id))}
   const ICONS=[{id:'about',l:'About',Ico:FolIco},{id:'signup',l:'SIGNUP.EXE',Ico:ExeIco},{id:'members',l:'Members',Ico:FolIco},{id:'mission',l:'Mission',Ico:FolIco},{id:'genesis',l:'Genesis',Ico:FolIco},{id:'faq',l:'FAQ.txt',Ico:TxtIco},{id:'contact',l:'Contact',Ico:TxtIco}]
 
-  // icon grid positions — spread across desktop in a natural scattered grid
+  // Spread across the full desktop — left col, right col, bottom row, a few scattered
   const ICON_POS = [
-    // col 1 (left edge)
-    { id:'about',   x:10,  y:8   },
-    { id:'members', x:10,  y:88  },
-    { id:'mission', x:10,  y:168 },
-    { id:'genesis', x:10,  y:248 },
-    // col 2
-    { id:'signup',  x:90,  y:8   },
-    // right side
-    { id:'faq',     x:10,  y:328 },
-    { id:'contact', x:90,  y:88  },
+    // left column
+    { id:'about',   x:14,  y:10  },
+    { id:'members', x:14,  y:106 },
+    { id:'mission', x:14,  y:202 },
+    { id:'genesis', x:14,  y:298 },
+    // right column
+    { id:'contact', x:'calc(100% - 98px)', y:10  },
+    { id:'faq',     x:'calc(100% - 98px)', y:106 },
+    // bottom-center-ish
+    { id:'signup',  x:'calc(50% - 44px)', y:10 },
   ]
+
   const timers=useRef({})
   function deskClick(e,id){
     e.stopPropagation();setSel(id)
     if(timers.current[id]){clearTimeout(timers.current[id]);timers.current[id]=null;open(id)}
     else{timers.current[id]=setTimeout(()=>{timers.current[id]=null},380)}
   }
+
   return (
     <div onClick={()=>setSel(null)} style={{width:'100%',height:'100%',background:'#007b7b',backgroundImage:'radial-gradient(ellipse 80% 80% at 50% 50%,#007070 0%,#005858 100%)',position:'relative',overflow:'hidden',paddingBottom:34,userSelect:'none'}}>
-      <div style={{position:'absolute',right:8,top:6,textAlign:'right',pointerEvents:'none',opacity:.07}}>
-        <div style={{fontFamily:'var(--wf)',fontSize:16,fontWeight:700,color:'#fff',letterSpacing:'.08em'}}>WHO ELSE OS</div>
-        <div style={{fontFamily:'var(--wf)',fontSize:8,color:'#fff'}}>Genesis Studios © 2025</div>
+
+      {/* ── WHO ELSE logo centered on desktop ── */}
+      <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-54%)',pointerEvents:'none',userSelect:'none',display:'flex',flexDirection:'column',alignItems:'center',lineHeight:.82,zIndex:1}}>
+        {/* WHO hollow */}
+        <span style={{
+          fontFamily:"'Bebas Neue',sans-serif",
+          fontSize:'clamp(4rem,10vw,8rem)',
+          letterSpacing:'-.02em',
+          color:'transparent',
+          WebkitTextStroke:'2px rgba(245,241,234,0.18)',
+          lineHeight:.82,
+          display:'block',
+        }}>WHO</span>
+        {/* ELSE solid */}
+        <span style={{
+          fontFamily:"'Bebas Neue',sans-serif",
+          fontSize:'clamp(4rem,10vw,8rem)',
+          letterSpacing:'-.02em',
+          color:'rgba(245,241,234,0.13)',
+          lineHeight:.82,
+          display:'block',
+          position:'relative',
+        }}>ELSE
+          {/* jagged red stroke */}
+          <span style={{
+            position:'absolute',bottom:-2,left:0,right:0,
+            height:'clamp(4px,0.7vw,7px)',
+            background:'rgba(201,48,48,0.18)',
+            display:'block',
+            clipPath:'polygon(0 70%,4% 5%,8% 80%,12% 10%,16% 90%,20% 5%,24% 76%,28% 0%,32% 84%,36% 16%,40% 80%,44% 8%,48% 72%,52% 0%,56% 80%,60% 18%,64% 88%,68% 6%,72% 74%,76% 22%,80% 86%,84% 4%,88% 68%,92% 28%,96% 72%,100% 42%,100% 100%,0 100%)',
+          }}/>
+        </span>
       </div>
-      {/* icons spread across desktop */}
-      <div style={{position:'absolute',inset:0,pointerEvents:'none'}} onClick={e=>e.stopPropagation()}>
+
+      {/* ── icons spread across desktop ── */}
+      <div style={{position:'absolute',inset:0,pointerEvents:'none',zIndex:2}}>
         {ICONS.map(({id,l,Ico})=>{
-          const pos = ICON_POS.find(p=>p.id===id)||{x:8,y:8}
+          const pos = ICON_POS.find(p=>p.id===id)||{x:14,y:10}
           return (
             <div key={id} onClick={e=>{e.stopPropagation();deskClick(e,id)}}
-              style={{position:'absolute',left:pos.x,top:pos.y,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'4px 2px',width:68,border:sel===id?'1px dotted rgba(255,255,255,.8)':'1px solid transparent',background:sel===id?'#000080':'transparent',cursor:'default',pointerEvents:'auto'}}>
-              <Ico/><span style={{fontFamily:'var(--wf)',fontSize:9,color:'#fff',textAlign:'center',lineHeight:1.2,textShadow:'1px 1px 1px #000,-1px -1px 1px #000',wordBreak:'break-word',width:'100%'}}>{l}</span>
+              style={{
+                position:'absolute',
+                left:pos.x,
+                top:pos.y,
+                display:'flex',flexDirection:'column',alignItems:'center',gap:3,
+                padding:'6px 4px',width:84,
+                border:sel===id?'1px dotted rgba(255,255,255,.85)':'1px solid transparent',
+                background:sel===id?'rgba(0,0,128,0.6)':'transparent',
+                cursor:'default',pointerEvents:'auto',
+                borderRadius:2,
+              }}>
+              {/* bigger icon wrapper */}
+              <div style={{transform:'scale(1.35)',transformOrigin:'top center',marginBottom:4}}>
+                <Ico/>
+              </div>
+              <span style={{
+                fontFamily:'var(--wf)',fontSize:11,
+                color:'#fff',textAlign:'center',lineHeight:1.25,
+                textShadow:'1px 1px 2px rgba(0,0,0,0.9),-1px -1px 2px rgba(0,0,0,0.7)',
+                wordBreak:'break-word',width:'100%',marginTop:2,
+              }}>{l}</span>
             </div>
           )
         })}
       </div>
+
       {wins.map(w=>(
         <OsWin key={w.id} title={w.title} icon={w.icon} zIndex={w.z} ix={w.x} iy={w.y} w={w.w} h={w.h} onClose={()=>close(w.id)} onFocus={()=>focus(w.id)}>
           {w.type==='folder'?<FolderBody folderKey={w.folderKey} onOpenFile={(n,c)=>openFile(w.id,n,c)}/>:<Notepad content={w.content} filename={w.filename}/>}
@@ -676,6 +728,15 @@ export default function App() {
           {/* PC */}
           <div className={styles.pcWrap}>
             <PcCanvas onScreenClick={() => setPhase('open')} />
+          </div>
+
+          {/* Sign In button — skips to OS directly */}
+          <div className={styles.signInWrap}>
+            <button className={styles.signInBtn} onClick={() => setPhase('open')}>
+              <span className={styles.signInIcon}>⊞</span>
+              Sign In to Who Else OS
+            </button>
+            <span className={styles.signInSub}>or click the monitor screen above</span>
           </div>
         </div>
       )}
