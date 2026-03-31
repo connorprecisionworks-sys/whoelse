@@ -1,6 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './App.module.css'
 
+// ============================================================
+// REPLACE THIS with your actual signup URL
+// e.g. 'https://forms.gle/yourformid'
+//      'https://yoursite.typeform.com/to/yourform'
+//      'https://whoelse.com/apply'
+// ============================================================
+const SIGNUP_URL = 'https://YOUR-SIGNUP-URL-HERE.com'
+
 const PHRASES = [
   'but us to pioneer the future',
   'to be trusted with this technology',
@@ -14,290 +22,413 @@ const PHRASES = [
   'but us to begin',
 ]
 
-function useRotatingPhrase(phrases, interval = 3000) {
-  const [index, setIndex] = useState(0)
-  const [state, setState] = useState('visible')
-
+function usePhrase(phrases, ms = 2800) {
+  const [idx, setIdx] = useState(0)
+  const [out, setOut] = useState(false)
   useEffect(() => {
-    const tick = setInterval(() => {
-      setState('exit')
-      setTimeout(() => {
-        setIndex(i => (i + 1) % phrases.length)
-        setState('enter')
-        setTimeout(() => setState('visible'), 50)
-      }, 380)
-    }, interval)
-    return () => clearInterval(tick)
-  }, [phrases.length, interval])
-
-  return { phrase: phrases[index], state }
-}
-
-const TICKER = [
-  'Faith × Innovation',
-  'Genesis Studios',
-  'Austin Christian University',
-  'Kingdom Glory',
-  'Who Else Collective',
-  'Pioneer The Future',
-]
-
-function Ticker() {
-  const items = [...TICKER, ...TICKER, ...TICKER]
-  return (
-    <div className={styles.tickerWrap}>
-      <div className={styles.tickerTrack}>
-        {items.map((item, i) => (
-          <span key={i} className={styles.tickerItem}>
-            {item} <span className={styles.tickerSep}>✦</span>
-          </span>
-        ))}
-      </div>
-    </div>
-  )
+    const t = setInterval(() => {
+      setOut(true)
+      setTimeout(() => { setIdx(i => (i + 1) % phrases.length); setOut(false) }, 350)
+    }, ms)
+    return () => clearInterval(t)
+  }, [phrases.length, ms])
+  return { phrase: phrases[idx], out }
 }
 
 function Nav() {
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 20)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
-  }, [])
   return (
-    <nav className={`${styles.nav} ${scrolled ? styles.navScrolled : ''}`}>
-      <div className={styles.navLeft}>
-        <span className={styles.navMark}>W/E</span>
-        <span className={styles.navDivider} />
-        <span className={styles.navSub}>Who Else</span>
-      </div>
-      <div className={styles.navRight}>
-        <span className={styles.navItem}>Genesis Studios</span>
-        <span className={styles.navItem}>ACU</span>
-        <button className={styles.navCta}>Apply →</button>
+    <nav className={styles.nav}>
+      <span className={styles.navLogo}>W/E</span>
+      <div className={styles.navLinks}>
+        <span>Genesis Studios</span>
+        <span>ACU</span>
+        <span className={styles.navApply}>Apply →</span>
       </div>
     </nav>
   )
 }
 
-function Hero() {
-  const { phrase, state } = useRotatingPhrase(PHRASES)
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
+function TrophyCanvas({ onSignup }) {
+  const canvasRef = useRef(null)
+  const stateRef = useRef({
+    lidState: 'on',   // 'on' | 'falling' | 'gone'
+    lidY: 0,
+    lidVY: 0,
+    lidRot: 0,
+    lidVRot: 0,
+    pulse: 0,
+    hover: false,
+    clicked: false,
+    flash: 0,
+    frame: 0,
+  })
 
   useEffect(() => {
-    const fn = (e) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 18,
-        y: (e.clientY / window.innerHeight - 0.5) * 10,
-      })
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
+    let raf
+
+    function resize() {
+      const parent = canvas.parentElement
+      canvas.width = parent.clientWidth
+      canvas.height = parent.clientHeight
     }
-    window.addEventListener('mousemove', fn, { passive: true })
-    return () => window.removeEventListener('mousemove', fn)
-  }, [])
+    resize()
+    window.addEventListener('resize', resize)
 
-  return (
-    <section className={styles.hero}>
+    function dims() {
+      const W = canvas.width, H = canvas.height
+      const cx = W / 2
+      const sc = Math.min(H * 0.0028, W * 0.002)
+      return { W, H, cx, sc }
+    }
 
-      <span className={styles.heroIndex}>001</span>
-      <span className={styles.heroYear}>EST. 2025</span>
+    // ── Stand ──────────────────────────────────
+    function drawStand(cx, baseY, sc) {
+      const sw = 160 * sc, legW = 28 * sc, legH = 32 * sc
+      const footW = 48 * sc, footH = 10 * sc, sh = 18 * sc
 
-      <div className={styles.typeBlock}>
+      const g1 = ctx.createLinearGradient(0, baseY, 0, baseY + footH)
+      g1.addColorStop(0, '#5c3b1e'); g1.addColorStop(1, '#3a2210')
+      ctx.fillStyle = g1
+      ctx.beginPath(); ctx.roundRect(cx - sw / 2 - footW * .1, baseY, footW, footH, 2); ctx.fill()
+      ctx.beginPath(); ctx.roundRect(cx + sw / 2 - footW * .9, baseY, footW, footH, 2); ctx.fill()
 
-        <div className={styles.whoRow}>
-          <span className={styles.who}>WHO</span>
-          <div className={styles.whoLabel}>
-            <span>A faith-driven</span>
-            <span>innovation collective</span>
-          </div>
-        </div>
+      const g2 = ctx.createLinearGradient(0, baseY - legH, 0, baseY)
+      g2.addColorStop(0, '#7a4e28'); g2.addColorStop(1, '#5c3b1e')
+      ctx.fillStyle = g2
+      ctx.beginPath(); ctx.roundRect(cx - sw / 2 + 4 * sc, baseY - legH, legW, legH, 2); ctx.fill()
+      ctx.beginPath(); ctx.roundRect(cx + sw / 2 - legW - 4 * sc, baseY - legH, legW, legH, 2); ctx.fill()
 
-        <div className={styles.elseRow}>
-          <span className={styles.else}>ELSE</span>
-          <svg
-            aria-hidden="true"
-            viewBox="0 0 560 16"
-            preserveAspectRatio="none"
-            className={styles.jaggedStroke}
-          >
-            <polyline
-              fill="#c93030"
-              points="0,11 14,2 28,13 42,1 56,12 70,2 84,14 98,0 112,11 126,3 140,13 154,1 168,12 182,2 196,14 210,0 224,11 238,3 252,13 266,1 280,12 294,2 308,14 322,0 336,11 350,3 364,13 378,1 392,12 406,2 420,14 434,0 448,11 462,3 476,13 490,1 504,12 518,2 532,13 546,3 560,8 560,16 0,16"
-            />
-          </svg>
-        </div>
+      const g3 = ctx.createLinearGradient(cx, baseY - legH - sh, cx, baseY - legH)
+      g3.addColorStop(0, '#9b6434'); g3.addColorStop(.5, '#7a4e28'); g3.addColorStop(1, '#5c3b1e')
+      ctx.fillStyle = g3
+      ctx.beginPath(); ctx.roundRect(cx - sw / 2, baseY - legH - sh, sw, sh, 3); ctx.fill()
 
-        <div className={styles.phraseRow}>
-          <span className={styles.phraseDash}>—</span>
-          <span
-            className={`${styles.phrase} ${styles[`phrase_${state}`]}`}
-            aria-live="polite"
-          >
-            {phrase}
-          </span>
-          <span className={styles.phraseQ}>?</span>
-        </div>
+      ctx.strokeStyle = 'rgba(0,0,0,0.12)'; ctx.lineWidth = 1
+      for (let i = 0; i < 4; i++) {
+        const gx = cx - sw / 2 + sw * .15 + i * sw * .18
+        ctx.beginPath(); ctx.moveTo(gx, baseY - legH - sh + 2); ctx.lineTo(gx + 6 * sc, baseY - legH - 2); ctx.stroke()
+      }
+      ctx.strokeStyle = 'rgba(255,200,120,0.15)'; ctx.lineWidth = 1
+      ctx.beginPath(); ctx.moveTo(cx - sw / 2, baseY - legH - sh); ctx.lineTo(cx + sw / 2, baseY - legH - sh); ctx.stroke()
 
-      </div>
+      return baseY - legH - sh
+    }
 
-      <div className={styles.heroMeta}>
-        <div className={styles.metaCol}>
-          <span className={styles.metaLabel}>Backed by</span>
-          <span className={styles.metaVal}>Genesis Studios × ACU</span>
-        </div>
-        <div className={styles.metaCol}>
-          <span className={styles.metaLabel}>Mission</span>
-          <span className={styles.metaVal}>Kingdom Glory</span>
-        </div>
-        <div className={styles.metaCol}>
-          <span className={styles.metaLabel}>Cohort</span>
-          <span className={styles.metaVal}>Gen. 01 — Open</span>
-        </div>
-      </div>
+    // ── Glass case ─────────────────────────────
+    function drawCase(cx, plankY, sc, lidOffY, lidOffRot) {
+      const cw = 130 * sc, ch = 150 * sc, ct = 6 * sc
+      const caseLeft = cx - cw / 2, caseTop = plankY - ch
 
-      <div
-        className={styles.ghostBg}
-        aria-hidden="true"
-        style={{ transform: `translate(${mousePos.x}px, ${mousePos.y}px)` }}
-      >
-        WHO<br />ELSE
-      </div>
+      ctx.fillStyle = 'rgba(140,200,255,0.04)'
+      ctx.fillRect(caseLeft, caseTop, cw, ch)
 
-    </section>
-  )
-}
+      const ig = ctx.createLinearGradient(caseLeft, caseTop, cx, caseTop)
+      ig.addColorStop(0, 'rgba(180,220,255,0.06)'); ig.addColorStop(.5, 'rgba(180,220,255,0.02)'); ig.addColorStop(1, 'rgba(180,220,255,0.06)')
+      ctx.fillStyle = ig; ctx.fillRect(caseLeft, caseTop, cw, ch)
 
-function MissionSection() {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.15 })
-    if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [])
+      ctx.fillStyle = 'rgba(180,220,255,0.06)'
+      ctx.fillRect(caseLeft, caseTop, ct, ch)
+      ctx.fillRect(caseLeft + cw - ct, caseTop, ct, ch)
 
-  return (
-    <section className={`${styles.missionSection} ${visible ? styles.sectionVisible : ''}`} ref={ref}>
-      <div className={styles.missionLeft}>
-        <span className={styles.sectionNum}>002</span>
-        <span className={styles.sectionLabel}>Mission</span>
-      </div>
-      <div className={styles.missionRight}>
-        <blockquote className={styles.missionQ}>
-          "Who else should be trusted to pioneer the future of technology?{' '}
-          <em>Who else</em> will accept this responsibility with unwavering faith?{' '}
-          <em>Who else</em> will make an impact that resonates for{' '}
-          <strong>Kingdom glory?</strong>"
-        </blockquote>
-        <div className={styles.missionBy}>
-          <span className={styles.missionLine} />
-          <span>Who Else Collective — 2025</span>
-        </div>
-      </div>
-    </section>
-  )
-}
+      ctx.strokeStyle = 'rgba(180,220,255,0.18)'; ctx.lineWidth = 1
+      ctx.strokeRect(caseLeft, caseTop, cw, ch)
 
-function PillarsSection() {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.1 })
-    if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [])
+      ctx.save(); ctx.beginPath(); ctx.rect(caseLeft, caseTop, cw, ch); ctx.clip()
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 2
+      ctx.beginPath(); ctx.moveTo(caseLeft + ct + 4 * sc, caseTop + 8 * sc); ctx.lineTo(caseLeft + ct + 4 * sc, plankY - 4 * sc); ctx.stroke()
+      ctx.beginPath(); ctx.moveTo(caseLeft + ct + 12 * sc, caseTop + 14 * sc); ctx.lineTo(caseLeft + ct + 12 * sc, caseTop + 40 * sc); ctx.stroke()
+      ctx.restore()
 
-  const pillars = [
-    { num: '01', title: 'Faith-Driven', body: 'Every idea, every product, every line of code built with purpose rooted in Kingdom values.' },
-    { num: '02', title: 'Founder-First', body: 'Genesis Studios at ACU backs the person before the pitch. Character before capital.' },
-    { num: '03', title: 'Build in Public', body: 'Ship real work. Get real feedback. The work is the testimony — not the presentation deck.' },
-    { num: '04', title: 'Legacy Over Exit', body: "We're not building for the acquisition. We're building for what lasts beyond us." },
-  ]
+      // lid
+      const s = stateRef.current
+      if (s.lidState !== 'gone') {
+        const lidW = cw + 8 * sc, lidH = 14 * sc
+        const lidX = cx - lidW / 2, lidBase = caseTop - 2
 
-  return (
-    <section className={`${styles.pillarsSection} ${visible ? styles.sectionVisible : ''}`} ref={ref}>
-      <div className={styles.pillarsHeader}>
-        <span className={styles.sectionNum}>003</span>
-        <h2 className={styles.pillarsTitle}>What we<br />stand for.</h2>
-        <span className={styles.sectionLabel}>Pillars</span>
-      </div>
-      <div className={styles.pillarsGrid}>
-        {pillars.map((p, i) => (
-          <div key={p.num} className={styles.pillar} style={{ transitionDelay: `${i * 0.1}s` }}>
-            <span className={styles.pillarNum}>{p.num}</span>
-            <h3 className={styles.pillarTitle}>{p.title}</h3>
-            <p className={styles.pillarBody}>{p.body}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  )
-}
+        ctx.save()
+        const pivX = cx, pivY = lidBase + lidH / 2
+        ctx.translate(pivX, pivY + lidOffY)
+        ctx.rotate(lidOffRot)
+        ctx.translate(-pivX, -pivY)
 
-function ApplySection() {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setVisible(true) }, { threshold: 0.2 })
-    if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
-  }, [])
+        const lg = ctx.createLinearGradient(lidX, lidBase, lidX, lidBase + lidH)
+        lg.addColorStop(0, 'rgba(200,235,255,0.35)'); lg.addColorStop(1, 'rgba(160,210,255,0.18)')
+        ctx.fillStyle = lg
+        ctx.beginPath(); ctx.roundRect(lidX, lidBase, lidW, lidH, 3); ctx.fill()
+        ctx.strokeStyle = 'rgba(200,235,255,0.5)'; ctx.lineWidth = 1
+        ctx.strokeRect(lidX, lidBase, lidW, lidH)
 
-  return (
-    <section className={`${styles.applySection} ${visible ? styles.sectionVisible : ''}`} ref={ref}>
-      <div className={styles.applyInner}>
-        <span className={styles.sectionNum} style={{ color: 'rgba(245,241,234,0.2)' }}>004</span>
-        <h2 className={styles.applyTitle}>
-          <span className={styles.applyWho}>WHO</span>
-          <span className={styles.applyElse}>ELSE</span>
-          <span className={styles.applyBut}>but you?</span>
-        </h2>
-        <p className={styles.applySub}>
-          Genesis Studios at Austin Christian University is opening the first Who Else cohort.
-          If you build, ship, and believe — this is for you.
-        </p>
-        <div className={styles.applyActions}>
-          <button className={styles.applyBtn}>Apply to Cohort 01</button>
-          <span className={styles.applyNote}>Applications reviewed on a rolling basis</span>
-        </div>
-      </div>
-    </section>
-  )
-}
+        ctx.fillStyle = 'rgba(200,235,255,0.5)'
+        ctx.beginPath(); ctx.roundRect(cx - 10 * sc, lidBase - 8 * sc, 20 * sc, 10 * sc, 3); ctx.fill()
+        ctx.strokeStyle = 'rgba(200,235,255,0.6)'; ctx.lineWidth = .8
+        ctx.strokeRect(cx - 10 * sc, lidBase - 8 * sc, 20 * sc, 10 * sc)
 
-function Footer() {
-  return (
-    <footer className={styles.footer}>
-      <div className={styles.footerTop}>
-        <div className={styles.footerBrand}>
-          <span className={styles.footerMark}>W/E</span>
-          <span className={styles.footerName}>Who Else</span>
-        </div>
-        <div className={styles.footerLinks}>
-          <span>Genesis Studios</span>
-          <span>Austin Christian University</span>
-          <span>Apply</span>
-        </div>
-      </div>
-      <div className={styles.footerBottom}>
-        <span>© 2025 Who Else × Genesis Studios — ACU</span>
-        <span>Pioneering the Future for Kingdom Glory</span>
-      </div>
-    </footer>
-  )
+        ctx.restore()
+      }
+
+      return { caseTop, cw, ch }
+    }
+
+    // ── Star ───────────────────────────────────
+    function drawStar(x, y, r, col) {
+      ctx.save(); ctx.translate(x, y); ctx.fillStyle = col
+      ctx.beginPath()
+      for (let i = 0; i < 5; i++) {
+        const a = Math.PI / 2 + i * 2 * Math.PI / 5
+        const b = a + Math.PI / 5
+        i === 0 ? ctx.moveTo(Math.cos(a) * r, Math.sin(a) * r) : ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r)
+        ctx.lineTo(Math.cos(b) * r * .42, Math.sin(b) * r * .42)
+      }
+      ctx.closePath(); ctx.fill(); ctx.restore()
+    }
+
+    // ── Trophy ─────────────────────────────────
+    function drawTrophy(cx, plankY, sc) {
+      const s = stateRef.current
+      const ty = plankY - 10 * sc
+
+      if (s.lidState === 'gone') {
+        const alpha = .12 + Math.sin(s.pulse) * .06 + (s.hover ? .08 : 0)
+        const grd = ctx.createRadialGradient(cx, ty - 60 * sc, 10 * sc, cx, ty - 60 * sc, 90 * sc)
+        grd.addColorStop(0, `rgba(196,154,34,${alpha + .08})`); grd.addColorStop(1, 'rgba(196,154,34,0)')
+        ctx.fillStyle = grd; ctx.beginPath(); ctx.arc(cx, ty - 60 * sc, 90 * sc, 0, Math.PI * 2); ctx.fill()
+      }
+
+      // base plate
+      const bpW = 90 * sc, bpH = 10 * sc
+      const bg = ctx.createLinearGradient(cx - bpW / 2, ty - bpH, cx - bpW / 2, ty)
+      bg.addColorStop(0, '#b8860b'); bg.addColorStop(.5, '#daa520'); bg.addColorStop(1, '#8b6914')
+      ctx.fillStyle = bg; ctx.beginPath(); ctx.roundRect(cx - bpW / 2, ty - bpH, bpW, bpH, 2); ctx.fill()
+
+      // stem
+      const stW = 18 * sc, stH = 38 * sc
+      const sg = ctx.createLinearGradient(cx - stW / 2, 0, cx + stW / 2, 0)
+      sg.addColorStop(0, '#8b6914'); sg.addColorStop(.35, '#daa520'); sg.addColorStop(.65, '#f0c040'); sg.addColorStop(1, '#8b6914')
+      ctx.fillStyle = sg; ctx.fillRect(cx - stW / 2, ty - bpH - stH, stW, stH)
+
+      // knot
+      const knY = ty - bpH - stH
+      const kg = ctx.createLinearGradient(cx - 24 * sc, 0, cx + 24 * sc, 0)
+      kg.addColorStop(0, '#8b6914'); kg.addColorStop(.4, '#daa520'); kg.addColorStop(.6, '#f0c040'); kg.addColorStop(1, '#8b6914')
+      ctx.fillStyle = kg; ctx.beginPath(); ctx.roundRect(cx - 24 * sc, knY - 8 * sc, 48 * sc, 16 * sc, 4); ctx.fill()
+
+      // cup
+      const cpBot = knY - 8 * sc, cpTopW = 80 * sc, cpBotW = 36 * sc, cpH = 70 * sc
+      const cpTop = cpBot - cpH
+      ctx.beginPath()
+      ctx.moveTo(cx - cpBotW / 2, cpBot)
+      ctx.bezierCurveTo(cx - cpBotW / 2 - 10 * sc, cpBot - cpH * .3, cx - cpTopW / 2, cpBot - cpH * .6, cx - cpTopW / 2, cpTop)
+      ctx.lineTo(cx + cpTopW / 2, cpTop)
+      ctx.bezierCurveTo(cx + cpTopW / 2, cpBot - cpH * .6, cx + cpBotW / 2 + 10 * sc, cpBot - cpH * .3, cx + cpBotW / 2, cpBot)
+      ctx.closePath()
+
+      const cg = ctx.createLinearGradient(cx - cpTopW / 2, 0, cx + cpTopW / 2, 0)
+      cg.addColorStop(0, '#8b6914'); cg.addColorStop(.2, '#c49a22'); cg.addColorStop(.45, '#f0c840')
+      cg.addColorStop(.55, '#ffe066'); cg.addColorStop(.8, '#c49a22'); cg.addColorStop(1, '#8b6914')
+      ctx.fillStyle = cg; ctx.fill()
+
+      // rim
+      const rg = ctx.createLinearGradient(cx - cpTopW / 2 - 4 * sc, 0, cx + cpTopW / 2 + 4 * sc, 0)
+      rg.addColorStop(0, '#8b6914'); rg.addColorStop(.5, '#ffe066'); rg.addColorStop(1, '#8b6914')
+      ctx.fillStyle = rg; ctx.beginPath(); ctx.roundRect(cx - cpTopW / 2 - 4 * sc, cpTop - 6 * sc, cpTopW + 8 * sc, 12 * sc, 3); ctx.fill()
+
+      // cup shine
+      ctx.save(); ctx.beginPath()
+      ctx.moveTo(cx - cpBotW / 2, cpBot)
+      ctx.bezierCurveTo(cx - cpBotW / 2 - 10 * sc, cpBot - cpH * .3, cx - cpTopW / 2, cpBot - cpH * .6, cx - cpTopW / 2, cpTop)
+      ctx.lineTo(cx + cpTopW / 2, cpTop)
+      ctx.bezierCurveTo(cx + cpTopW / 2, cpBot - cpH * .6, cx + cpBotW / 2 + 10 * sc, cpBot - cpH * .3, cx + cpBotW / 2, cpBot)
+      ctx.closePath(); ctx.clip()
+      const shine = ctx.createLinearGradient(cx - cpTopW / 2, 0, cx + cpTopW / 2, 0)
+      shine.addColorStop(0, 'rgba(255,255,255,0)'); shine.addColorStop(.3, 'rgba(255,255,255,0)')
+      shine.addColorStop(.4, 'rgba(255,255,255,0.18)'); shine.addColorStop(.5, 'rgba(255,255,255,0.08)'); shine.addColorStop(.6, 'rgba(255,255,255,0)')
+      ctx.fillStyle = shine; ctx.fillRect(cx - cpTopW / 2, cpTop, cpTopW, cpH); ctx.restore()
+
+      // handles
+      for (const side of [-1, 1]) {
+        const hx = cx + side * (cpTopW / 2 - 2 * sc)
+        const hy1 = cpTop + 12 * sc, hy2 = cpTop + 44 * sc
+        ctx.strokeStyle = '#c49a22'; ctx.lineWidth = 5 * sc
+        ctx.beginPath(); ctx.moveTo(hx, hy1); ctx.bezierCurveTo(hx + side * 28 * sc, hy1, hx + side * 28 * sc, hy2, hx, hy2); ctx.stroke()
+        ctx.strokeStyle = '#ffe066'; ctx.lineWidth = 2 * sc
+        ctx.beginPath(); ctx.moveTo(hx, hy1); ctx.bezierCurveTo(hx + side * 28 * sc, hy1, hx + side * 28 * sc, hy2, hx, hy2); ctx.stroke()
+      }
+
+      // W/E engraving
+      ctx.font = `bold ${28 * sc}px 'Bebas Neue', sans-serif`
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'
+      ctx.fillStyle = 'rgba(139,105,20,0.7)'; ctx.fillText('W/E', cx + sc, cpTop + cpH * .42 + sc)
+      ctx.fillStyle = 'rgba(255,224,80,0.55)'; ctx.fillText('W/E', cx, cpTop + cpH * .42)
+
+      drawStar(cx, cpTop - 12 * sc, 8 * sc, '#ffe066')
+
+      // prompt
+      if (s.lidState === 'gone' && !s.clicked) {
+        const a = .45 + Math.sin(s.pulse * .8) * .2
+        ctx.font = `600 ${10 * sc}px 'JetBrains Mono', monospace`
+        ctx.textAlign = 'center'
+        ctx.fillStyle = `rgba(224,184,74,${a})`
+        ctx.fillText('CLICK THE TROPHY', cx, cpTop - 24 * sc)
+      }
+
+      return {
+        x: cx - cpTopW / 2 - 30 * sc,
+        y: cpTop - 20 * sc,
+        w: cpTopW + 60 * sc,
+        h: ty - cpTop + 20 * sc,
+      }
+    }
+
+    // ── Click handler ──────────────────────────
+    let trophyBounds = { x: 0, y: 0, w: 0, h: 0 }
+
+    function handleClick(e) {
+      const rect = canvas.getBoundingClientRect()
+      const mx = e.clientX - rect.left
+      const my = e.clientY - rect.top
+      const { W, H, cx, sc } = dims()
+      const plankY = H - 55 * sc
+      const s = stateRef.current
+
+      if (s.lidState === 'on') {
+        const caseTop = plankY - 150 * sc
+        const lidW = 138 * sc
+        if (mx >= cx - lidW / 2 && mx <= cx + lidW / 2 && my >= caseTop - 14 * sc && my <= caseTop + 22 * sc) {
+          s.lidState = 'falling'
+          s.lidVY = -10
+          s.lidVRot = (Math.random() > .5 ? 1 : -1) * (0.08 + Math.random() * .06)
+          onSignup('lid_popped')
+        }
+      } else if (s.lidState === 'gone' && !s.clicked) {
+        const tb = trophyBounds
+        if (mx >= tb.x && mx <= tb.x + tb.w && my >= tb.y && my <= tb.y + tb.h) {
+          s.clicked = true
+          s.flash = 1
+          canvas.style.cursor = 'crosshair'
+          setTimeout(() => window.open(SIGNUP_URL, '_blank'), 350)
+        }
+      }
+    }
+
+    canvas.addEventListener('click', handleClick)
+
+    // ── Mousemove ──────────────────────────────
+    function handleMove(e) {
+      const s = stateRef.current
+      if (s.lidState !== 'gone' || s.clicked) return
+      const rect = canvas.getBoundingClientRect()
+      const mx = e.clientX - rect.left, my = e.clientY - rect.top
+      const tb = trophyBounds
+      s.hover = mx >= tb.x && mx <= tb.x + tb.w && my >= tb.y && my <= tb.y + tb.h
+      canvas.style.cursor = s.hover ? 'pointer' : 'crosshair'
+    }
+    canvas.addEventListener('mousemove', handleMove)
+
+    // ── Render ─────────────────────────────────
+    function loop() {
+      const s = stateRef.current
+      s.frame++
+      s.pulse += 0.04
+      const { W, H, cx, sc } = dims()
+      ctx.clearRect(0, 0, W, H)
+
+      const plankY = H - 55 * sc
+
+      // lid physics
+      if (s.lidState === 'falling') {
+        s.lidY += s.lidVY
+        s.lidVY += 1.4
+        s.lidRot += s.lidVRot
+        if (s.lidY > H + 80) { s.lidState = 'gone'; s.lidY = 0; s.lidRot = 0 }
+      }
+
+      drawStand(cx, plankY, sc)
+      trophyBounds = drawTrophy(cx, plankY, sc)
+      drawCase(cx, plankY, sc, s.lidY, s.lidRot)
+
+      // flash overlay
+      if (s.flash > 0) {
+        ctx.fillStyle = `rgba(196,154,34,${s.flash * .5})`
+        ctx.fillRect(0, 0, W, H)
+        s.flash -= 0.06
+        if (s.flash < 0) s.flash = 0
+      }
+
+      raf = requestAnimationFrame(loop)
+    }
+    loop()
+
+    return () => {
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', resize)
+      canvas.removeEventListener('click', handleClick)
+      canvas.removeEventListener('mousemove', handleMove)
+    }
+  }, [onSignup])
+
+  return <canvas ref={canvasRef} className={styles.canvas} />
 }
 
 export default function App() {
+  const { phrase, out } = usePhrase(PHRASES)
+  const [hintVisible, setHintVisible] = useState(false)
+  const [hintDismissed, setHintDismissed] = useState(false)
+  const hintTimer = useRef(null)
+
+  // start hint timer on mount
+  useEffect(() => {
+    hintTimer.current = setTimeout(() => {
+      if (!hintDismissed) setHintVisible(true)
+    }, 20000)
+    return () => clearTimeout(hintTimer.current)
+  }, [])
+
+  function handleSignupEvent(event) {
+    if (event === 'lid_popped') {
+      // reset hint for trophy click
+      clearTimeout(hintTimer.current)
+      setHintVisible(false)
+      setHintDismissed(false)
+      hintTimer.current = setTimeout(() => setHintVisible(true), 20000)
+    }
+  }
+
+  function dismissHint() {
+    setHintVisible(false)
+    setHintDismissed(true)
+    clearTimeout(hintTimer.current)
+  }
+
   return (
-    <>
+    <div className={styles.page}>
       <Nav />
-      <Ticker />
-      <main>
-        <Hero />
-        <MissionSection />
-        <PillarsSection />
-        <ApplySection />
-      </main>
-      <Footer />
-    </>
+
+      <div className={styles.wordmark}>
+        <span className={styles.who}>WHO</span>
+        <span className={styles.else}>ELSE</span>
+      </div>
+
+      <div className={styles.phraseRow}>
+        <span className={`${styles.phrase} ${out ? styles.phraseOut : styles.phraseIn}`}>
+          — {phrase}?
+        </span>
+      </div>
+
+      <div className={styles.stage}>
+        <TrophyCanvas onSignup={handleSignupEvent} />
+      </div>
+
+      {/* Hint strip */}
+      <div className={`${styles.hint} ${hintVisible ? styles.hintShow : ''}`}>
+        <span className={styles.hintArrow}>→</span>
+        <div className={styles.hintText}>
+          <strong>Click the trophy</strong>
+          to sign up for Who Else
+        </div>
+        <button className={styles.hintClose} onClick={dismissHint}>✕</button>
+      </div>
+    </div>
   )
 }
