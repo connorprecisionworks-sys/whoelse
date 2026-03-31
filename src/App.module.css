@@ -3,30 +3,29 @@
   --wm: 'Courier New', 'Lucida Console', monospace;
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 body { overflow: hidden; }
 
-/* ── PAGE ─────────────────────────────── */
+/* ── PAGE ─────────────────────────── */
 .page {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
-  background: #0a0908;
-  font-family: var(--wf);
+  background: #0c0b0a;
 }
 
-/* ── GRAIN ────────────────────────────── */
+/* ── GRAIN ────────────────────────── */
 .grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.32;
+  opacity: 0.28;
   mix-blend-mode: overlay;
 }
 
-/* ── LANDING ──────────────────────────── */
+/* ── LANDING ──────────────────────── */
 .landing {
   width: 100%;
   height: 100%;
@@ -36,200 +35,129 @@ body { overflow: hidden; }
   justify-content: center;
   position: relative;
   overflow: hidden;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-              filter 0.6s ease;
+  gap: 0;
 }
 
-.landingZoom {
-  transform: scale(2.5) translateY(8%);
-  filter: blur(3px);
-}
-
-/* ── ROOM BACKGROUND ──────────────────── */
+/* ── ROOM ─────────────────────────── */
 .room {
   position: absolute;
   inset: 0;
-  /* dark room: floor meets wall */
+  /* dark studio room: subtle wall/floor */
   background:
-    /* floor */
     linear-gradient(180deg,
-      transparent 0%,
-      transparent 62%,
-      #1c1208 62%,
-      #120e06 100%
-    ),
-    /* wall */
-    linear-gradient(180deg, #100c08 0%, #181210 62%);
+      #111010 0%,
+      #141210 55%,
+      #1a1510 55%,
+      #0e0c08 100%
+    );
 }
-
-/* floor/wall junction line */
 .room::before {
   content: '';
   position: absolute;
-  left: 0; right: 0;
-  top: 62%;
+  left: 0; right: 0; top: 55%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255,200,100,0.1), transparent);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,200,100,0.07) 50%, transparent 100%);
 }
-
-/* ambient ceiling light */
 .room::after {
   content: '';
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,200,120,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 100%);
+    radial-gradient(ellipse 70% 50% at 50% 30%, rgba(255,220,160,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 50%, transparent 45%, rgba(0,0,0,0.6) 100%);
 }
 
-/* ── WORDMARK ─────────────────────────── */
-.wordmark {
-  display: flex;
-  align-items: baseline;
-  gap: 0;
-  line-height: 0.85;
-  margin-bottom: 0.4rem;
+/* ── TOP BAR: wordmark + tagline ──── */
+.topBar {
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1rem;
   animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
 }
 
-.wordmarkWho {
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  line-height: 0.85;
+}
+
+.who {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-size: clamp(3rem, 9vw, 7rem);
   letter-spacing: -0.02em;
   color: transparent;
   -webkit-text-stroke: 1.5px rgba(245,241,234,0.7);
   line-height: 0.85;
 }
 
-.wordmarkElse {
+.else {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: clamp(3.5rem, 10vw, 8rem);
+  font-size: clamp(3rem, 9vw, 7rem);
   letter-spacing: -0.02em;
   color: #f5f1ea;
   line-height: 0.85;
   position: relative;
 }
 
-/* jagged underline on ELSE */
-.wordmarkElse::after {
+.else::after {
   content: '';
   position: absolute;
-  bottom: -2px; left: 0;
+  bottom: -1px; left: 0;
   width: 100%;
-  height: clamp(4px, 0.7vw, 7px);
+  height: clamp(3px, 0.55vw, 5px);
   background: #c93030;
   clip-path: polygon(0 70%,4% 5%,8% 80%,12% 10%,16% 90%,20% 5%,24% 76%,28% 0%,32% 84%,36% 16%,40% 80%,44% 8%,48% 72%,52% 0%,56% 80%,60% 18%,64% 88%,68% 6%,72% 74%,76% 22%,80% 86%,84% 4%,88% 68%,92% 28%,96% 72%,100% 42%,100% 100%,0 100%);
 }
 
 .tagline {
   font-family: 'Fraunces', serif;
-  font-size: clamp(0.65rem, 1.2vw, 0.9rem);
+  font-size: clamp(0.6rem, 1.1vw, 0.85rem);
   font-style: italic;
   font-weight: 700;
-  color: rgba(245,241,234,0.42);
-  margin-bottom: 2rem;
+  color: rgba(245,241,234,0.38);
+  margin-top: 0.3rem;
+}
+
+/* ── PC WRAP ──────────────────────── */
+.pcWrap {
   position: relative;
   z-index: 2;
-  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s both;
+  width: min(820px, 92vw);
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+  /* aspect ratio matches the 814x458 image */
+  aspect-ratio: 814 / 458;
 }
 
-/* ── DESK SCENE ───────────────────────── */
-.deskScene {
-  position: relative;
-  z-index: 2;
-  width: min(700px, 92vw);
-  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both;
-}
-
-/* ── MACBOOK SVG ──────────────────────── */
-.macbook {
-  width: 100%;
-  height: auto;
-  display: block;
-  filter:
-    drop-shadow(0 20px 60px rgba(0,0,0,0.8))
-    drop-shadow(0 4px 16px rgba(0,0,0,0.6));
-  cursor: pointer;
-  transition: filter 0.3s ease, transform 0.3s ease;
-}
-
-.macbook:hover {
-  filter:
-    drop-shadow(0 24px 70px rgba(0,0,0,0.85))
-    drop-shadow(0 0 30px rgba(196,154,34,0.12));
-  transform: translateY(-2px);
-}
-
-.macbookZoomed {
-  transform: translateY(-2px);
-  pointer-events: none;
-}
-
-/* ── PORTAL: OS fullscreen ────────────── */
-.portal {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: #0a0908;
-  animation: portalIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
-}
-
-@keyframes portalIn {
-  from { opacity: 0; transform: scale(0.94); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* ── PORTAL MACBOOK FRAME ─────────────── */
-.portalFrame {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* top bezel */
-.portalBezel {
-  background: linear-gradient(145deg, #2a2a2c, #1c1c1e);
-  border: 2px solid #3a3a3c;
-  border-radius: 12px 12px 4px 4px;
-  padding: 14px 14px 8px;
-  position: relative;
-  box-shadow:
-    inset 0 2px 4px rgba(255,255,255,0.05),
-    0 24px 80px rgba(0,0,0,0.9),
-    0 0 0 1px #141416;
-}
-
-/* notch */
-.portalNotch {
+/* 
+  The OS is embedded BEHIND the PC image.
+  Screen area in the image: left=43%, top=21.8%, width=32.6%, height=54.2%
+  
+  The screen in the image is at a slight angle (perspective).
+  We use CSS transform to skew it to match the monitor perspective.
+  The monitor face is roughly frontal with ~5deg horizontal tilt.
+*/
+.screenEmbed {
   position: absolute;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 80px;
-  height: 18px;
-  background: #0a0a0c;
-  border-radius: 0 0 10px 10px;
-  z-index: 10;
-}
-
-/* the actual OS screen */
-.portalScreen {
-  width: min(76vw, 980px);
-  height: min(57vw, 735px);
-  background: #007b7b;
+  /* position exactly over the monitor screen area */
+  left: 43.2%;
+  top: 22%;
+  width: 32.4%;
+  height: 53.8%;
   border-radius: 2px;
   overflow: hidden;
-  position: relative;
+  cursor: pointer;
+  z-index: 1;
+  /* subtle perspective warp to match the monitor's slight angle */
+  transform: perspective(600px) rotateY(-6deg) rotateX(2deg);
+  transform-origin: center center;
+  /* scanlines over the OS */
+  background: #007b7b;
 }
 
-/* scanline effect on portal screen */
-.portalScreen::after {
+.screenEmbed::after {
   content: '';
   position: absolute;
   inset: 0;
@@ -237,84 +165,131 @@ body { overflow: hidden; }
     0deg,
     transparent,
     transparent 3px,
-    rgba(0,0,0,0.04) 3px,
-    rgba(0,0,0,0.04) 4px
+    rgba(0,0,0,0.05) 3px,
+    rgba(0,0,0,0.05) 4px
   );
   pointer-events: none;
   z-index: 9999;
 }
 
-.portalChin {
-  background: linear-gradient(180deg, #252527, #1c1c1e);
-  width: 100%;
-  height: 32px;
-  border-radius: 0 0 8px 8px;
-  border: 2px solid #2a2a2c;
-  border-top: none;
+/* click hint inside screen area */
+.screenHint {
+  position: absolute;
+  left: 43.2%;
+  top: 22%;
+  width: 32.4%;
+  height: 53.8%;
+  z-index: 3;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
+  transform: perspective(600px) rotateY(-6deg) rotateX(2deg);
+  transform-origin: center center;
 }
 
-.portalChin::after {
-  content: '';
-  width: 60px;
-  height: 4px;
-  background: #1a1a1c;
-  border-radius: 2px;
+.screenHint span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.35rem, 0.9vw, 0.6rem);
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(196,154,34,0.75);
+  background: rgba(0,0,0,0.4);
+  padding: 0.3em 0.7em;
+  border: 1px solid rgba(196,154,34,0.25);
+  backdrop-filter: blur(2px);
+  animation: hintPulse 2s ease-in-out infinite;
 }
 
-.portalBase {
-  width: min(55vw, 700px);
-  height: 10px;
-  background: linear-gradient(180deg, #232325, #161618);
-  border-radius: 0 0 6px 6px;
-  border: 1px solid #1e1e20;
-  border-top: none;
+@keyframes hintPulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
 }
 
-/* ── EXIT BUTTON ──────────────────────── */
+/* PC photo — sits on top of the OS embed */
+.pcImg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* pointer-events: none lets clicks pass through to screenClickZone */
+  pointer-events: none;
+  z-index: 2;
+  filter: drop-shadow(0 24px 60px rgba(0,0,0,0.8));
+  display: block;
+}
+
+/* invisible click zone precisely over monitor screen */
+.screenClickZone {
+  position: absolute;
+  left: 40%;
+  top: 19%;
+  width: 36%;
+  height: 59%;
+  z-index: 4;
+  cursor: pointer;
+  /* debug: background: rgba(255,0,0,0.1); */
+}
+
+/* ── OS FULLSCREEN ────────────────── */
+.osFullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  animation: osIn 0.4s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes osIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── EXIT BUTTON ──────────────────── */
 .exitBtn {
   position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 200;
+  top: 14px;
+  left: 14px;
+  z-index: 9999;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.55rem;
-  letter-spacing: 0.25em;
+  font-size: 0.52rem;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  background: rgba(0,0,0,0.5);
-  color: rgba(245,241,234,0.55);
-  border: 1px solid rgba(245,241,234,0.15);
-  padding: 0.5rem 1rem;
+  background: rgba(0,0,0,0.6);
+  color: rgba(245,241,234,0.6);
+  border: 1px solid rgba(245,241,234,0.14);
+  padding: 0.45rem 1rem;
   cursor: pointer;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(6px);
   transition: all 0.15s;
+  animation: fadeIn 0.4s ease 0.3s both;
 }
 
 .exitBtn:hover {
-  background: rgba(0,0,0,0.75);
+  background: rgba(0,0,0,0.8);
   color: #f5f1ea;
   border-color: rgba(245,241,234,0.35);
 }
 
-/* ── FILE ICON HOVER ──────────────────── */
+/* ── FILE ICON HOVER ──────────────── */
 .fi:hover {
   background: rgba(0,0,128,0.12) !important;
   border-color: #000080 !important;
 }
 
-/* ── ANIMATIONS ───────────────────────── */
+/* ── ANIMATIONS ───────────────────── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ── RESPONSIVE ───────────────────────── */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── RESPONSIVE ───────────────────── */
 @media (max-width: 600px) {
-  .deskScene { width: 98vw; }
-  .portalScreen { width: 96vw; height: 72vw; }
-  .portalBezel { padding: 8px 8px 6px; }
-  .portalBase { width: 80vw; }
-  .wordmarkWho, .wordmarkElse { font-size: clamp(2.8rem, 14vw, 5rem); }
+  .pcWrap { width: 99vw; }
+  .topBar { margin-bottom: 0.5rem; }
 }
