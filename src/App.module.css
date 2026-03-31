@@ -1,283 +1,500 @@
-/* ── FONTS ──────────────────────────── */
 :root {
-  --w95font: 'MS Sans Serif', 'Tahoma', 'Arial', sans-serif;
-  --w95mono: 'Courier New', 'Lucida Console', monospace;
+  --wf: 'MS Sans Serif', Tahoma, Arial, sans-serif;
+  --wm: 'Courier New', 'Lucida Console', monospace;
+  --brick-bg: #1e0e06;
+  --brick-face: #2e1208;
+  --mortar: rgba(0,0,0,0.6);
 }
 
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { overflow: hidden; }
 
-/* ── DESKTOP ────────────────────────── */
-.desktop95 {
+/* ═══════════════════════════════════════
+   OUTER SCENE — fixed viewport
+═══════════════════════════════════════ */
+.scene {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
-  /* Classic W95 teal — tinted with Who Else gold */
-  background: #007b7b;
+  background: var(--brick-bg);
+  /* perspective on the scene so the world div dollies toward viewer */
+  perspective: 900px;
+  perspective-origin: 50% 42%;
+}
+
+/* ═══════════════════════════════════════
+   WORLD — the 3D plane that moves toward camera
+═══════════════════════════════════════ */
+.world {
+  position: absolute;
+  inset: -8%;          /* slightly oversized so edges stay filled during zoom */
+  transform-origin: 50% 42%;
+  transform: translateZ(0px);
+  transition: transform 2.2s cubic-bezier(0.25, 0.1, 0.1, 1),
+              filter 2.2s ease;
+  will-change: transform;
+}
+
+/* dolly in: push the world plane toward the viewer along Z */
+.worldDolly {
+  transform: translateZ(460px);
+  filter: blur(1.5px);
+}
+
+/* stay close but freeze — we show the overlay on top */
+.worldZoomed {
+  transform: translateZ(460px);
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   BRICK WALL
+═══════════════════════════════════════ */
+.brick {
+  position: absolute;
+  inset: 0;
+  background-color: var(--brick-face);
+
+  /* horizontal mortar lines */
   background-image:
-    radial-gradient(ellipse 70% 70% at 50% 50%, #007070 0%, #005858 100%);
-  cursor: none;
-  user-select: none;
-  padding-bottom: 36px;
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 38px,
+      var(--mortar) 38px,
+      var(--mortar) 43px
+    );
+  background-size: 100% 43px;
 }
 
-/* ── CURSOR ─────────────────────────── */
-.w95cursor {
-  position: fixed;
-  pointer-events: none;
-  z-index: 99999;
-  transform: translate(-1px, -1px);
-  filter: drop-shadow(1px 1px 0 rgba(0,0,0,0.5));
-}
-
-/* ── ICON COLUMN ────────────────────── */
-.iconColumn {
+/* vertical mortar — even rows */
+.brick::before {
+  content: '';
   position: absolute;
-  top: 12px;
-  left: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 10;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 72px,
+    var(--mortar) 72px,
+    var(--mortar) 77px
+  );
+  background-size: 77px 86px;
+  background-position: 0 0;
 }
 
-/* ── DESKTOP ICON ───────────────────── */
-.deskIcon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 6px 4px;
-  width: 72px;
-  cursor: default;
-  border: 1px solid transparent;
-}
-
-.deskIcon:hover {
-  border: 1px dotted rgba(255,255,255,0.5);
-}
-
-.deskIconSel {
-  background: #000080;
-  border: 1px dotted rgba(255,255,255,0.8) !important;
-}
-
-.deskIconImg {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.deskIconLabel {
-  font-family: var(--w95font);
-  font-size: 11px;
-  color: #fff;
-  text-align: center;
-  line-height: 1.2;
-  text-shadow: 1px 1px 1px #000, -1px -1px 1px #000, 1px -1px 1px #000, -1px 1px 1px #000;
-  word-break: break-word;
-  width: 100%;
-}
-
-.deskIconSel .deskIconLabel {
-  background: #000080;
-  color: #fff;
-}
-
-/* ── WATERMARK ──────────────────────── */
-.w95watermark {
+/* vertical mortar — odd rows, offset by half brick */
+.brick::after {
+  content: '';
   position: absolute;
-  bottom: 50px;
-  right: 20px;
-  text-align: right;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px,
+    transparent 72px,
+    var(--mortar) 72px,
+    var(--mortar) 77px
+  );
+  background-size: 77px 86px;
+  background-position: 38px 43px;
+
+  /* deep moody overlay — night atmosphere */
+  /* can't use multiple backgrounds with a pseudo already used, so layer via box-shadow trick */
+  /* instead we use a gradient mask */
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, transparent 100%);
+}
+
+/* night atmosphere + colour variation — done on .brick itself as an additional gradient */
+/* we achieve it with a 4th layer by wrapping it in the scene::before */
+.scene::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background:
+    /* top dark shadow */
+    linear-gradient(180deg, rgba(0,0,0,0.65) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%),
+    /* left/right vignette */
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 35%, rgba(0,0,0,0.65) 100%),
+    /* random brick colour warmth */
+    radial-gradient(ellipse 60% 40% at 30% 60%, rgba(80,20,5,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 50% at 70% 30%, rgba(60,15,4,0.12) 0%, transparent 50%);
+}
+
+/* ═══════════════════════════════════════
+   GRAFFITI
+═══════════════════════════════════════ */
+.graffiti {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -52%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 5;
   pointer-events: none;
 }
 
-.w95wmTitle {
-  font-family: var(--w95font);
-  font-size: 28px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.08);
-  letter-spacing: 0.1em;
-  line-height: 1;
+.burst {
+  position: absolute;
+  width: clamp(340px, 70vw, 720px);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -46%);
+  pointer-events: none;
 }
 
-.w95wmSub {
-  font-family: var(--w95font);
-  font-size: 11px;
-  color: rgba(255,255,255,0.06);
-  margin-top: 2px;
+/* WHO */
+.who {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(5.5rem, 17vw, 15rem);
+  font-weight: 900;
+  color: #f5f1ea;
+  letter-spacing: -0.02em;
+  line-height: 0.8;
+  -webkit-text-stroke: clamp(4px, 0.8vw, 8px) #000;
+  paint-order: stroke fill;
+  text-shadow:
+    3px 4px 0 #000,
+    6px 8px 18px rgba(0,0,0,0.95),
+    0 0 60px rgba(0,0,0,0.4);
+  transform: skewX(-3deg);
+  animation: gIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.1s both;
 }
 
-/* ── FILE ICON (inside folder) ──────── */
-.fileIcon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 8px 6px;
-  width: 72px;
-  cursor: default;
-  border: 1px solid transparent;
+/* ELSE */
+.else {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  font-size: clamp(5.5rem, 17vw, 15rem);
+  font-weight: 900;
+  color: #f5f1ea;
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  -webkit-text-stroke: clamp(4px, 0.8vw, 8px) #000;
+  paint-order: stroke fill;
+  text-shadow:
+    3px 4px 0 #000,
+    6px 8px 18px rgba(0,0,0,0.95),
+    0 0 60px rgba(0,0,0,0.4);
+  transform: skewX(-3deg) translateX(1.5%);
+  margin-top: 6px;
+  position: relative;
+  animation: gIn 0.9s cubic-bezier(0.16,1,0.3,1) 0.18s both;
 }
 
-.fileIcon:hover {
-  background: rgba(0,0,128,0.1);
-  border: 1px dotted #000080;
-}
-
-.fileIconLabel {
-  font-family: var(--w95font);
-  font-size: 11px;
-  color: #000;
-  text-align: center;
-  line-height: 1.3;
-  word-break: break-all;
+/* jagged red underline */
+.else::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
   width: 100%;
+  height: clamp(6px, 1.1vw, 11px);
+  background: #c93030;
+  clip-path: polygon(
+    0 70%,2.5% 0%,5% 80%,7.5% 10%,10% 90%,12.5% 5%,15% 78%,17.5% 0%,
+    20% 85%,22.5% 15%,25% 82%,27.5% 8%,30% 72%,32.5% 0%,35% 80%,
+    37.5% 18%,40% 88%,42.5% 5%,45% 76%,47.5% 14%,50% 84%,52.5% 2%,
+    55% 78%,57.5% 20%,60% 88%,62.5% 6%,65% 72%,67.5% 18%,70% 86%,
+    72.5% 4%,75% 76%,77.5% 22%,80% 84%,82.5% 8%,85% 68%,87.5% 26%,
+    90% 80%,92.5% 10%,95% 70%,97.5% 30%,100% 55%,
+    100% 100%,0 100%
+  );
 }
 
-/* ── W95 BUTTON ─────────────────────── */
-.w95btn {
-  font-family: var(--w95font);
-  font-size: 11px;
-  min-width: 72px;
-  padding: 3px 10px;
-  background: #c0c0c0;
-  border-top: 2px solid #ffffff;
-  border-left: 2px solid #ffffff;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
-  cursor: default;
-  color: #000;
+@keyframes gIn {
+  from { opacity: 0; transform: skewX(-3deg) translateY(16px); }
+  to   { opacity: 1; transform: skewX(-3deg) translateY(0); }
 }
 
-.w95btn:active {
-  border-top: 2px solid #808080;
-  border-left: 2px solid #808080;
-  border-right: 2px solid #ffffff;
-  border-bottom: 2px solid #ffffff;
+/* ═══════════════════════════════════════
+   CRT COMPUTER
+═══════════════════════════════════════ */
+.crt {
+  position: absolute;
+  bottom: 4%;
+  left: 3%;
+  z-index: 6;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.6s ease;
 }
 
-.w95btn:focus { outline: 1px dotted #000; outline-offset: -4px; }
+.crt:hover { transform: scale(1.04); }
 
-/* ── WINDOW BUTTONS ─────────────────── */
-.w95winbtn {
-  width: 16px;
-  height: 14px;
-  background: #c0c0c0;
-  border-top: 1px solid #fff;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #404040;
-  border-bottom: 1px solid #404040;
-  font-size: 9px;
-  font-family: var(--w95font);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-  color: #000;
-  padding: 0;
-  line-height: 1;
-  flex-shrink: 0;
+.crtFade { opacity: 0; pointer-events: none; }
+
+/* green pulse glow ring */
+.crtGlow {
+  position: absolute;
+  inset: -28px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(0,255,136,0.14) 0%,
+    rgba(0,255,136,0.06) 40%,
+    transparent 70%
+  );
+  animation: glowPulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
 }
 
-.w95winbtn:active {
-  border-top: 1px solid #404040;
-  border-left: 1px solid #404040;
-  border-right: 1px solid #fff;
-  border-bottom: 1px solid #fff;
+@keyframes glowPulse {
+  0%, 100% { transform: scale(0.94); opacity: 0.7; }
+  50%       { transform: scale(1.06); opacity: 1; }
 }
 
-.w95winbtnClose {
-  font-weight: 700;
-  font-size: 10px;
-}
-
-/* ── START BUTTON ───────────────────── */
-.startBtn {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  height: 28px;
-  background: #c0c0c0;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
-  font-family: var(--w95font);
-  font-size: 12px;
-  font-weight: 700;
-  cursor: default;
-  flex-shrink: 0;
-  color: #000;
-}
-
-.startBtn:active {
-  border-top: 2px solid #808080;
-  border-left: 2px solid #808080;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-}
-
-/* ── TASKBAR TASK BUTTON ────────────── */
-.taskBtn {
-  height: 26px;
-  padding: 0 8px;
-  background: #c0c0c0;
-  border-top: 2px solid #fff;
-  border-left: 2px solid #fff;
-  border-right: 2px solid #808080;
-  border-bottom: 2px solid #808080;
-  font-family: var(--w95font);
-  font-size: 11px;
-  cursor: default;
-  color: #000;
-  text-align: left;
-}
-
-.taskBtn:active {
-  border-top: 2px solid #808080;
-  border-left: 2px solid #808080;
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-}
-
-/* ── START MENU ITEM ────────────────── */
-.startMenuItem {
-  display: flex;
-  align-items: center;
-  padding: 5px 12px;
-  cursor: default;
-  font-family: var(--w95font);
-  font-size: 11px;
-  color: #000;
+.crtHint {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(0,255,136,0.55);
   white-space: nowrap;
+  pointer-events: none;
+  animation: hintBlink 2.5s step-end infinite;
 }
 
-.startMenuItem:hover {
-  background: #000080;
-  color: #fff;
+@keyframes hintBlink {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 0.2; }
 }
 
-/* ── SCROLLBARS ─────────────────────── */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #c0c0c0 #808080;
+.crtSvg {
+  width: clamp(170px, 21vw, 260px);
+  height: auto;
+  display: block;
+  filter:
+    drop-shadow(0 10px 30px rgba(0,0,0,0.85))
+    drop-shadow(0 0 16px rgba(0,255,136,0.12));
 }
 
-::-webkit-scrollbar { width: 16px; height: 16px; }
-::-webkit-scrollbar-track { background: #c0c0c0; }
-::-webkit-scrollbar-thumb {
-  background: #c0c0c0;
-  border-top: 1px solid #fff;
-  border-left: 1px solid #fff;
-  border-right: 1px solid #808080;
-  border-bottom: 1px solid #808080;
+/* ═══════════════════════════════════════
+   ZOOMED OVERLAY
+═══════════════════════════════════════ */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: overlayIn 0.5s ease both;
 }
-::-webkit-scrollbar-button { background: #c0c0c0; height: 16px; width: 16px; }
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* brick stays visible as background */
+.overlayBrick {
+  position: absolute;
+  inset: 0;
+  background-color: var(--brick-face);
+  background-image:
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px, transparent 38px,
+      var(--mortar) 38px, var(--mortar) 43px
+    );
+  background-size: 100% 43px;
+}
+
+.overlayBrick::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0px, transparent 72px,
+    var(--mortar) 72px, var(--mortar) 77px
+  );
+  background-size: 77px 86px;
+}
+
+.overlayBrick::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(0,0,0,0.7) 0%, transparent 25%, transparent 75%, rgba(0,0,0,0.6) 100%),
+    radial-gradient(ellipse 90% 90% at 50% 50%, transparent 30%, rgba(0,0,0,0.7) 100%);
+}
+
+/* ═══════════════════════════════════════
+   MONITOR FRAME
+═══════════════════════════════════════ */
+.monitor {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: monitorIn 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes monitorIn {
+  from { opacity: 0; transform: scale(0.9) translateY(24px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+/* big boxy CRT bezel */
+.monitorBezel {
+  background: linear-gradient(145deg, #363634, #282826);
+  border: 4px solid #3a3a38;
+  border-radius: 12px 12px 6px 6px;
+  padding: 16px 16px 12px;
+  box-shadow:
+    inset 0 3px 5px rgba(255,255,255,0.06),
+    inset 0 -3px 5px rgba(0,0,0,0.5),
+    0 24px 80px rgba(0,0,0,0.95),
+    0 0 0 2px #1a1a18,
+    6px 6px 0 rgba(0,0,0,0.3);
+}
+
+/* the screen — contains the live OS */
+.monitorScreen {
+  width: min(70vw, 860px);
+  height: min(52.5vw, 645px);
+  background: #001a10;
+  border-radius: 3px;
+  overflow: hidden;
+  position: relative;
+  box-shadow:
+    inset 0 0 40px rgba(0,0,0,0.8),
+    inset 0 0 8px rgba(0,255,136,0.04);
+}
+
+/* CRT scanline overlay on screen */
+.monitorScreen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent, transparent 3px,
+    rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+  );
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 3px;
+}
+
+/* screen glass edge reflection */
+.monitorScreen::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 35%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.monitorChin {
+  background: linear-gradient(180deg, #2e2e2c, #252523);
+  width: 100%;
+  height: 38px;
+  border-radius: 0 0 10px 10px;
+  border: 3px solid #333;
+  border-top: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+}
+
+.led {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88, 0 0 16px rgba(0,255,136,0.4);
+  animation: ledPulse 3.5s ease-in-out infinite;
+}
+
+@keyframes ledPulse {
+  0%, 85%, 100% { opacity: 1; }
+  90%           { opacity: 0.2; }
+}
+
+.ledLabel {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.52rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(0,255,136,0.38);
+}
+
+.monitorNeck {
+  width: 56px;
+  height: 26px;
+  background: linear-gradient(180deg, #2a2a28, #1e1e1c);
+  border-left: 3px solid #2e2e2c;
+  border-right: 3px solid #2e2e2c;
+}
+
+.monitorBase {
+  width: 230px;
+  height: 18px;
+  background: linear-gradient(180deg, #252523, #1a1a18);
+  border-radius: 0 0 10px 10px;
+  border: 3px solid #282826;
+  border-top: none;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+}
+
+/* ═══════════════════════════════════════
+   EXIT BUTTON
+═══════════════════════════════════════ */
+.exitBtn {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 200;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  background: rgba(0,0,0,0.5);
+  color: rgba(245,241,234,0.55);
+  border: 1px solid rgba(245,241,234,0.18);
+  padding: 0.5rem 1.1rem;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  backdrop-filter: blur(4px);
+  animation: monitorIn 0.4s ease 0.3s both;
+}
+
+.exitBtn:hover {
+  background: rgba(0,0,0,0.75);
+  color: #f5f1ea;
+  border-color: rgba(245,241,234,0.4);
+}
+
+/* ── file icon hover inside OS ── */
+.fi:hover {
+  background: rgba(0,0,128,0.12) !important;
+  border-color: #000080 !important;
+}
+
+/* ═══════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════ */
+@media (max-width: 700px) {
+  .crtSvg { width: 140px; }
+  .monitorScreen { width: 90vw; height: 67.5vw; }
+  .monitorBezel { padding: 8px 8px 7px; border-radius: 8px 8px 4px 4px; }
+  .monitorBase { width: 150px; }
+  .monitorNeck { width: 38px; height: 18px; }
+  .monitorChin { height: 28px; }
+}

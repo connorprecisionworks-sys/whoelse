@@ -1,314 +1,79 @@
 import { useState, useEffect, useRef } from 'react'
 import styles from './App.module.css'
 
-// ── REPLACE with your signup URL ──────────────────────────────
 const SIGNUP_URL = 'https://YOUR-SIGNUP-URL-HERE.com'
 
-// ═══════════════════════════════════════════════════════════════
-// FILE CONTENT
-// ═══════════════════════════════════════════════════════════════
+// ─── WHO ELSE OS ─────────────────────────────────────────────
 const FILES = {
   about: {
-    'README.txt': `WHO ELSE COLLECTIVE
--------------------
-
-Who else should be trusted to pioneer the future
-of technology? Who else will accept this
-responsibility with unwavering faith and commitment?
-
-We are the ones who will lead, innovate, and inspire.
-Transforming vision into reality and leaving a legacy
-of purpose and faith.
-
-Who Else is a faith-driven innovation collective for
-the next generation of builders.
-
-FOUNDED : 2025
-LOCATION: Austin, TX
-BACKED  : Genesis Studios @ ACU`,
-
-    'Mission.txt': `MISSION STATEMENT
------------------
-
-Genesis Studios & Who Else exist to prove that
-faith and innovation are not opposites — they are
-co-architects of the future.
-
-We invest in people who build for something bigger.
-The ultimate metric is not revenue or users.
-
-It's: did we make the world more reflective of
-its Creator?
-
-Pioneering the Future for Kingdom Glory.`,
-
-    'Pillars.txt': `WHO ELSE PILLARS
-----------------
-
-01  FAITH-DRIVEN
-    Every idea built with purpose rooted in
-    Kingdom values. The why before the what.
-
-02  FOUNDER-FIRST
-    We back the person before the pitch.
-    Character before capital.
-
-03  BUILD IN PUBLIC
-    Ship real work. Get real feedback.
-    The work is the testimony.
-
-04  LEGACY OVER EXIT
-    Not building for the acquisition.
-    Building for what lasts beyond us.`,
+    'README.txt': `WHO ELSE COLLECTIVE\n-------------------\n\nWho else should be trusted to pioneer the\nfuture of technology?\n\nFAITH-DRIVEN  · FOUNDER-FIRST\nBUILD IN PUBLIC · LEGACY OVER EXIT\n\nFOUNDED : 2025\nLOCATION: Austin, TX\nBACKED  : Genesis Studios @ ACU`,
+    'Mission.txt': `MISSION\n-------\n\nGenesis Studios & Who Else exist to prove\nthat faith and innovation are co-architects\nof the future.\n\nPioneering the Future for Kingdom Glory.`,
+    'Pillars.txt': `PILLARS\n-------\n\n01 FAITH-DRIVEN\n   The why before the what.\n\n02 FOUNDER-FIRST\n   Character before capital.\n\n03 BUILD IN PUBLIC\n   Ship real work. The work is the testimony.\n\n04 LEGACY OVER EXIT\n   Building for what lasts beyond us.`,
   },
-
-  genesis: {
-    'About.txt': `GENESIS STUDIOS @ ACU
----------------------
-
-Genesis Studios is the venture capital studio
-arm of Austin Christian University.
-
-We seed, build, and scale ventures with purpose
-at their core.
-
-Genesis Studios is the infrastructure behind
-Who Else. The network. The capital. The wisdom.
-
-SERVICES:
-  - Venture Building & Investment
-  - Founder Mentorship Pipeline
-  - Faith x Technology Integration
-  - Ecosystem & Partner Network`,
-
-    'Partnership.txt': `GENESIS x WHO ELSE
-------------------
-
-Who Else is not just a collective — it is a
-proprietary talent pipeline for Genesis Studios.
-
-The best young founders in the country,
-identified early, nurtured intentionally,
-funneled into the Genesis portfolio.
-
-HOW IT WORKS:
-  1. Join Who Else collective
-  2. Participate in Mission Drops
-  3. Top performers enter Genesis pipeline
-  4. Direct paths to mentorship + capital
-
-The answer to "who else?" is already in the room.`,
-  },
-
-  mission: {
-    'The_Call.txt': `THE CALL
---------
-
-"Who else should be trusted to pioneer the
-future of technology?
-
-Who else will accept this responsibility with
-unwavering faith and commitment?
-
-Who else will make an impact that resonates
-for Kingdom glory?
-
-We are the ones who will lead, innovate,
-and inspire — transforming vision into reality
-and leaving a legacy of purpose and faith."
-
-                        — Who Else, 2025`,
-
-    'Values.txt': `CORE VALUES
------------
-
-FAITH       We build from a foundation of belief.
-INNOVATION  We build what has never existed.
-COMMUNITY   Iron sharpens iron. We grow together.
-EXCELLENCE  Half-built ships sink. We ship complete.
-IMPACT      Kingdom glory is the ultimate metric.`,
-  },
-
   members: {
-    'MEMBERS.txt': `CURRENT MEMBERS — GEN. 01
--------------------------
-
-This folder contains founding member profiles.
-Profiles are added as members join.
-
-To add your profile here:
-  > Run SIGNUP.EXE on the desktop
-
-Current cohort: OPEN FOR APPLICATIONS
-
-[ Founding member slots available ]`,
-
-    '[ Add your name here ].txt': `FOUNDING MEMBER SLOT
---------------------
-
-NAME  : [ Your Name ]
-ROLE  : [ Your Role ]
-COHORT: Gen. 01
-
-This slot is waiting to be filled.
-
-To claim it:
-  > Double-click SIGNUP.EXE on the desktop
-  > Complete the application
-  > Join Who Else Collective`,
+    'MEMBERS.txt': `MEMBERS — GEN. 01\n-----------------\n\nFounding member slots open.\n\nTo join:\n  > Run SIGNUP.EXE on the desktop`,
+    '[ Your name here ].txt': `FOUNDING MEMBER SLOT\n--------------------\n\nThis slot is waiting to be filled.\n\nDouble-click SIGNUP.EXE to claim it.`,
   },
-
+  mission: {
+    'The_Call.txt': `THE CALL\n--------\n\n"Who else should be trusted to pioneer\nthe future of technology?\n\nWho else will accept this responsibility\nwith unwavering faith?\n\nWho else will make an impact that\nresonates for Kingdom glory?"\n\n            — Who Else, 2025`,
+    'Values.txt': `VALUES\n------\n\nFAITH       Build from belief.\nINNOVATION  Build what never existed.\nCOMMUNITY   Iron sharpens iron.\nEXCELLENCE  Half-built ships sink.\nIMPACT      Kingdom glory is the metric.`,
+  },
+  genesis: {
+    'About.txt': `GENESIS STUDIOS @ ACU\n---------------------\n\nThe VC studio arm of Austin Christian\nUniversity.\n\nWe back Who Else members who prove\nthemselves.\n\nReal funding. Real mentorship.`,
+    'Partnership.txt': `GENESIS x WHO ELSE\n------------------\n\nWho Else is a talent pipeline for\nGenesis Studios.\n\nTop performers enter the Genesis pipeline\nfor direct mentorship and capital.`,
+  },
   faq: {
-    'FAQ.txt': `FREQUENTLY ASKED QUESTIONS
---------------------------
-
-Q: WHO CAN JOIN?
-A: Any student who builds things. Design,
-   code, business — if you make something
-   real, you belong here.
-
-Q: DO I NEED EXPERIENCE?
-A: No. You need drive. Experience follows
-   action.
-
-Q: IS IT FREE?
-A: Yes. Genesis Studios resources unlock
-   through participation.
-
-Q: WHAT ARE MISSION DROPS?
-A: Weekly innovation challenges. Best
-   solutions get noticed by Genesis Studios.
-   Some win prizes.
-
-Q: WHAT IS GENESIS STUDIOS?
-A: The VC studio arm of ACU. They back Who
-   Else members who prove themselves.
-
-Q: HOW DO I APPLY?
-A: Double-click SIGNUP.EXE on the desktop.`,
+    'FAQ.txt': `FAQ\n---\n\nQ: WHO CAN JOIN?\nA: Any student who builds things.\n\nQ: EXPERIENCE NEEDED?\nA: No. You need drive.\n\nQ: IS IT FREE?\nA: Yes. Resources unlock through\n   participation.\n\nQ: HOW TO APPLY?\nA: Run SIGNUP.EXE on the desktop.`,
   },
-
   contact: {
-    'Contact.txt': `CONTACT WHO ELSE
-----------------
-
-GENERAL  : hello@whoelse.co
-GENESIS  : genesis@acu.edu
-PRESS    : press@whoelse.co
-
-SOCIAL:
-  Instagram : @whoelse.collective
-  Twitter/X : @whoelse
-
-LOCATION:
-  Austin Christian University
-  Austin, Texas
-
----
-To apply: run SIGNUP.EXE`,
+    'Contact.txt': `CONTACT\n-------\n\nGENERAL: hello@whoelse.co\nGENESIS: genesis@acu.edu\nPRESS  : press@whoelse.co\n\nInstagram: @whoelse.collective\nTwitter  : @whoelse\n\nAustin Christian University\nAustin, Texas`,
   },
 }
 
-// ═══════════════════════════════════════════════════════════════
-// W95 ICON SVGs
-// ═══════════════════════════════════════════════════════════════
-function IconFolder({ gold }) {
-  const c = gold ? '#c49a22' : '#c8a040'
+const R = { borderTop:'2px solid #fff', borderLeft:'2px solid #fff', borderRight:'2px solid #808080', borderBottom:'2px solid #808080' }
+const S = { borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff' }
+
+function TxtIco() {
   return (
-    <svg width="32" height="28" viewBox="0 0 32 28" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1 7 Q1 5 3 5 L11 5 L14 8 L29 8 Q31 8 31 10 L31 25 Q31 27 29 27 L3 27 Q1 27 1 25 Z" fill={c}/>
-      <path d="M1 10 L31 10 L31 25 Q31 27 29 27 L3 27 Q1 27 1 25 Z" fill={gold ? '#daa520' : '#dba030'}/>
-      {/* highlight top */}
-      <path d="M1 10 L31 10" stroke="rgba(255,255,255,0.5)" strokeWidth="0.8"/>
-      {/* shadow */}
-      <path d="M1 27 L29 27" stroke="rgba(0,0,0,0.3)" strokeWidth="0.5"/>
+    <svg width="28" height="28" viewBox="0 0 28 28">
+      <rect x="2" y="1" width="18" height="24" rx="1" fill="#fffef8"/>
+      <rect x="2" y="1" width="18" height="24" rx="1" fill="none" stroke="#888" strokeWidth=".8"/>
+      <path d="M16 1L20 5L16 5Z" fill="#ddd"/>
+      <path d="M16 1L16 5L20 5" fill="none" stroke="#888" strokeWidth=".8"/>
+      <rect x="4" y="9" width="11" height="1" fill="#aaa"/>
+      <rect x="4" y="12" width="9" height="1" fill="#aaa"/>
+      <rect x="4" y="15" width="10" height="1" fill="#aaa"/>
     </svg>
   )
 }
-
-function IconExe() {
+function FolIco() {
   return (
-    <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      {/* document */}
+    <svg width="32" height="28" viewBox="0 0 32 28">
+      <path d="M1 7Q1 5 3 5L11 5L14 8L29 8Q31 8 31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#c49a22" opacity=".9"/>
+      <path d="M1 10L31 10L31 25Q31 27 29 27L3 27Q1 27 1 25Z" fill="#daa520"/>
+      <path d="M1 10L31 10" stroke="rgba(255,255,255,.5)" strokeWidth=".8"/>
+    </svg>
+  )
+}
+function ExeIco() {
+  return (
+    <svg width="28" height="28" viewBox="0 0 32 32">
       <rect x="2" y="1" width="22" height="28" rx="1" fill="#fffef8"/>
-      <rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth="0.8"/>
-      {/* dog-ear */}
-      <path d="M18 1 L24 7 L18 7 Z" fill="#ddd"/>
-      <path d="M18 1 L18 7 L24 7" fill="none" stroke="#888" strokeWidth="0.8"/>
-      {/* red gear badge */}
+      <rect x="2" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth=".8"/>
+      <path d="M18 1L24 7L18 7Z" fill="#ddd"/>
       <circle cx="24" cy="24" r="8" fill="#c93030"/>
       <text x="24" y="28" textAnchor="middle" fill="#fff" fontSize="10" fontFamily="sans-serif" fontWeight="900">▶</text>
-      {/* text lines */}
-      <rect x="5" y="11" width="13" height="1.5" fill="#999"/>
-      <rect x="5" y="15" width="10" height="1.5" fill="#999"/>
-      <rect x="5" y="19" width="12" height="1.5" fill="#999"/>
     </svg>
   )
 }
 
-function IconTxt() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <rect x="3" y="1" width="22" height="28" rx="1" fill="#fffef8"/>
-      <rect x="3" y="1" width="22" height="28" rx="1" fill="none" stroke="#888" strokeWidth="0.8"/>
-      <path d="M19 1 L25 7 L19 7 Z" fill="#ddd"/>
-      <path d="M19 1 L19 7 L25 7" fill="none" stroke="#888" strokeWidth="0.8"/>
-      <rect x="6" y="11" width="13" height="1.2" fill="#aaa"/>
-      <rect x="6" y="14" width="10" height="1.2" fill="#aaa"/>
-      <rect x="6" y="17" width="12" height="1.2" fill="#aaa"/>
-      <rect x="6" y="20" width="8" height="1.2" fill="#aaa"/>
-    </svg>
-  )
-}
-
-function IconPerson() {
-  return (
-    <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-      <rect x="2" y="2" width="28" height="28" rx="2" fill="#e8e0d0"/>
-      <rect x="2" y="2" width="28" height="28" rx="2" fill="none" stroke="#888" strokeWidth="0.8"/>
-      <circle cx="16" cy="12" r="6" fill="#bbb"/>
-      <path d="M4 28 Q4 20 16 20 Q28 20 28 28" fill="#ccc"/>
-    </svg>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════
-// W95 BEVEL helpers (inline styles)
-// ═══════════════════════════════════════════════════════════════
-const RAISED = {
-  borderTop:    '2px solid #ffffff',
-  borderLeft:   '2px solid #ffffff',
-  borderRight:  '2px solid #808080',
-  borderBottom: '2px solid #808080',
-}
-
-const SUNKEN = {
-  borderTop:    '2px solid #808080',
-  borderLeft:   '2px solid #808080',
-  borderRight:  '2px solid #ffffff',
-  borderBottom: '2px solid #ffffff',
-}
-
-const RAISED_SM = {
-  borderTop:    '1px solid #ffffff',
-  borderLeft:   '1px solid #ffffff',
-  borderRight:  '1px solid #808080',
-  borderBottom: '1px solid #808080',
-}
-
-// ═══════════════════════════════════════════════════════════════
-// SIGNUP EXE
-// ═══════════════════════════════════════════════════════════════
 function SignupExe({ onClose }) {
   const [lines, setLines] = useState([])
-  const [progress, setProgress] = useState(0)
-  const logRef = useRef(null)
-
+  const [prog, setProg] = useState(0)
+  const ref = useRef(null)
   const LOG = [
     'C:\\WHOELSE> Initializing installer...',
-    'Checking system requirements... OK',
-    'Verifying faith protocols......... OK',
-    'Loading Kingdom modules........... OK',
+    'Checking faith protocols.......... OK',
     'Connecting to Genesis Studios..... OK',
     'Allocating cohort slot............ OK',
     'Installing purpose.dll............ OK',
@@ -316,484 +81,368 @@ function SignupExe({ onClose }) {
     'Installation complete!',
     'Launching application form...',
   ]
-
   useEffect(() => {
     let i = 0
     const t = setInterval(() => {
       if (i < LOG.length) {
         setLines(l => [...l, LOG[i]])
-        setProgress(Math.round(((i + 1) / LOG.length) * 100))
+        setProg(Math.round((i + 1) / LOG.length * 100))
         i++
-        if (logRef.current) logRef.current.scrollTop = logRef.current.scrollHeight
+        if (ref.current) ref.current.scrollTop = 9999
       } else {
         clearInterval(t)
         setTimeout(() => { window.open(SIGNUP_URL, '_blank'); onClose() }, 700)
       }
-    }, 380)
+    }, 400)
     return () => clearInterval(t)
   }, [])
-
   return (
-    <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 12, minWidth: 420 }}>
-      <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-        <IconExe />
-        <div>
-          <div style={{ fontFamily: 'var(--w95font)', fontSize: 11, fontWeight: 700 }}>WHO_ELSE Setup</div>
-          <div style={{ fontFamily: 'var(--w95font)', fontSize: 11, color: '#444' }}>Please wait while Who Else Collective is installed.</div>
-        </div>
-      </div>
-      <div ref={logRef} style={{ ...SUNKEN, background: '#000', color: '#c8c8c8', fontFamily: 'var(--w95mono)', fontSize: 11, padding: '8px 10px', height: 160, overflowY: 'auto', lineHeight: 1.7 }}>
-        {lines.map((l, i) => (
-          <div key={i} style={{ color: i === lines.length - 1 ? '#c49a22' : '#c8c8c8' }}>{l}</div>
-        ))}
-        {lines.length > 0 && <span style={{ color: '#fff', animation: 'blink 1s step-end infinite' }}>_</span>}
+    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 10, minWidth: 360 }}>
+      <div style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#c93030' }}>WHO_ELSE Setup Wizard</div>
+      <div ref={ref} style={{ ...S, background: '#000', color: '#ccc', fontFamily: 'var(--wm)', fontSize: 11, padding: '6px 8px', height: 130, overflowY: 'auto', lineHeight: 1.7 }}>
+        {lines.map((l, i) => <div key={i} style={{ color: i === lines.length - 1 ? '#c49a22' : '#ccc' }}>{l}</div>)}
       </div>
       <div>
-        <div style={{ fontFamily: 'var(--w95font)', fontSize: 11, marginBottom: 4 }}>Installing: {progress}%</div>
-        <div style={{ ...SUNKEN, height: 16, background: '#c0c0c0', padding: 2 }}>
-          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(90deg,#000080,#0000c8)', transition: 'width 0.3s' }} />
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 11, marginBottom: 3 }}>Installing: {prog}%</div>
+        <div style={{ ...S, height: 14, background: '#c0c0c0', padding: 2 }}>
+          <div style={{ height: '100%', width: `${prog}%`, background: 'linear-gradient(90deg,#000080,#1084d0)', transition: 'width .3s' }} />
         </div>
       </div>
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <button className={styles.w95btn} onClick={onClose}>Cancel</button>
+        <button onClick={onClose} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '3px 14px', background: '#c0c0c0', ...R, cursor: 'default' }}>Cancel</button>
       </div>
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-// NOTEPAD VIEWER
-// ═══════════════════════════════════════════════════════════════
-function Notepad({ filename, content, onClose }) {
+function Notepad({ content, filename }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', minHeight: 0 }}>
-      {/* menu bar */}
-      <div style={{ display: 'flex', gap: 0, padding: '2px 4px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ display: 'flex', padding: '2px 4px', borderBottom: '1px solid #808080', flexShrink: 0, gap: 2 }}>
         {['File', 'Edit', 'Search', 'Help'].map(m => (
-          <span key={m} style={{ fontFamily: 'var(--w95font)', fontSize: 11, padding: '2px 8px', cursor: 'default' }}>{m}</span>
+          <span key={m} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '1px 6px', cursor: 'default' }}>{m}</span>
         ))}
       </div>
-      <textarea
-        readOnly
-        style={{
-          flex: 1,
-          border: 'none',
-          outline: 'none',
-          resize: 'none',
-          fontFamily: 'var(--w95mono)',
-          fontSize: 12,
-          lineHeight: 1.7,
-          padding: '6px 8px',
-          background: '#fff',
-          color: '#000',
-          overflowY: 'auto',
-          minHeight: 200,
-        }}
-        value={content}
-      />
-      <div style={{ padding: '2px 6px', borderTop: '1px solid #808080', fontFamily: 'var(--w95font)', fontSize: 11, color: '#444', flexShrink: 0 }}>
-        {filename}
-      </div>
+      <textarea readOnly value={content} style={{ flex: 1, border: 'none', outline: 'none', resize: 'none', fontFamily: 'var(--wm)', fontSize: 11, padding: '4px 6px', background: '#fff', color: '#000', lineHeight: 1.7, minHeight: 140 }} />
+      <div style={{ padding: '1px 6px', borderTop: '1px solid #808080', fontFamily: 'var(--wf)', fontSize: 11, color: '#444', flexShrink: 0 }}>{filename}</div>
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-// FOLDER WINDOW BODY
-// ═══════════════════════════════════════════════════════════════
 function FolderBody({ folderKey, onOpenFile }) {
   const files = FILES[folderKey] || {}
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-      {/* toolbar */}
-      <div style={{ display: 'flex', gap: 6, padding: '4px 6px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
+      <div style={{ display: 'flex', gap: 4, padding: '2px 6px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
         {['File', 'Edit', 'View', 'Help'].map(m => (
-          <span key={m} style={{ fontFamily: 'var(--w95font)', fontSize: 11, padding: '1px 6px', cursor: 'default' }}>{m}</span>
+          <span key={m} style={{ fontFamily: 'var(--wf)', fontSize: 11, padding: '1px 6px', cursor: 'default' }}>{m}</span>
         ))}
       </div>
-      {/* address bar */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '3px 6px', borderBottom: '1px solid #808080', flexShrink: 0 }}>
-        <span style={{ fontFamily: 'var(--w95font)', fontSize: 11, color: '#444' }}>Address</span>
-        <div style={{ ...SUNKEN, flex: 1, padding: '1px 6px', background: '#fff', fontFamily: 'var(--w95mono)', fontSize: 11 }}>
-          C:\WHOELSE\{folderKey.toUpperCase()}
-        </div>
+      <div style={{ ...S, margin: '3px 6px', padding: '1px 6px', background: '#fff', fontFamily: 'var(--wm)', fontSize: 11, flexShrink: 0 }}>
+        C:\WHOELSE\{folderKey.toUpperCase()}
       </div>
-      {/* file area */}
-      <div style={{ flex: 1, padding: 12, display: 'flex', flexWrap: 'wrap', gap: 16, alignContent: 'flex-start', overflowY: 'auto', background: '#fff' }}>
+      <div style={{ flex: 1, padding: 10, display: 'flex', flexWrap: 'wrap', gap: 12, alignContent: 'flex-start', overflowY: 'auto', background: '#fff' }}>
         {Object.entries(files).map(([name, content]) => (
-          <div
-            key={name}
-            className={styles.fileIcon}
-            onDoubleClick={() => onOpenFile(name, content)}
-            title={`Double-click to open ${name}`}
-          >
-            {name.endsWith('.exe') ? <IconExe /> : name.endsWith('MEMBERS.txt') || name.startsWith('[') ? <IconPerson /> : <IconTxt />}
-            <span className={styles.fileIconLabel}>{name}</span>
+          <div key={name} onDoubleClick={() => onOpenFile(name, content)}
+            className={styles.fi}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '6px 4px', width: 68, cursor: 'default', textAlign: 'center', border: '1px solid transparent', borderRadius: 2 }}>
+            {name.endsWith('.exe') ? <ExeIco /> : <TxtIco />}
+            <span style={{ fontFamily: 'var(--wf)', fontSize: 10, lineHeight: 1.2, wordBreak: 'break-all' }}>{name}</span>
           </div>
         ))}
       </div>
-      {/* status bar */}
-      <div style={{ ...SUNKEN, padding: '2px 8px', fontFamily: 'var(--w95font)', fontSize: 11, color: '#444', flexShrink: 0, display: 'flex', gap: 12 }}>
-        <span>{Object.keys(files).length} object(s)</span>
-        <span>Double-click to open</span>
+      <div style={{ ...S, padding: '1px 8px', fontFamily: 'var(--wf)', fontSize: 11, color: '#444', flexShrink: 0, background: '#c0c0c0' }}>
+        {Object.keys(files).length} object(s)
       </div>
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-// W95 WINDOW
-// ═══════════════════════════════════════════════════════════════
-function W95Window({ id, title, icon, children, onClose, onFocus, zIndex, initialX, initialY, width = 480, height = 340 }) {
-  const [pos, setPos] = useState({ x: initialX, y: initialY })
-  const [minimized, setMinimized] = useState(false)
-  const dragging = useRef(false)
-  const dragStart = useRef(null)
-  const [active, setActive] = useState(true)
-
-  function titleMouseDown(e) {
-    if (e.target.closest('[data-wbtn]')) return
+let _topZ = 400
+function OsWin({ title, icon, children, onClose, onFocus, zIndex, ix, iy, w = 420, h = 280 }) {
+  const [pos, setPos] = useState({ x: ix, y: iy })
+  const dragging = useRef(false), ds = useRef(null)
+  function tdm(e) {
+    if (e.target.dataset.wb) return
     dragging.current = true
-    dragStart.current = { mx: e.clientX, my: e.clientY, px: pos.x, py: pos.y }
+    ds.current = { mx: e.clientX, my: e.clientY, px: pos.x, py: pos.y }
     onFocus()
   }
-
   useEffect(() => {
-    function onMove(e) {
-      if (!dragging.current) return
-      const dx = e.clientX - dragStart.current.mx
-      const dy = e.clientY - dragStart.current.my
-      setPos({ x: dragStart.current.px + dx, y: dragStart.current.py + dy })
-    }
-    function onUp() { dragging.current = false }
-    window.addEventListener('mousemove', onMove)
-    window.addEventListener('mouseup', onUp)
-    return () => { window.removeEventListener('mousemove', onMove); window.removeEventListener('mouseup', onUp) }
+    const mm = e => { if (!dragging.current) return; setPos({ x: ds.current.px + e.clientX - ds.current.mx, y: ds.current.py + e.clientY - ds.current.my }) }
+    const mu = () => { dragging.current = false }
+    window.addEventListener('mousemove', mm)
+    window.addEventListener('mouseup', mu)
+    return () => { window.removeEventListener('mousemove', mm); window.removeEventListener('mouseup', mu) }
   }, [])
-
-  if (minimized) return null
-
+  const isTop = zIndex >= _topZ - 1
   return (
-    <div
-      style={{ position: 'fixed', left: pos.x, top: pos.y, width, zIndex, ...RAISED, background: '#c0c0c0' }}
-      onMouseDown={onFocus}
-    >
-      {/* Title bar */}
-      <div
-        style={{
-          height: 22,
-          background: zIndex > 200 ? 'linear-gradient(90deg,#000080,#1084d0)' : '#808080',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 3px 0 6px',
-          cursor: 'default',
-          userSelect: 'none',
-        }}
-        onMouseDown={titleMouseDown}
-      >
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5, overflow: 'hidden' }}>
-          {icon && <span style={{ fontSize: 12, flexShrink: 0 }}>{icon}</span>}
-          <span style={{ fontFamily: 'var(--w95font)', fontSize: 11, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            {title}
-          </span>
+    <div onMouseDown={onFocus} style={{ position: 'absolute', left: pos.x, top: pos.y, width: w, zIndex, background: '#c0c0c0', ...R }}>
+      <div style={{ height: 22, background: `linear-gradient(90deg,${isTop ? '#000080' : '#808080'},${isTop ? '#1084d0' : '#909090'})`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 3px 0 5px', userSelect: 'none', cursor: 'default' }} onMouseDown={tdm}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, overflow: 'hidden' }}>
+          {icon && <span style={{ fontSize: 11 }}>{icon}</span>}
+          <span style={{ fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{title}</span>
         </div>
-        <div style={{ display: 'flex', gap: 2, flexShrink: 0 }}>
-          <button data-wbtn="min" className={styles.w95winbtn} onClick={() => setMinimized(true)}>_</button>
-          <button data-wbtn="max" className={styles.w95winbtn}>□</button>
-          <button data-wbtn="cls" className={`${styles.w95winbtn} ${styles.w95winbtnClose}`} onClick={onClose}>✕</button>
-        </div>
+        <button data-wb="1" onClick={onClose} style={{ width: 16, height: 14, background: '#c0c0c0', borderTop: '1px solid #fff', borderLeft: '1px solid #fff', borderRight: '1px solid #404040', borderBottom: '1px solid #404040', fontFamily: 'var(--wf)', fontSize: 10, fontWeight: 700, cursor: 'default', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
       </div>
-      {/* Body */}
-      <div style={{ height, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-        {children}
-      </div>
+      <div style={{ height: h, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>{children}</div>
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-// DESKTOP ICON
-// ═══════════════════════════════════════════════════════════════
-function DesktopIcon({ id, label, IconComp, onOpen, selected, onSelect }) {
-  const timer = useRef(null)
+function WhoElseOS() {
+  const [wins, setWins] = useState([])
+  const [topZ, setTopZ] = useState(400)
+  const [sel, setSel] = useState(null)
+  const [signup, setSignup] = useState(false)
 
-  function onClick(e) {
-    e.stopPropagation()
-    onSelect(id)
-    if (timer.current) {
-      clearTimeout(timer.current)
-      timer.current = null
-      onOpen()
-    } else {
-      timer.current = setTimeout(() => { timer.current = null }, 400)
+  function nz() { const z = topZ + 1; setTopZ(z); _topZ = z; return z }
+  function focus(id) { const z = nz(); setWins(ws => ws.map(w => w.id === id ? { ...w, z } : w)) }
+
+  function open(key) {
+    if (key === 'signup') { setSignup(true); return }
+    if (wins.find(w => w.id === key)) { focus(key); return }
+    const off = wins.length * 22, z = nz()
+    const cfg = {
+      about:   { t: 'About Who Else',        i: '📁', fk: 'about',   w: 400, h: 260 },
+      members: { t: 'Members',               i: '📁', fk: 'members', w: 360, h: 240 },
+      mission: { t: 'Mission',               i: '📁', fk: 'mission', w: 380, h: 260 },
+      genesis: { t: 'Genesis Studios',       i: '📁', fk: 'genesis', w: 380, h: 240 },
+      faq:     { t: 'FAQ.txt — Notepad',     i: '📄', note: true, fk: 'faq',     fn: 'FAQ.txt',     w: 360, h: 260 },
+      contact: { t: 'Contact.txt — Notepad', i: '📄', note: true, fk: 'contact', fn: 'Contact.txt', w: 360, h: 240 },
     }
+    const c = cfg[key]; if (!c) return
+    setWins(ws => [...ws, { id: key, title: c.t, icon: c.i, type: c.note ? 'note' : 'folder', folderKey: c.fk, filename: c.fn, content: c.note ? Object.values(FILES[c.fk])[0] : null, x: 40 + off, y: 36 + off, z, w: c.w, h: c.h }])
   }
 
-  return (
-    <div
-      className={`${styles.deskIcon} ${selected ? styles.deskIconSel : ''}`}
-      onClick={onClick}
-    >
-      <div className={styles.deskIconImg}><IconComp /></div>
-      <span className={styles.deskIconLabel}>{label}</span>
-    </div>
-  )
-}
+  function openFile(winId, name, content) {
+    const id = `${winId}-${name}`
+    if (wins.find(w => w.id === id)) { focus(id); return }
+    const z = nz(), off = wins.length * 18
+    setWins(ws => [...ws, { id, title: `${name} — Notepad`, icon: '📄', type: 'note', content, filename: name, x: 60 + off, y: 54 + off, z, w: 380, h: 280 }])
+  }
 
-// ═══════════════════════════════════════════════════════════════
-// TASKBAR
-// ═══════════════════════════════════════════════════════════════
-function W95Taskbar({ windows, onTaskClick, onStartClick, startOpen, onToggleStart }) {
-  const [time, setTime] = useState('')
-  useEffect(() => {
-    const tick = () => {
-      const n = new Date()
-      setTime(n.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }))
-    }
-    tick(); const t = setInterval(tick, 10000); return () => clearInterval(t)
-  }, [])
+  function close(id) { setWins(ws => ws.filter(w => w.id !== id)) }
 
-  return (
-    <div style={{ position: 'fixed', bottom: 0, left: 0, right: 0, height: 36, background: '#c0c0c0', ...RAISED, display: 'flex', alignItems: 'center', padding: '2px 4px', gap: 4, zIndex: 9000 }}>
-      {/* Start */}
-      <button
-        className={styles.startBtn}
-        onClick={onToggleStart}
-        style={{ background: startOpen ? '#c0c0c0' : undefined, ...(startOpen ? SUNKEN : {}) }}
-      >
-        <span style={{ fontSize: 14 }}>⊞</span>
-        <span style={{ fontFamily: 'var(--w95font)', fontSize: 12, fontWeight: 700 }}>Start</span>
-      </button>
-
-      <div style={{ width: 2, height: 28, borderLeft: '1px solid #808080', borderRight: '1px solid #fff' }} />
-
-      {/* Open windows */}
-      <div style={{ flex: 1, display: 'flex', gap: 4, overflow: 'hidden' }}>
-        {windows.map(w => (
-          <button key={w.id} className={styles.taskBtn} onClick={() => onTaskClick(w.id)}
-            style={{ fontFamily: 'var(--w95font)', fontSize: 11, maxWidth: 160, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {w.icon && <span style={{ marginRight: 4 }}>{w.icon}</span>}
-            {w.title}
-          </button>
-        ))}
-      </div>
-
-      {/* Clock */}
-      <div style={{ ...SUNKEN, padding: '2px 10px', fontFamily: 'var(--w95font)', fontSize: 11, flexShrink: 0 }}>
-        {time}
-      </div>
-    </div>
-  )
-}
-
-// ═══════════════════════════════════════════════════════════════
-// START MENU
-// ═══════════════════════════════════════════════════════════════
-function StartMenu({ onClose, onOpenItem }) {
-  const items = [
-    { label: 'About Who Else', key: 'about', icon: '📁' },
-    { label: 'Members', key: 'members', icon: '📁' },
-    { label: 'Mission', key: 'mission', icon: '📁' },
-    { label: 'Genesis Studios', key: 'genesis', icon: '📁' },
-    { label: 'FAQ', key: 'faq', icon: '📄' },
-    { label: 'Contact', key: 'contact', icon: '📄' },
-    null,
-    { label: 'SIGNUP.EXE', key: 'signup', icon: '⚙️' },
+  const ICONS = [
+    { id: 'about',   l: 'About',      Ico: FolIco },
+    { id: 'signup',  l: 'SIGNUP.EXE', Ico: ExeIco },
+    { id: 'members', l: 'Members',    Ico: FolIco },
+    { id: 'mission', l: 'Mission',    Ico: FolIco },
+    { id: 'genesis', l: 'Genesis',    Ico: FolIco },
+    { id: 'faq',     l: 'FAQ.txt',    Ico: TxtIco },
+    { id: 'contact', l: 'Contact',    Ico: TxtIco },
   ]
 
+  const timers = useRef({})
+  function deskClick(e, id) {
+    e.stopPropagation()
+    setSel(id)
+    if (timers.current[id]) { clearTimeout(timers.current[id]); timers.current[id] = null; open(id) }
+    else { timers.current[id] = setTimeout(() => { timers.current[id] = null }, 380) }
+  }
+
   return (
-    <div style={{ position: 'fixed', bottom: 36, left: 0, width: 200, background: '#c0c0c0', ...RAISED, zIndex: 9500 }}>
-      {/* Brand strip */}
-      <div style={{ display: 'flex', background: 'linear-gradient(180deg,#000080,#1084d0)', padding: '6px 8px', alignItems: 'flex-end' }}>
-        <span style={{ fontFamily: 'var(--w95font)', fontSize: 11, fontWeight: 700, color: '#c49a22', letterSpacing: '0.1em', writingMode: 'vertical-rl', transform: 'rotate(180deg)', marginRight: 6 }}>
-          Who Else OS
-        </span>
-        <span style={{ fontFamily: 'var(--w95font)', fontSize: 9, color: 'rgba(255,255,255,0.5)', writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-          Genesis Studios © 2025
-        </span>
+    <div onClick={() => setSel(null)} style={{ width: '100%', height: '100%', background: '#007b7b', backgroundImage: 'radial-gradient(ellipse 80% 80% at 50% 50%,#007070 0%,#005858 100%)', position: 'relative', overflow: 'hidden', paddingBottom: 34, userSelect: 'none' }}>
+      {/* watermark */}
+      <div style={{ position: 'absolute', right: 10, top: 8, textAlign: 'right', pointerEvents: 'none', opacity: .1 }}>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '.1em' }}>WHO ELSE OS</div>
+        <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#fff' }}>Genesis Studios © 2025</div>
       </div>
-      <div>
-        {items.map((item, i) =>
-          item === null ? (
-            <div key={i} style={{ height: 1, background: '#808080', margin: '2px 4px' }} />
-          ) : (
-            <div
-              key={item.key}
-              className={styles.startMenuItem}
-              onClick={() => { onOpenItem(item.key); onClose() }}
-            >
-              <span style={{ marginRight: 8 }}>{item.icon}</span>
-              <span style={{ fontFamily: 'var(--w95font)', fontSize: 11 }}>{item.label}</span>
-            </div>
-          )
-        )}
+      {/* icons */}
+      <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', flexDirection: 'column', gap: 4 }} onClick={e => e.stopPropagation()}>
+        {ICONS.map(({ id, l, Ico }) => (
+          <div key={id} onClick={e => deskClick(e, id)}
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '5px 3px', width: 62, border: sel === id ? '1px dotted rgba(255,255,255,.8)' : '1px solid transparent', background: sel === id ? '#000080' : 'transparent', cursor: 'default' }}>
+            <Ico />
+            <span style={{ fontFamily: 'var(--wf)', fontSize: 10, color: '#fff', textAlign: 'center', lineHeight: 1.2, textShadow: '1px 1px 1px #000,-1px -1px 1px #000', wordBreak: 'break-word', width: '100%' }}>{l}</span>
+          </div>
+        ))}
+      </div>
+      {/* windows */}
+      {wins.map(w => (
+        <OsWin key={w.id} title={w.title} icon={w.icon} zIndex={w.z} ix={w.x} iy={w.y} w={w.w} h={w.h} onClose={() => close(w.id)} onFocus={() => focus(w.id)}>
+          {w.type === 'folder'
+            ? <FolderBody folderKey={w.folderKey} onOpenFile={(n, c) => openFile(w.id, n, c)} />
+            : <Notepad content={w.content} filename={w.filename} />}
+        </OsWin>
+      ))}
+      {signup && (
+        <OsWin title="WHO_ELSE Setup" icon="⚙️" zIndex={topZ + 50} ix={50} iy={36} w={390} h={220} onClose={() => setSignup(false)} onFocus={() => {}}>
+          <SignupExe onClose={() => setSignup(false)} />
+        </OsWin>
+      )}
+      {/* taskbar */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 34, background: '#c0c0c0', ...R, display: 'flex', alignItems: 'center', padding: '2px 4px', gap: 4, zIndex: 9000 }}>
+        <button onClick={() => open('about')} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '2px 10px', height: 26, background: '#c0c0c0', ...R, fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, cursor: 'default', color: '#000' }}>
+          <span style={{ fontSize: 13 }}>⊞</span> Start
+        </button>
+        <div style={{ width: 2, height: 24, borderLeft: '1px solid #808080', borderRight: '1px solid #fff' }} />
+        {wins.map(w => (
+          <button key={w.id} onClick={() => focus(w.id)} style={{ height: 24, padding: '0 8px', background: '#c0c0c0', ...R, fontFamily: 'var(--wf)', fontSize: 10, cursor: 'default', maxWidth: 130, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+            {w.icon} {w.title}
+          </button>
+        ))}
+        <div style={{ flex: 1 }} />
+        <div style={{ ...S, padding: '1px 8px', fontFamily: 'var(--wf)', fontSize: 11 }}>
+          {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </div>
       </div>
     </div>
   )
 }
 
-// ═══════════════════════════════════════════════════════════════
-// DESKTOP ICONS CONFIG
-// ═══════════════════════════════════════════════════════════════
-const ICONS = [
-  { id: 'about',   label: 'About Who Else',  Ico: () => <IconFolder gold />,  title: 'About Who Else',  icon: '📁', w: 480, h: 320, folderKey: 'about' },
-  { id: 'signup',  label: 'SIGNUP.EXE',      Ico: IconExe,                    title: 'SIGNUP.EXE',      icon: '⚙️' },
-  { id: 'members', label: 'Members',         Ico: () => <IconFolder gold />,  title: 'Members',         icon: '📁', w: 480, h: 300, folderKey: 'members' },
-  { id: 'mission', label: 'Mission',         Ico: () => <IconFolder gold />,  title: 'Mission',         icon: '📁', w: 480, h: 300, folderKey: 'mission' },
-  { id: 'genesis', label: 'Genesis Studios', Ico: () => <IconFolder gold />,  title: 'Genesis Studios', icon: '📁', w: 480, h: 300, folderKey: 'genesis' },
-  { id: 'faq',     label: 'FAQ.txt',         Ico: IconTxt,                    title: 'FAQ — Notepad',   icon: '📄', isFile: true, fileKey: 'faq', fileName: 'FAQ.txt' },
-  { id: 'contact', label: 'Contact.txt',     Ico: IconTxt,                    title: 'Contact — Notepad', icon: '📄', isFile: true, fileKey: 'contact', fileName: 'Contact.txt' },
-]
+// ─── CRT SVG ─────────────────────────────────────────────────
+function CrtSvg() {
+  return (
+    <svg viewBox="0 0 240 210" className={styles.crtSvg} xmlns="http://www.w3.org/2000/svg">
+      {/* shadow */}
+      <ellipse cx="100" cy="205" rx="95" ry="7" fill="rgba(0,0,0,0.55)" />
+      {/* tower */}
+      <rect x="148" y="88" width="78" height="108" rx="5" fill="#2c2c2a" />
+      <rect x="148" y="88" width="78" height="108" rx="5" fill="none" stroke="#3a3a38" strokeWidth="1" />
+      <rect x="154" y="95" width="66" height="9" rx="2" fill="#1e1e1c" />
+      <circle cx="210" cy="99" r="5" fill="#c93030" opacity="0.85" />
+      <circle cx="210" cy="99" r="2.5" fill="#ff5555" />
+      <rect x="154" y="118" width="35" height="7" rx="1.5" fill="#111" stroke="#444" strokeWidth=".5" />
+      <rect x="154" y="130" width="28" height="4" rx="1" fill="#1a1a18" />
+      <rect x="154" y="138" width="28" height="4" rx="1" fill="#1a1a18" />
+      {/* monitor body */}
+      <rect x="5" y="24" width="130" height="100" rx="9" fill="#2e2e2c" />
+      <rect x="5" y="24" width="130" height="100" rx="9" fill="none" stroke="#454543" strokeWidth="1.2" />
+      {/* bezel inner shadow */}
+      <rect x="13" y="32" width="114" height="80" rx="5" fill="#111" />
+      {/* screen */}
+      <rect x="16" y="35" width="108" height="74" rx="3" fill="#001a12" />
+      {/* screen glow */}
+      <rect x="16" y="35" width="108" height="74" rx="3" fill="url(#sg)" />
+      {/* scanlines */}
+      <rect x="16" y="35" width="108" height="74" rx="3" fill="url(#sl)" opacity=".25" />
+      {/* OS UI on screen */}
+      <rect x="16" y="35" width="108" height="10" fill="#008080" />
+      <text x="22" y="43" fill="#fff" fontSize="5.5" fontFamily="Courier New,monospace" fontWeight="700">WHO ELSE OS  v1.0</text>
+      {/* taskbar strip */}
+      <rect x="16" y="99" width="108" height="10" fill="#c0c0c0" />
+      <rect x="18" y="101" width="26" height="6" rx="1" fill="#d4d0c8" stroke="#808080" strokeWidth=".5" />
+      <text x="31" y="106" textAnchor="middle" fill="#000" fontSize="4" fontFamily="Courier New,monospace" fontWeight="700">⊞ Start</text>
+      <text x="116" y="106" textAnchor="middle" fill="#000" fontSize="4" fontFamily="Courier New,monospace">12:00</text>
+      {/* fake folder icons */}
+      {[0, 1, 2].map(i => (
+        <g key={i} transform={`translate(${22 + i * 18}, 50)`}>
+          <rect width="13" height="10" rx="1" fill="#c49a22" opacity=".8" />
+          <rect y="3" width="13" height="10" rx="1" fill="#daa520" opacity=".9" />
+        </g>
+      ))}
+      {/* screen reflection */}
+      <path d="M16 35L50 35L36 55L16 50Z" fill="rgba(255,255,255,.025)" />
+      {/* monitor chin */}
+      <rect x="5" y="124" width="130" height="12" rx="0" fill="#2a2a28" />
+      <circle cx="70" cy="130" r="3.5" fill="#00cc66" opacity=".7" />
+      <circle cx="70" cy="130" r="2" fill="#00ff88" />
+      {/* neck */}
+      <rect x="55" y="136" width="30" height="16" rx="2" fill="#272725" />
+      {/* base */}
+      <rect x="28" y="150" width="84" height="9" rx="3" fill="#222" />
+      <rect x="32" y="145" width="76" height="7" rx="2" fill="#2c2c2a" />
+      {/* keyboard */}
+      <rect x="5" y="172" width="118" height="26" rx="3" fill="#2c2c2a" stroke="#3a3a38" strokeWidth=".8" />
+      {[0,1,2].map(row => Array.from({length:12}).map((_, col) => (
+        <rect key={`${row}-${col}`} x={9 + col * 9} y={175 + row * 7} width="7" height="5" rx="1" fill="#1e1e1c" stroke="#2e2e2c" strokeWidth=".4"/>
+      )))}
+      {/* mouse */}
+      <rect x="132" y="175" width="24" height="32" rx="11" fill="#2c2c2a" stroke="#3a3a38" strokeWidth=".8" />
+      <line x1="144" y1="175" x2="144" y2="193" stroke="#222" strokeWidth=".8" />
+      {/* defs */}
+      <defs>
+        <radialGradient id="sg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#00ff88" stopOpacity=".1" />
+          <stop offset="100%" stopColor="#00ff88" stopOpacity="0" />
+        </radialGradient>
+        <pattern id="sl" patternUnits="userSpaceOnUse" width="1" height="4">
+          <rect width="1" height="2" fill="#000" opacity="1" />
+        </pattern>
+      </defs>
+    </svg>
+  )
+}
 
-// ═══════════════════════════════════════════════════════════════
-// APP
-// ═══════════════════════════════════════════════════════════════
+// ─── MAIN SCENE ───────────────────────────────────────────────
 export default function App() {
-  const [windows, setWindows] = useState([])
-  const [topZ, setTopZ] = useState(300)
-  const [selected, setSelected] = useState(null)
-  const [showSignup, setShowSignup] = useState(false)
-  const [startOpen, setStartOpen] = useState(false)
-  const [cursor, setCursor] = useState({ x: -100, y: -100 })
+  // Phase: 'wall' | 'dollying' | 'zoomed'
+  const [phase, setPhase] = useState('wall')
 
-  useEffect(() => {
-    const fn = e => setCursor({ x: e.clientX, y: e.clientY })
-    window.addEventListener('mousemove', fn, { passive: true })
-    return () => window.removeEventListener('mousemove', fn)
-  }, [])
-
-  function nextZ() {
-    const z = topZ + 1; setTopZ(z); return z
+  function clickComputer() {
+    if (phase !== 'wall') return
+    setPhase('dollying')
+    // after dolly animation completes, snap to zoomed
+    setTimeout(() => setPhase('zoomed'), 2200)
   }
 
-  function focusWin(id) {
-    const z = nextZ()
-    setWindows(ws => ws.map(w => w.id === id ? { ...w, z } : w))
-  }
-
-  function openItem(key) {
-    if (key === 'signup') { setShowSignup(true); return }
-    const cfg = ICONS.find(i => i.id === key)
-    if (!cfg) return
-    if (windows.find(w => w.id === key)) { focusWin(key); return }
-    const offset = windows.length * 28
-    const z = nextZ()
-
-    if (cfg.isFile) {
-      const content = Object.values(FILES[cfg.fileKey])[0]
-      setWindows(ws => [...ws, { id: key, title: cfg.title, icon: cfg.icon, type: 'notepad', filename: cfg.fileName, content, x: 80 + offset, y: 60 + offset, z, w: 440, h: 320 }])
-    } else {
-      setWindows(ws => [...ws, { id: key, title: cfg.title, icon: cfg.icon, type: 'folder', folderKey: cfg.folderKey, x: 80 + offset, y: 60 + offset, z, w: cfg.w, h: cfg.h }])
-    }
-  }
-
-  function openFileFromFolder(winId, filename, content) {
-    const fileId = `${winId}-${filename}`
-    if (windows.find(w => w.id === fileId)) { focusWin(fileId); return }
-    const z = nextZ()
-    const offset = windows.length * 24
-    setWindows(ws => [...ws, { id: fileId, title: `${filename} — Notepad`, icon: '📄', type: 'notepad', filename, content, x: 120 + offset, y: 90 + offset, z, w: 440, h: 320 }])
-  }
-
-  function closeWin(id) {
-    setWindows(ws => ws.filter(w => w.id !== id))
-    if (id === 'signup-exe') setShowSignup(false)
+  function exitOS() {
+    setPhase('wall')
   }
 
   return (
-    <div
-      className={styles.desktop95}
-      onClick={() => { setSelected(null); setStartOpen(false) }}
-    >
-      {/* Cursor */}
-      <div className={styles.w95cursor} style={{ left: cursor.x, top: cursor.y }}>
-        <svg width="18" height="22" viewBox="0 0 18 22">
-          <path d="M1 1 L1 17 L5 13 L8 20 L11 19 L8 12 L14 12 Z" fill="#fff" stroke="#000" strokeWidth="1.2" strokeLinejoin="round"/>
-        </svg>
-      </div>
+    <div className={styles.scene}>
 
-      {/* Desktop icons */}
-      <div className={styles.iconColumn} onClick={e => e.stopPropagation()}>
-        {ICONS.map(ic => (
-          <DesktopIcon
-            key={ic.id}
-            id={ic.id}
-            label={ic.label}
-            IconComp={ic.Ico}
-            selected={selected === ic.id}
-            onSelect={setSelected}
-            onOpen={() => openItem(ic.id)}
-          />
-        ))}
-      </div>
+      {/* ── PERSPECTIVE CONTAINER — this is what dollies ── */}
+      <div className={`${styles.world} ${phase === 'dollying' ? styles.worldDolly : ''} ${phase === 'zoomed' ? styles.worldZoomed : ''}`}>
 
-      {/* Watermark */}
-      <div className={styles.w95watermark}>
-        <div className={styles.w95wmTitle}>WHO ELSE OS</div>
-        <div className={styles.w95wmSub}>Build {new Date().getFullYear()} · Genesis Studios · ACU</div>
-      </div>
+        {/* BRICK WALL */}
+        <div className={styles.brick} />
 
-      {/* Windows */}
-      {windows.map(win => (
-        <W95Window
-          key={win.id}
-          id={win.id}
-          title={win.title}
-          icon={win.icon}
-          zIndex={win.z}
-          initialX={win.x}
-          initialY={win.y}
-          width={win.w}
-          height={win.h}
-          onClose={() => closeWin(win.id)}
-          onFocus={() => focusWin(win.id)}
+        {/* GRAFFITI — center of wall */}
+        <div className={styles.graffiti}>
+          {/* Ink burst behind letters */}
+          <svg className={styles.burst} viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M280,18 L318,4 L332,42 L378,14 L364,56 L422,38 L404,80 L458,72 L434,110 L488,118 L448,150 L490,174 L444,188 L472,222 L416,216 L424,264 L372,246 L366,292 L318,264 L296,300 L280,270 L264,300 L242,264 L194,292 L188,246 L136,264 L144,216 L88,222 L116,188 L70,174 L112,150 L72,118 L126,110 L102,72 L156,80 L138,38 L196,56 L182,14 L228,42 L242,4 Z"
+              fill="rgba(10,6,3,0.88)" />
+            <path d="M280,40 L308,28 L320,56 L356,36 L344,66 L392,54 L376,86 L420,82 L400,112 L440,120 L410,146 L444,166 L410,178 L434,206 L392,200 L398,238 L358,224 L354,262 L316,240 L298,268 L280,246 L262,268 L244,240 L206,262 L202,224 L162,238 L168,200 L126,206 L150,178 L116,166 L150,146 L120,120 L160,112 L140,82 L184,86 L168,54 L216,66 L204,36 L240,56 L252,28 Z"
+              fill="rgba(18,10,4,0.6)" />
+          </svg>
+
+          <div className={styles.who}>WHO</div>
+          <div className={styles.else}>ELSE</div>
+        </div>
+
+        {/* CRT COMPUTER — bottom left */}
+        <div
+          className={`${styles.crt} ${phase !== 'wall' ? styles.crtFade : ''}`}
+          onClick={clickComputer}
         >
-          {win.type === 'folder' && (
-            <FolderBody
-              folderKey={win.folderKey}
-              onOpenFile={(name, content) => openFileFromFolder(win.id, name, content)}
-            />
-          )}
-          {win.type === 'notepad' && (
-            <Notepad filename={win.filename} content={win.content} onClose={() => closeWin(win.id)} />
-          )}
-        </W95Window>
-      ))}
+          <div className={styles.crtGlow} />
+          <div className={styles.crtHint}>click to enter ↓</div>
+          <CrtSvg />
+        </div>
 
-      {/* Signup EXE */}
-      {showSignup && (
-        <W95Window
-          id="signup-exe"
-          title="Who Else Setup — Installation Wizard"
-          icon="⚙️"
-          zIndex={topZ + 50}
-          initialX={Math.max(40, window.innerWidth / 2 - 220)}
-          initialY={Math.max(40, window.innerHeight / 2 - 160)}
-          width={460}
-          height={280}
-          onClose={() => setShowSignup(false)}
-          onFocus={() => {}}
-        >
-          <SignupExe onClose={() => setShowSignup(false)} />
-        </W95Window>
+      </div>{/* /world */}
+
+      {/* ── MONITOR FRAME OVERLAY — shown when zoomed ── */}
+      {phase === 'zoomed' && (
+        <div className={styles.overlay}>
+          {/* brick still visible as background */}
+          <div className={styles.overlayBrick} />
+
+          {/* CRT monitor housing */}
+          <div className={styles.monitor}>
+            <div className={styles.monitorBezel}>
+              {/* screen contains the full OS */}
+              <div className={styles.monitorScreen}>
+                <WhoElseOS />
+              </div>
+            </div>
+            <div className={styles.monitorChin}>
+              <div className={styles.led} />
+              <span className={styles.ledLabel}>WHO ELSE OS</span>
+            </div>
+            <div className={styles.monitorNeck} />
+            <div className={styles.monitorBase} />
+          </div>
+
+          <button className={styles.exitBtn} onClick={exitOS}>← BACK TO WALL</button>
+        </div>
       )}
 
-      {/* Start menu */}
-      {startOpen && (
-        <StartMenu
-          onClose={() => setStartOpen(false)}
-          onOpenItem={openItem}
-        />
-      )}
-
-      {/* Taskbar */}
-      <W95Taskbar
-        windows={windows}
-        onTaskClick={focusWin}
-        startOpen={startOpen}
-        onToggleStart={e => { e.stopPropagation(); setStartOpen(s => !s) }}
-      />
     </div>
   )
 }
