@@ -1,0 +1,40 @@
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --black:   #080706;
+  --white:   #f5f1ea;
+  --gold:    #c49a22;
+  --gold-lt: #e0b84a;
+  --gold-dk: #7a5e0e;
+  --red:     #9b1f1f;
+  --red-lt:  #c93030;
+  --muted:   rgba(245, 241, 234, 0.45);
+  --border:  rgba(245, 241, 234, 0.1);
+
+  --display: 'Bebas Neue', sans-serif;
+  --serif:   'Fraunces', serif;
+  --mono:    'JetBrains Mono', monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: var(--mono);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: crosshair;
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--black);
+}
