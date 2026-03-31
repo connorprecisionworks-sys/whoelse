@@ -147,7 +147,7 @@ function FolderBody({ folderKey, onOpenFile }) {
             className={styles.fi}
             style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '6px 4px', width: 68, cursor: 'default', textAlign: 'center', border: '1px solid transparent', borderRadius: 2 }}>
             {name.endsWith('.exe') ? <ExeIco /> : <TxtIco />}
-            <span style={{ fontFamily: 'var(--wf)', fontSize: 10, lineHeight: 1.2, wordBreak: 'break-all' }}>{name}</span>
+            <span style={{ fontFamily: 'var(--wf)', fontSize: 10, lineHeight: 1.2, wordBreak: 'break-all', color: '#000' }}>{name}</span>
           </div>
         ))}
       </div>
@@ -391,19 +391,21 @@ export default function App() {
         {/* BRICK WALL */}
         <div className={styles.brick} />
 
-        {/* GRAFFITI — center of wall */}
+        {/* GRAFFITI — real logo image centered on wall */}
         <div className={styles.graffiti}>
-          {/* Ink burst behind letters */}
-          <svg className={styles.burst} viewBox="0 0 560 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <path d="M280,18 L318,4 L332,42 L378,14 L364,56 L422,38 L404,80 L458,72 L434,110 L488,118 L448,150 L490,174 L444,188 L472,222 L416,216 L424,264 L372,246 L366,292 L318,264 L296,300 L280,270 L264,300 L242,264 L194,292 L188,246 L136,264 L144,216 L88,222 L116,188 L70,174 L112,150 L72,118 L126,110 L102,72 L156,80 L138,38 L196,56 L182,14 L228,42 L242,4 Z"
-              fill="rgba(10,6,3,0.88)" />
-            <path d="M280,40 L308,28 L320,56 L356,36 L344,66 L392,54 L376,86 L420,82 L400,112 L440,120 L410,146 L444,166 L410,178 L434,206 L392,200 L398,238 L358,224 L354,262 L316,240 L298,268 L280,246 L262,268 L244,240 L206,262 L202,224 L162,238 L168,200 L126,206 L150,178 L116,166 L150,146 L120,120 L160,112 L140,82 L184,86 L168,54 L216,66 L204,36 L240,56 L252,28 Z"
-              fill="rgba(18,10,4,0.6)" />
-          </svg>
-
-          <div className={styles.who}>WHO</div>
-          <div className={styles.else}>ELSE</div>
+          <img
+            src="/whoelse-logo.png"
+            alt="Who Else"
+            className={styles.graffitiImg}
+            draggable={false}
+          />
         </div>
+
+        {/* SPOTLIGHT — cone of light over the computer area */}
+        <div className={styles.spotlight} aria-hidden="true" />
+
+        {/* GROUND LIGHT POOL — warm puddle under CRT */}
+        <div className={styles.groundLight} aria-hidden="true" />
 
         {/* CRT COMPUTER — bottom left */}
         <div
