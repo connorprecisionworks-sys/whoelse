@@ -1,420 +1,283 @@
 :root {
   --wf: 'MS Sans Serif', Tahoma, Arial, sans-serif;
   --wm: 'Courier New', 'Lucida Console', monospace;
-  --brick-bg: #150a04;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { overflow: hidden; }
 
-/* ═══════════════════════════════════════
-   OUTER SCENE
-═══════════════════════════════════════ */
-.scene {
+/* ── PAGE ─────────────────────────────── */
+.page {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
   position: relative;
-  background: var(--brick-bg);
-  /* aim perspective at the computer: bottom-left quadrant */
-  perspective: 900px;
-  perspective-origin: 22% 78%;
+  background: #0a0908;
+  font-family: var(--wf);
 }
 
-/* film grain overlay */
+/* ── GRAIN ────────────────────────────── */
 .grain {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 9998;
-  opacity: 0.38;
+  opacity: 0.32;
   mix-blend-mode: overlay;
 }
 
-/* ═══════════════════════════════════════
-   WORLD — dollies toward camera on Z
-═══════════════════════════════════════ */
-.world {
-  position: absolute;
-  inset: -8%;
-  /* must match perspective-origin so dolly aims at computer */
-  transform-origin: 22% 78%;
-  transform: translateZ(0px);
-  transition: transform 2.4s cubic-bezier(0.22, 0.1, 0.08, 1),
-              filter 2.4s ease;
-  will-change: transform;
-}
-
-.worldDolly {
-  transform: translateZ(500px);
-  filter: blur(1.5px);
-}
-
-.worldZoomed {
-  transform: translateZ(500px);
-  filter: blur(2.5px);
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════
-   BRICK WALL — real photo background
-═══════════════════════════════════════ */
-.brick {
-  position: absolute;
-  inset: 0;
-  background: url('/wall.jpg') center center / cover no-repeat;
-}
-
-/* atmosphere overlay on top of photo */
-.brick::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.05) 30%, rgba(0,0,0,0.05) 65%, rgba(0,0,0,0.5) 100%),
-    radial-gradient(ellipse 95% 95% at 50% 50%, transparent 35%, rgba(0,0,0,0.55) 100%);
-}
-
-/* ═══════════════════════════════════════
-   SPOTLIGHT — ceiling mount, shines DOWN
-═══════════════════════════════════════ */
-.spotlight {
-  position: absolute;
-  /* centered above the computer position */
-  top: 0;
-  left: 6%;
-  width: 38%;
+/* ── LANDING ──────────────────────────── */
+.landing {
+  width: 100%;
   height: 100%;
-  background: conic-gradient(
-    from 90deg at 45% 0%,
-    transparent 0deg,
-    transparent 72deg,
-    rgba(255,215,130,0.03) 78deg,
-    rgba(255,220,140,0.09) 90deg,
-    rgba(255,215,130,0.03) 102deg,
-    transparent 108deg,
-    transparent 360deg
-  );
-  pointer-events: none;
-  z-index: 4;
-  mix-blend-mode: screen;
-}
-
-/* warm elliptical pool on the floor directly under spotlight */
-.groundLight {
-  position: absolute;
-  bottom: 2%;
-  left: 8%;
-  width: 30%;
-  height: 20%;
-  background: radial-gradient(
-    ellipse 65% 50% at 48% 85%,
-    rgba(255,200,90,0.22) 0%,
-    rgba(255,170,60,0.1)  40%,
-    rgba(255,130,30,0.04) 65%,
-    transparent 100%
-  );
-  pointer-events: none;
-  z-index: 4;
-  mix-blend-mode: screen;
-}
-
-/* spotlight fixture dot at ceiling */
-.spotlightFixture {
-  position: absolute;
-  top: 0;
-  left: calc(6% + 18%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgba(255,220,160,0.55);
-  box-shadow: 0 0 12px 4px rgba(255,200,100,0.25);
-  z-index: 5;
-  pointer-events: none;
-}
-
-/* ═══════════════════════════════════════
-   GRAFFITI — real logo image
-═══════════════════════════════════════ */
-.graffiti {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -52%);
-  z-index: 5;
-  pointer-events: none;
-}
-
-.graffitiImg {
-  width: clamp(280px, 52vw, 620px);
-  height: auto;
-  display: block;
-  /* real alpha transparency — no blend mode needed */
-  filter:
-    drop-shadow(0 0 24px rgba(255,255,255,0.08))
-    drop-shadow(2px 4px 0 rgba(0,0,0,0.6));
-  animation: logoIn 1s cubic-bezier(0.16,1,0.3,1) 0.2s both;
-}
-
-@keyframes logoIn {
-  from { opacity: 0; transform: scale(0.96) translateY(12px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-/* ═══════════════════════════════════════
-   CRT COMPUTER — fully visible, inward
-═══════════════════════════════════════ */
-.crt {
-  position: absolute;
-  bottom: 8%;
-  left: 10%;
-  z-index: 6;
-  cursor: pointer;
-  transition: transform 0.2s ease, opacity 0.6s ease;
-}
-
-.crt:hover { transform: scale(1.03) translateY(-2px); }
-.crtFade { opacity: 0; pointer-events: none; }
-
-/* no glow from computer itself — light comes from above */
-.crtGlow { display: none; }
-
-@keyframes glowPulse {
-  0%, 100% { transform: scale(0.94); opacity: 0.7; }
-  50%       { transform: scale(1.06); opacity: 1; }
-}
-
-.crtHint {
-  position: absolute;
-  bottom: -24px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.5rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: rgba(255, 200, 100, 0.7);
-  white-space: nowrap;
-  pointer-events: none;
-  animation: hintBlink 2.5s step-end infinite;
-}
-
-@keyframes hintBlink {
-  0%, 100% { opacity: 0.8; }
-  50%       { opacity: 0.25; }
-}
-
-.crtSvg {
-  display: none; /* replaced by photo image */
-}
-
-/* The actual computer photo */
-.crtImg {
-  width: clamp(220px, 28vw, 360px);
-  height: auto;
-  display: block;
-  position: relative;
-  z-index: 2;
-  filter:
-    drop-shadow(0 16px 48px rgba(0,0,0,0.92))
-    drop-shadow(0 4px 18px rgba(255,185,70,0.25));
-  animation: crtIn 0.8s cubic-bezier(0.16,1,0.3,1) 0.4s both;
-}
-
-@keyframes crtIn {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* cardboard box SVG behind/below the computer */
-.crtBox {
-  position: absolute;
-  bottom: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: clamp(260px, 34vw, 440px);
-  z-index: 1;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,0.7));
-}
-
-/* screen glow from the computer image */
-.screenGlow {
-  position: absolute;
-  top: 18%;
-  left: 14%;
-  width: 38%;
-  height: 28%;
-  background: radial-gradient(ellipse, rgba(100,180,255,0.18) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: 3;
-  animation: screenPulse 3s ease-in-out infinite;
-}
-
-@keyframes screenPulse {
-  0%, 100% { opacity: 0.6; }
-  50%       { opacity: 1; }
-}
-
-/* ═══════════════════════════════════════
-   ZOOMED OVERLAY
-═══════════════════════════════════════ */
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 50;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: overlayIn 0.5s ease both;
-}
-
-@keyframes overlayIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.overlayBrick {
-  position: absolute;
-  inset: 0;
-  background: url('/wall.jpg') center center / cover no-repeat;
-}
-
-.overlayBrick::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(180deg, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.15) 30%, rgba(0,0,0,0.15) 70%, rgba(0,0,0,0.5) 100%),
-    radial-gradient(ellipse 95% 95% at 50% 50%, transparent 25%, rgba(0,0,0,0.7) 100%);
-}
-
-/* ═══════════════════════════════════════
-   MONITOR FRAME
-═══════════════════════════════════════ */
-.monitor {
-  position: relative;
-  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  animation: monitorIn 0.55s cubic-bezier(0.16,1,0.3,1) both;
-}
-
-@keyframes monitorIn {
-  from { opacity: 0; transform: scale(0.9) translateY(24px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.monitorBezel {
-  background: linear-gradient(145deg, #363634, #282826);
-  border: 4px solid #3a3a38;
-  border-radius: 12px 12px 6px 6px;
-  padding: 16px 16px 12px;
-  box-shadow:
-    inset 0 3px 5px rgba(255,255,255,0.06),
-    inset 0 -3px 5px rgba(0,0,0,0.5),
-    0 24px 80px rgba(0,0,0,0.95),
-    0 0 0 2px #1a1a18,
-    6px 6px 0 rgba(0,0,0,0.3);
-}
-
-.monitorScreen {
-  width: min(70vw, 860px);
-  height: min(52.5vw, 645px);
-  background: #001a10;
-  border-radius: 3px;
+  justify-content: center;
+  position: relative;
   overflow: hidden;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              filter 0.6s ease;
+}
+
+.landingZoom {
+  transform: scale(2.5) translateY(8%);
+  filter: blur(3px);
+}
+
+/* ── ROOM BACKGROUND ──────────────────── */
+.room {
+  position: absolute;
+  inset: 0;
+  /* dark room: floor meets wall */
+  background:
+    /* floor */
+    linear-gradient(180deg,
+      transparent 0%,
+      transparent 62%,
+      #1c1208 62%,
+      #120e06 100%
+    ),
+    /* wall */
+    linear-gradient(180deg, #100c08 0%, #181210 62%);
+}
+
+/* floor/wall junction line */
+.room::before {
+  content: '';
+  position: absolute;
+  left: 0; right: 0;
+  top: 62%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,200,100,0.1), transparent);
+}
+
+/* ambient ceiling light */
+.room::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(255,200,120,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(0,0,0,0.5) 100%);
+}
+
+/* ── WORDMARK ─────────────────────────── */
+.wordmark {
+  display: flex;
+  align-items: baseline;
+  gap: 0;
+  line-height: 0.85;
+  margin-bottom: 0.4rem;
+  position: relative;
+  z-index: 2;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.1s both;
+}
+
+.wordmarkWho {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(245,241,234,0.7);
+  line-height: 0.85;
+}
+
+.wordmarkElse {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 10vw, 8rem);
+  letter-spacing: -0.02em;
+  color: #f5f1ea;
+  line-height: 0.85;
+  position: relative;
+}
+
+/* jagged underline on ELSE */
+.wordmarkElse::after {
+  content: '';
+  position: absolute;
+  bottom: -2px; left: 0;
+  width: 100%;
+  height: clamp(4px, 0.7vw, 7px);
+  background: #c93030;
+  clip-path: polygon(0 70%,4% 5%,8% 80%,12% 10%,16% 90%,20% 5%,24% 76%,28% 0%,32% 84%,36% 16%,40% 80%,44% 8%,48% 72%,52% 0%,56% 80%,60% 18%,64% 88%,68% 6%,72% 74%,76% 22%,80% 86%,84% 4%,88% 68%,92% 28%,96% 72%,100% 42%,100% 100%,0 100%);
+}
+
+.tagline {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(0.65rem, 1.2vw, 0.9rem);
+  font-style: italic;
+  font-weight: 700;
+  color: rgba(245,241,234,0.42);
+  margin-bottom: 2rem;
+  position: relative;
+  z-index: 2;
+  animation: fadeUp 0.8s cubic-bezier(0.16,1,0.3,1) 0.25s both;
+}
+
+/* ── DESK SCENE ───────────────────────── */
+.deskScene {
+  position: relative;
+  z-index: 2;
+  width: min(700px, 92vw);
+  animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) 0.15s both;
+}
+
+/* ── MACBOOK SVG ──────────────────────── */
+.macbook {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter:
+    drop-shadow(0 20px 60px rgba(0,0,0,0.8))
+    drop-shadow(0 4px 16px rgba(0,0,0,0.6));
+  cursor: pointer;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.macbook:hover {
+  filter:
+    drop-shadow(0 24px 70px rgba(0,0,0,0.85))
+    drop-shadow(0 0 30px rgba(196,154,34,0.12));
+  transform: translateY(-2px);
+}
+
+.macbookZoomed {
+  transform: translateY(-2px);
+  pointer-events: none;
+}
+
+/* ── PORTAL: OS fullscreen ────────────── */
+.portal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #0a0908;
+  animation: portalIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+@keyframes portalIn {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ── PORTAL MACBOOK FRAME ─────────────── */
+.portalFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* top bezel */
+.portalBezel {
+  background: linear-gradient(145deg, #2a2a2c, #1c1c1e);
+  border: 2px solid #3a3a3c;
+  border-radius: 12px 12px 4px 4px;
+  padding: 14px 14px 8px;
   position: relative;
   box-shadow:
-    inset 0 0 40px rgba(0,0,0,0.8),
-    inset 0 0 8px rgba(0,255,136,0.04);
+    inset 0 2px 4px rgba(255,255,255,0.05),
+    0 24px 80px rgba(0,0,0,0.9),
+    0 0 0 1px #141416;
 }
 
-.monitorScreen::after {
+/* notch */
+.portalNotch {
+  position: absolute;
+  top: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 18px;
+  background: #0a0a0c;
+  border-radius: 0 0 10px 10px;
+  z-index: 10;
+}
+
+/* the actual OS screen */
+.portalScreen {
+  width: min(76vw, 980px);
+  height: min(57vw, 735px);
+  background: #007b7b;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* scanline effect on portal screen */
+.portalScreen::after {
   content: '';
   position: absolute;
   inset: 0;
   background: repeating-linear-gradient(
     0deg,
-    transparent, transparent 3px,
-    rgba(0,0,0,0.06) 3px, rgba(0,0,0,0.06) 4px
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.04) 3px,
+    rgba(0,0,0,0.04) 4px
   );
   pointer-events: none;
   z-index: 9999;
-  border-radius: 3px;
 }
 
-.monitorScreen::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 35%;
-  background: linear-gradient(180deg, rgba(255,255,255,0.025) 0%, transparent 100%);
-  pointer-events: none;
-  z-index: 9998;
-}
-
-.monitorChin {
-  background: linear-gradient(180deg, #2e2e2c, #252523);
+.portalChin {
+  background: linear-gradient(180deg, #252527, #1c1c1e);
   width: 100%;
-  height: 38px;
-  border-radius: 0 0 10px 10px;
-  border: 3px solid #333;
+  height: 32px;
+  border-radius: 0 0 8px 8px;
+  border: 2px solid #2a2a2c;
   border-top: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
 }
 
-.led {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #00ff88;
-  box-shadow: 0 0 8px #00ff88, 0 0 16px rgba(0,255,136,0.4);
-  animation: ledPulse 3.5s ease-in-out infinite;
+.portalChin::after {
+  content: '';
+  width: 60px;
+  height: 4px;
+  background: #1a1a1c;
+  border-radius: 2px;
 }
 
-@keyframes ledPulse {
-  0%, 85%, 100% { opacity: 1; }
-  90%           { opacity: 0.2; }
-}
-
-.ledLabel {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.52rem;
-  letter-spacing: 0.28em;
-  text-transform: uppercase;
-  color: rgba(0,255,136,0.38);
-}
-
-.monitorNeck {
-  width: 56px;
-  height: 26px;
-  background: linear-gradient(180deg, #2a2a28, #1e1e1c);
-  border-left: 3px solid #2e2e2c;
-  border-right: 3px solid #2e2e2c;
-}
-
-.monitorBase {
-  width: 230px;
-  height: 18px;
-  background: linear-gradient(180deg, #252523, #1a1a18);
-  border-radius: 0 0 10px 10px;
-  border: 3px solid #282826;
+.portalBase {
+  width: min(55vw, 700px);
+  height: 10px;
+  background: linear-gradient(180deg, #232325, #161618);
+  border-radius: 0 0 6px 6px;
+  border: 1px solid #1e1e20;
   border-top: none;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.7);
 }
 
-/* ═══════════════════════════════════════
-   EXIT BUTTON
-═══════════════════════════════════════ */
+/* ── EXIT BUTTON ──────────────────────── */
 .exitBtn {
   position: fixed;
-  top: 18px;
-  left: 18px;
+  top: 16px;
+  left: 16px;
   z-index: 200;
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.55rem;
@@ -422,35 +285,36 @@ body { overflow: hidden; }
   text-transform: uppercase;
   background: rgba(0,0,0,0.5);
   color: rgba(245,241,234,0.55);
-  border: 1px solid rgba(245,241,234,0.18);
-  padding: 0.5rem 1.1rem;
+  border: 1px solid rgba(245,241,234,0.15);
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
   backdrop-filter: blur(4px);
-  animation: monitorIn 0.4s ease 0.3s both;
+  transition: all 0.15s;
 }
 
 .exitBtn:hover {
   background: rgba(0,0,0,0.75);
   color: #f5f1ea;
-  border-color: rgba(245,241,234,0.4);
+  border-color: rgba(245,241,234,0.35);
 }
 
-/* ── file icon hover inside OS ── */
+/* ── FILE ICON HOVER ──────────────────── */
 .fi:hover {
   background: rgba(0,0,128,0.12) !important;
   border-color: #000080 !important;
 }
 
-/* ═══════════════════════════════════════
-   RESPONSIVE
-═══════════════════════════════════════ */
-@media (max-width: 700px) {
-  .crtSvg { width: 140px; }
-  .monitorScreen { width: 90vw; height: 67.5vw; }
-  .monitorBezel { padding: 8px 8px 7px; border-radius: 8px 8px 4px 4px; }
-  .monitorBase { width: 150px; }
-  .monitorNeck { width: 38px; height: 18px; }
-  .monitorChin { height: 28px; }
-  .graffitiImg { width: clamp(220px, 80vw, 380px); }
+/* ── ANIMATIONS ───────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── RESPONSIVE ───────────────────────── */
+@media (max-width: 600px) {
+  .deskScene { width: 98vw; }
+  .portalScreen { width: 96vw; height: 72vw; }
+  .portalBezel { padding: 8px 8px 6px; }
+  .portalBase { width: 80vw; }
+  .wordmarkWho, .wordmarkElse { font-size: clamp(2.8rem, 14vw, 5rem); }
 }

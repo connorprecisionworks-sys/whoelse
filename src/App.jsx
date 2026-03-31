@@ -3,7 +3,7 @@ import styles from './App.module.css'
 
 const SIGNUP_URL = 'https://YOUR-SIGNUP-URL-HERE.com'
 
-// ─── WHO ELSE OS ─────────────────────────────────────────────
+// ─── FILE CONTENT ────────────────────────────────────────────
 const FILES = {
   about: {
     'README.txt': `WHO ELSE COLLECTIVE\n-------------------\n\nWho else should be trusted to pioneer the\nfuture of technology?\n\nFAITH-DRIVEN  · FOUNDER-FIRST\nBUILD IN PUBLIC · LEGACY OVER EXIT\n\nFOUNDED : 2025\nLOCATION: Austin, TX\nBACKED  : Genesis Studios @ ACU`,
@@ -33,6 +33,7 @@ const FILES = {
 const R = { borderTop:'2px solid #fff', borderLeft:'2px solid #fff', borderRight:'2px solid #808080', borderBottom:'2px solid #808080' }
 const S = { borderTop:'2px solid #808080', borderLeft:'2px solid #808080', borderRight:'2px solid #fff', borderBottom:'2px solid #fff' }
 
+// ─── W95 ICONS ───────────────────────────────────────────────
 function TxtIco() {
   return (
     <svg width="28" height="28" viewBox="0 0 28 28">
@@ -67,6 +68,7 @@ function ExeIco() {
   )
 }
 
+// ─── SIGNUP EXE ──────────────────────────────────────────────
 function SignupExe({ onClose }) {
   const [lines, setLines] = useState([])
   const [prog, setProg] = useState(0)
@@ -115,6 +117,7 @@ function SignupExe({ onClose }) {
   )
 }
 
+// ─── NOTEPAD ─────────────────────────────────────────────────
 function Notepad({ content, filename }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -129,6 +132,7 @@ function Notepad({ content, filename }) {
   )
 }
 
+// ─── FOLDER BODY ─────────────────────────────────────────────
 function FolderBody({ folderKey, onOpenFile }) {
   const files = FILES[folderKey] || {}
   return (
@@ -158,6 +162,7 @@ function FolderBody({ folderKey, onOpenFile }) {
   )
 }
 
+// ─── W95 WINDOW ──────────────────────────────────────────────
 let _topZ = 400
 function OsWin({ title, icon, children, onClose, onFocus, zIndex, ix, iy, w = 420, h = 280 }) {
   const [pos, setPos] = useState({ x: ix, y: iy })
@@ -190,6 +195,7 @@ function OsWin({ title, icon, children, onClose, onFocus, zIndex, ix, iy, w = 42
   )
 }
 
+// ─── WHO ELSE OS ─────────────────────────────────────────────
 function WhoElseOS() {
   const [wins, setWins] = useState([])
   const [topZ, setTopZ] = useState(400)
@@ -244,12 +250,10 @@ function WhoElseOS() {
 
   return (
     <div onClick={() => setSel(null)} style={{ width: '100%', height: '100%', background: '#007b7b', backgroundImage: 'radial-gradient(ellipse 80% 80% at 50% 50%,#007070 0%,#005858 100%)', position: 'relative', overflow: 'hidden', paddingBottom: 34, userSelect: 'none' }}>
-      {/* watermark */}
-      <div style={{ position: 'absolute', right: 10, top: 8, textAlign: 'right', pointerEvents: 'none', opacity: .1 }}>
+      <div style={{ position: 'absolute', right: 10, top: 8, textAlign: 'right', pointerEvents: 'none', opacity: .08 }}>
         <div style={{ fontFamily: 'var(--wf)', fontSize: 18, fontWeight: 700, color: '#fff', letterSpacing: '.1em' }}>WHO ELSE OS</div>
         <div style={{ fontFamily: 'var(--wf)', fontSize: 9, color: '#fff' }}>Genesis Studios © 2025</div>
       </div>
-      {/* icons */}
       <div style={{ position: 'absolute', top: 10, left: 10, display: 'flex', flexDirection: 'column', gap: 4 }} onClick={e => e.stopPropagation()}>
         {ICONS.map(({ id, l, Ico }) => (
           <div key={id} onClick={e => deskClick(e, id)}
@@ -259,7 +263,6 @@ function WhoElseOS() {
           </div>
         ))}
       </div>
-      {/* windows */}
       {wins.map(w => (
         <OsWin key={w.id} title={w.title} icon={w.icon} zIndex={w.z} ix={w.x} iy={w.y} w={w.w} h={w.h} onClose={() => close(w.id)} onFocus={() => focus(w.id)}>
           {w.type === 'folder'
@@ -272,7 +275,6 @@ function WhoElseOS() {
           <SignupExe onClose={() => setSignup(false)} />
         </OsWin>
       )}
-      {/* taskbar */}
       <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 34, background: '#c0c0c0', ...R, display: 'flex', alignItems: 'center', padding: '2px 4px', gap: 4, zIndex: 9000 }}>
         <button onClick={() => open('about')} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '2px 10px', height: 26, background: '#c0c0c0', ...R, fontFamily: 'var(--wf)', fontSize: 11, fontWeight: 700, cursor: 'default', color: '#000' }}>
           <span style={{ fontSize: 13 }}>⊞</span> Start
@@ -292,180 +294,6 @@ function WhoElseOS() {
   )
 }
 
-// ─── HIGH-QUALITY ISOMETRIC CRT SETUP ────────────────────────
-function CrtSvg() {
-  return (
-    <svg viewBox="0 0 300 340" className={styles.crtSvg} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="monTop" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#3a3835"/><stop offset="50%" stopColor="#454340"/><stop offset="100%" stopColor="#2a2826"/>
-        </linearGradient>
-        <linearGradient id="monFront" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#3c3a38"/><stop offset="100%" stopColor="#242220"/>
-        </linearGradient>
-        <linearGradient id="monSide" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#201e1c"/><stop offset="100%" stopColor="#141210"/>
-        </linearGradient>
-        <radialGradient id="screenGlow" cx="50%" cy="45%" r="55%">
-          <stop offset="0%" stopColor="#00e87a" stopOpacity="0.22"/>
-          <stop offset="55%" stopColor="#00aa55" stopOpacity="0.09"/>
-          <stop offset="100%" stopColor="#003322" stopOpacity="0"/>
-        </radialGradient>
-        <linearGradient id="box1top" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#c8ac5a"/><stop offset="100%" stopColor="#a08830"/>
-        </linearGradient>
-        <linearGradient id="box1front" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#bc982e"/><stop offset="100%" stopColor="#8c6e18"/>
-        </linearGradient>
-        <linearGradient id="box1side" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#7c6014"/><stop offset="100%" stopColor="#5c480c"/>
-        </linearGradient>
-        <linearGradient id="box2top" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#caae62"/><stop offset="100%" stopColor="#a28a3c"/>
-        </linearGradient>
-        <linearGradient id="box2front" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#ba9a34"/><stop offset="100%" stopColor="#8a7020"/>
-        </linearGradient>
-        <linearGradient id="box2side" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#7e641a"/><stop offset="100%" stopColor="#5c4c10"/>
-        </linearGradient>
-        <linearGradient id="towerTop" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#343230"/><stop offset="100%" stopColor="#242220"/>
-        </linearGradient>
-        <linearGradient id="towerFront" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#302e2c"/><stop offset="100%" stopColor="#1e1c1a"/>
-        </linearGradient>
-        <linearGradient id="towerSide" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#1c1a18"/><stop offset="100%" stopColor="#100e0c"/>
-        </linearGradient>
-      </defs>
-
-      {/* ── FLOOR SHADOW ── */}
-      <ellipse cx="148" cy="334" rx="135" ry="9" fill="rgba(0,0,0,0.6)"/>
-
-      {/* ── BOXES ── */}
-      {/* Box 1 large */}
-      <polygon points="30,250 108,226 152,250 74,274" fill="url(#box1top)"/>
-      <polygon points="30,250 74,274 74,322 30,298" fill="url(#box1front)"/>
-      <polygon points="74,274 152,250 152,298 74,322" fill="url(#box1side)"/>
-      <polygon points="46,254 108,232 108,238 46,260" fill="rgba(190,165,80,0.35)"/>
-      <line x1="74" y1="274" x2="74" y2="322" stroke="rgba(0,0,0,0.18)" strokeWidth="1"/>
-      <line x1="30" y1="250" x2="152" y2="250" stroke="rgba(255,255,255,0.06)" strokeWidth="0.6"/>
-
-      {/* Box 2 small, front-right */}
-      <polygon points="112,232 168,216 200,232 144,248" fill="url(#box2top)"/>
-      <polygon points="112,232 144,248 144,288 112,272" fill="url(#box2front)"/>
-      <polygon points="144,248 200,232 200,272 144,288" fill="url(#box2side)"/>
-      <polygon points="124,236 168,222 168,227 124,241" fill="rgba(185,160,75,0.3)"/>
-
-      {/* ── TOWER ── */}
-      <polygon points="192,172 256,152 284,168 220,188" fill="url(#towerTop)"/>
-      <polygon points="192,172 220,188 220,302 192,286" fill="url(#towerFront)"/>
-      <polygon points="220,188 284,168 284,282 220,302" fill="url(#towerSide)"/>
-      {/* drive bays */}
-      <rect x="195" y="198" width="21" height="6" rx="1" fill="#181614" stroke="#0e0c0a" strokeWidth="0.5"/>
-      <rect x="195" y="207" width="21" height="5" rx="1" fill="#181614" stroke="#0e0c0a" strokeWidth="0.5"/>
-      {/* power btn */}
-      <circle cx="205" cy="222" r="5" fill="#1c1a18" stroke="#0e0c0a" strokeWidth="0.8"/>
-      <circle cx="205" cy="222" r="3" fill="#c93030"/>
-      <circle cx="205" cy="222" r="1.5" fill="#ff4444"/>
-      {/* led */}
-      <rect x="195" y="232" width="12" height="2" rx="1" fill="#00cc66" opacity="0.65"/>
-      {/* vents */}
-      {[248,256,264,272,280].map(y => (
-        <line key={y} x1="195" y1={y} x2="215" y2={y} stroke="#0e0c0a" strokeWidth="0.8" opacity="0.7"/>
-      ))}
-      {/* side vents */}
-      {[196,204,212,220,228].map((y,i) => (
-        <polygon key={i} points={`${234+i*4},${y} ${254+i*4},${y-6} ${254+i*4},${y-3} ${234+i*4},${y+3}`}
-          fill="none" stroke="rgba(0,0,0,0.45)" strokeWidth="0.7"/>
-      ))}
-
-      {/* ── MONITOR ── */}
-      {/* top face */}
-      <polygon points="56,76 166,44 210,68 100,100" fill="url(#monTop)"/>
-      {/* front face */}
-      <polygon points="56,76 100,100 100,216 56,192" fill="url(#monFront)"/>
-      {/* right face */}
-      <polygon points="100,100 210,68 210,184 100,216" fill="url(#monSide)"/>
-      {/* top highlight edge */}
-      <polygon points="56,76 166,44 168,48 58,80" fill="rgba(255,255,255,0.05)"/>
-
-      {/* bezel recess front */}
-      <polygon points="62,92 96,106 96,200 62,186" fill="#1a1816"/>
-      {/* screen glass */}
-      <polygon points="66,96 92,108 92,194 66,182" fill="#001c10"/>
-      {/* phosphor glow */}
-      <polygon points="66,96 92,108 92,194 66,182" fill="url(#screenGlow)"/>
-      {/* scanlines */}
-      {Array.from({length:14}).map((_,i) => (
-        <line key={i} x1="66" y1={100+i*6.7} x2="92" y2={110+i*6.2}
-          stroke="rgba(0,0,0,0.1)" strokeWidth="0.7"/>
-      ))}
-      {/* OS taskbar */}
-      <polygon points="66,186 92,194 92,200 66,192" fill="#c0c0c0"/>
-      <polygon points="68,187 76,189 76,193 68,191" fill="#d0ccc8"/>
-      {/* folder icons */}
-      {[0,1,2].map(i => (
-        <polygon key={i}
-          points={`${68+i*7},${104+i*0.5} ${74+i*7},${106+i*0.5} ${74+i*7},${112+i*0.5} ${68+i*7},${110+i*0.5}`}
-          fill="#c49a22" opacity="0.8"/>
-      ))}
-      {/* header bar */}
-      <polygon points="66,96 92,108 92,111 66,99" fill="#007070"/>
-      {/* glass reflection */}
-      <polygon points="66,96 76,100 70,116 66,113" fill="rgba(255,255,255,0.035)"/>
-
-      {/* monitor side bezel detail */}
-      {[112,120,128,136].map((y,i) => (
-        <line key={i} x1={148+i*4} y1={y-2} x2={205-i*2} y2={y-12}
-          stroke="rgba(0,0,0,0.25)" strokeWidth="1.1"/>
-      ))}
-
-      {/* monitor chin front */}
-      <polygon points="56,212 100,228 100,216 56,200" fill="#222020"/>
-      <polygon points="56,212 100,228 56,228" fill="#1a1818"/>
-      {/* power LED on chin */}
-      <circle cx="78" cy="220" r="2.5" fill="#00ff88"/>
-      <circle cx="78" cy="220" r="1.5" fill="#88ffcc" opacity="0.8"/>
-
-      {/* neck iso */}
-      <polygon points="72,224 82,228 82,244 72,240" fill="#252220"/>
-      <polygon points="82,228 104,222 104,238 82,244" fill="#1c1a18"/>
-      <polygon points="72,224 104,216 104,222 82,228 72,224" fill="#2c2a28"/>
-
-      {/* base iso */}
-      <polygon points="48,240 116,220 138,232 70,252" fill="#2a2826"/>
-      <polygon points="48,240 70,252 70,262 48,250" fill="#1e1c1a"/>
-      <polygon points="70,252 138,232 138,242 70,262" fill="#161412"/>
-
-      {/* ── KEYBOARD ── */}
-      <polygon points="22,282 148,248 168,260 42,294" fill="#2e2c2a"/>
-      <polygon points="22,282 42,294 42,302 22,290" fill="#222020"/>
-      <polygon points="42,294 168,260 168,268 42,302" fill="#1c1a18"/>
-      {/* keys */}
-      {[0,1,2,3].map(row =>
-        Array.from({length:10}).map((_,col) => (
-          <polygon key={`${row}-${col}`}
-            points={`${28+col*12+row*1.4},${278-row*8+col*0.4} ${37+col*12+row*1.4},${275-row*8+col*0.4} ${37+col*12+row*1.4},${280-row*8+col*0.4} ${28+col*12+row*1.4},${283-row*8+col*0.4}`}
-            fill="#1c1a18" stroke="rgba(0,0,0,0.35)" strokeWidth="0.3"/>
-        ))
-      )}
-      <polygon points="54,290 108,274 108,280 54,296" fill="#1c1a18" stroke="rgba(0,0,0,0.3)" strokeWidth="0.3"/>
-
-      {/* ── MOUSE ── */}
-      <ellipse cx="192" cy="278" rx="16" ry="22" fill="#2c2a28" transform="rotate(-12 192 278)"/>
-      <ellipse cx="192" cy="278" rx="16" ry="22" fill="none" stroke="#1a1818" strokeWidth="0.8" transform="rotate(-12 192 278)"/>
-      <line x1="184" y1="268" x2="200" y2="265" stroke="#1a1818" strokeWidth="0.8"/>
-      <rect x="189" y="268" width="5" height="8" rx="2" fill="#1a1818" transform="rotate(-12 191 272)"/>
-
-      {/* ── CABLES ── */}
-      <path d="M100 216 Q112 234 140 248" fill="none" stroke="#111" strokeWidth="2.5" strokeLinecap="round"/>
-      <path d="M92 180 Q106 202 128 214 Q148 222 165 244" fill="none" stroke="#0d0d0d" strokeWidth="2" strokeLinecap="round"/>
-    </svg>
-  )
-}
-
 // ─── FILM GRAIN ──────────────────────────────────────────────
 function GrainCanvas() {
   const ref = useRef(null)
@@ -473,10 +301,7 @@ function GrainCanvas() {
     const canvas = ref.current
     const ctx = canvas.getContext('2d')
     let raf
-    function resize() {
-      canvas.width = window.innerWidth
-      canvas.height = window.innerHeight
-    }
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight }
     resize()
     window.addEventListener('resize', resize)
     function draw() {
@@ -485,7 +310,7 @@ function GrainCanvas() {
       const d = img.data
       for (let i = 0; i < d.length; i += 4) {
         const v = Math.random() * 255 | 0
-        d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 26
+        d[i] = v; d[i+1] = v; d[i+2] = v; d[i+3] = 22
       }
       ctx.putImageData(img, 0, 0)
       raf = requestAnimationFrame(draw)
@@ -496,145 +321,273 @@ function GrainCanvas() {
   return <canvas ref={ref} className={styles.grain} />
 }
 
-// ─── MAIN SCENE ───────────────────────────────────────────────
+// ─── MACBOOK SVG ─────────────────────────────────────────────
+// Isometric MacBook rendered in SVG — screen is the interactive area
+function MacBook({ onClickScreen, zoomed }) {
+  return (
+    <svg
+      viewBox="0 0 520 340"
+      className={`${styles.macbook} ${zoomed ? styles.macbookZoomed : ''}`}
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        {/* lid top face */}
+        <linearGradient id="lidTop" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#1c1c1e"/>
+          <stop offset="45%" stopColor="#2c2c2e"/>
+          <stop offset="100%" stopColor="#141416"/>
+        </linearGradient>
+        {/* lid front face */}
+        <linearGradient id="lidFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#232325"/>
+          <stop offset="100%" stopColor="#18181a"/>
+        </linearGradient>
+        {/* lid right */}
+        <linearGradient id="lidRight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#161618"/>
+          <stop offset="100%" stopColor="#0e0e10"/>
+        </linearGradient>
+        {/* base top */}
+        <linearGradient id="baseTop" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#2a2a2c"/>
+          <stop offset="100%" stopColor="#1e1e20"/>
+        </linearGradient>
+        {/* base front */}
+        <linearGradient id="baseFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#242426"/>
+          <stop offset="100%" stopColor="#161618"/>
+        </linearGradient>
+        {/* base right */}
+        <linearGradient id="baseRight" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#181818"/>
+          <stop offset="100%" stopColor="#0c0c0e"/>
+        </linearGradient>
+        {/* screen bg — W95 teal */}
+        <linearGradient id="screenBg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#007070"/>
+          <stop offset="100%" stopColor="#005858"/>
+        </linearGradient>
+        {/* keyboard gradient */}
+        <linearGradient id="kbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#343436"/>
+          <stop offset="100%" stopColor="#252527"/>
+        </linearGradient>
+        {/* desk surface */}
+        <linearGradient id="deskTop" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#3a2e1e"/>
+          <stop offset="100%" stopColor="#2a2014"/>
+        </linearGradient>
+        <linearGradient id="deskFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#2e2414"/>
+          <stop offset="100%" stopColor="#1e180c"/>
+        </linearGradient>
+        {/* screen glow */}
+        <radialGradient id="screenGlow" cx="50%" cy="50%" r="60%">
+          <stop offset="0%" stopColor="#00cc88" stopOpacity="0.12"/>
+          <stop offset="100%" stopColor="#00cc88" stopOpacity="0"/>
+        </radialGradient>
+        {/* click hint glow */}
+        <radialGradient id="hintGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="#c49a22" stopOpacity="0.2"/>
+          <stop offset="100%" stopColor="#c49a22" stopOpacity="0"/>
+        </radialGradient>
+      </defs>
+
+      {/* ── DESK SURFACE ── */}
+      {/* top of desk */}
+      <polygon points="0,260 520,260 520,290 0,290" fill="url(#deskTop)"/>
+      {/* desk front edge */}
+      <polygon points="0,290 520,290 520,310 0,310" fill="url(#deskFront)"/>
+      {/* subtle wood grain lines */}
+      {[0,1,2,3,4].map(i => (
+        <line key={i} x1="0" y1={263+i*5} x2="520" y2={263+i*5}
+          stroke="rgba(0,0,0,0.08)" strokeWidth="0.8"/>
+      ))}
+      {/* desk edge highlight */}
+      <line x1="0" y1="260" x2="520" y2="260" stroke="rgba(255,255,255,0.08)" strokeWidth="1"/>
+
+      {/* ── MACBOOK BASE ── */}
+      {/* base top face — keyboard deck */}
+      <polygon points="78,222 442,222 468,250 52,250" fill="url(#baseTop)"/>
+      {/* base front edge */}
+      <polygon points="52,250 468,250 468,262 52,262" fill="url(#baseFront)"/>
+      {/* base right side */}
+      <polygon points="442,222 468,250 468,262 442,234" fill="url(#baseRight)"/>
+
+      {/* ── KEYBOARD ── */}
+      {/* keyboard area on base */}
+      <polygon points="110,228 410,228 430,247 90,247" fill="url(#kbGrad)"/>
+      {/* key rows — 4 rows */}
+      {[0,1,2,3].map(row =>
+        Array.from({length: row === 3 ? 8 : 12}).map((_, col) => {
+          const rowOffset = row * 4.2
+          const colW = row === 3 ? 26 : 22
+          const startX = row === 3 ? 148 : 118
+          const skew = row * 0.8
+          return (
+            <polygon key={`${row}-${col}`}
+              points={`
+                ${startX + col * colW + skew},${232 + rowOffset}
+                ${startX + col * colW + 19 + skew},${232 + rowOffset}
+                ${startX + col * colW + 19.8 + skew},${235.5 + rowOffset}
+                ${startX + col * colW + 0.8 + skew},${235.5 + rowOffset}
+              `}
+              fill="#1e1e20" stroke="rgba(0,0,0,0.5)" strokeWidth="0.3"
+            />
+          )
+        })
+      )}
+      {/* spacebar */}
+      <polygon points="196,248 324,248 325,251 195,251" fill="#1e1e20" stroke="rgba(0,0,0,0.4)" strokeWidth="0.3"/>
+      {/* trackpad */}
+      <polygon points="220,252 300,252 302,258 218,258" fill="#2a2a2c" stroke="#1a1a1c" strokeWidth="0.5"/>
+
+      {/* ── MACBOOK LID ── */}
+      {/* lid top face */}
+      <polygon points="70,40 450,40 468,250 52,250" fill="url(#lidTop)"/>
+      {/* lid right face */}
+      <polygon points="450,40 468,48 468,250 450,242" fill="url(#lidRight)"/>
+
+      {/* ── SCREEN AREA (clickable) ── */}
+      {/* screen bezel */}
+      <polygon points="86,52 434,52 450,242 70,242" fill="#0a0a0c"/>
+      {/* screen glass */}
+      <polygon points="96,60 424,60 438,234 82,234" fill="url(#screenBg)" style={{ cursor: 'pointer' }} onClick={onClickScreen}/>
+      {/* screen glow overlay */}
+      <polygon points="96,60 424,60 438,234 82,234" fill="url(#screenGlow)" style={{ cursor: 'pointer' }} onClick={onClickScreen}/>
+
+      {/* ── W95 OS UI on screen ── */}
+      {/* taskbar */}
+      <polygon points="96,220 424,220 438,234 82,234" fill="#c0c0c0" style={{ cursor: 'pointer' }} onClick={onClickScreen}/>
+      {/* start button */}
+      <polygon points="99,221 125,221 126,227 98,227" fill="#d0ccc8" stroke="#808080" strokeWidth="0.5"/>
+      <text x="112" y="226" textAnchor="middle" fill="#000" fontSize="4" fontFamily="Courier New,monospace" fontWeight="700">⊞ Start</text>
+      {/* clock */}
+      <text x="430" y="229" textAnchor="middle" fill="#000" fontSize="3.5" fontFamily="Courier New,monospace">
+        {new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}
+      </text>
+      {/* folder icons on desktop */}
+      {[0,1,2,3].map(i => (
+        <g key={i} style={{ cursor: 'pointer' }} onClick={onClickScreen}>
+          {/* folder icon */}
+          <polygon
+            points={`${104+i*0.5},${72+i*22} ${118+i*0.5},${68+i*22} ${122+i*0.5},${72+i*22} ${108+i*0.5},${76+i*22}`}
+            fill="#c49a22" opacity="0.8"/>
+          <polygon
+            points={`${104+i*0.5},${72+i*22} ${108+i*0.5},${76+i*22} ${108+i*0.5},${84+i*22} ${104+i*0.5},${80+i*22}`}
+            fill="#daa520" opacity="0.9"/>
+          <polygon
+            points={`${108+i*0.5},${76+i*22} ${122+i*0.5},${72+i*22} ${122+i*0.5},${80+i*22} ${108+i*0.5},${84+i*22}`}
+            fill="#b8860b" opacity="0.85"/>
+        </g>
+      ))}
+      {/* W95 header bar on an open window */}
+      <polygon points="130,80 380,75 385,115 125,120" fill="#ececec" style={{ cursor: 'pointer' }} onClick={onClickScreen}/>
+      <polygon points="130,80 380,75 380,83 130,88" fill="#000080" style={{ cursor: 'pointer' }} onClick={onClickScreen}/>
+      <text x="245" y="87" textAnchor="middle" fill="#fff" fontSize="4.5" fontFamily="Courier New,monospace" fontWeight="700">WHO ELSE OS — v1.0</text>
+      {/* fake file icons in window */}
+      {[0,1,2].map(i => (
+        <g key={i} style={{ cursor: 'pointer' }} onClick={onClickScreen}>
+          <rect x={140+i*55} y={92} width="14" height="16" rx="1" fill="#fffef8" stroke="#aaa" strokeWidth="0.4"/>
+          <rect x={140+i*55} y={92} width="14" height="5" fill="#ddd"/>
+          <text x={147+i*55} y={116} textAnchor="middle" fill="#000" fontSize="3" fontFamily="Courier New,monospace">file.txt</text>
+        </g>
+      ))}
+      {/* screen glass reflection */}
+      <polygon points="96,60 180,57 175,130 82,134" fill="rgba(255,255,255,0.025)"/>
+
+      {/* ── NOTCH ── */}
+      <ellipse cx="260" cy="51" rx="12" ry="3.5" fill="#0a0a0c"/>
+
+      {/* ── APPLE LOGO on lid back ── */}
+      {/* We see the front/inside of the lid — logo would be on the outside, skip */}
+
+      {/* ── HINGE LINE ── */}
+      <line x1="52" y1="250" x2="468" y2="250" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
+
+      {/* ── CLICK HINT ── */}
+      {!zoomed && (
+        <>
+          <ellipse cx="260" cy="147" rx="80" ry="80" fill="url(#hintGlow)" opacity="0.6"/>
+          <text x="260" y="145" textAnchor="middle" fill="rgba(196,154,34,0.7)" fontSize="7"
+            fontFamily="'JetBrains Mono',monospace" fontWeight="600" letterSpacing="2">
+            CLICK TO OPEN
+          </text>
+          <text x="260" y="156" textAnchor="middle" fill="rgba(196,154,34,0.45)" fontSize="5.5"
+            fontFamily="'JetBrains Mono',monospace" letterSpacing="1">
+            WHO ELSE OS
+          </text>
+        </>
+      )}
+
+      {/* floor shadow */}
+      <ellipse cx="260" cy="302" rx="200" ry="10" fill="rgba(0,0,0,0.35)"/>
+    </svg>
+  )
+}
+
+// ─── MACBOOK SCREEN PORTAL ────────────────────────────────────
+// When clicked — screen expands to fill, showing the full OS
+function ScreenPortal({ onExit }) {
+  return (
+    <div className={styles.portal}>
+      {/* MacBook frame around the OS */}
+      <div className={styles.portalFrame}>
+        <div className={styles.portalBezel}>
+          <div className={styles.portalNotch} />
+          <div className={styles.portalScreen}>
+            <WhoElseOS />
+          </div>
+        </div>
+        <div className={styles.portalChin} />
+        <div className={styles.portalBase} />
+      </div>
+      <button className={styles.exitBtn} onClick={onExit}>← close</button>
+    </div>
+  )
+}
+
+// ─── APP ─────────────────────────────────────────────────────
 export default function App() {
-  // Phase: 'wall' | 'dollying' | 'zoomed'
-  const [phase, setPhase] = useState('wall')
+  const [open, setOpen] = useState(false)
+  const [animating, setAnimating] = useState(false)
 
-  function clickComputer() {
-    if (phase !== 'wall') return
-    setPhase('dollying')
-    setTimeout(() => setPhase('zoomed'), 2400)
+  function handleClick() {
+    if (open || animating) return
+    setAnimating(true)
+    setTimeout(() => { setOpen(true); setAnimating(false) }, 600)
   }
 
-  function exitOS() {
-    setPhase('wall')
-  }
+  function handleExit() { setOpen(false) }
 
   return (
-    <div className={styles.scene}>
-
-      {/* Film grain fixed over everything */}
+    <div className={styles.page}>
       <GrainCanvas />
 
-      {/* ── PERSPECTIVE CONTAINER ── */}
-      <div className={`${styles.world} ${phase === 'dollying' ? styles.worldDolly : ''} ${phase === 'zoomed' ? styles.worldZoomed : ''}`}>
+      {/* ── LANDING: desk with MacBook ── */}
+      {!open && (
+        <div className={`${styles.landing} ${animating ? styles.landingZoom : ''}`}>
+          {/* room background */}
+          <div className={styles.room} />
 
-        {/* BRICK WALL */}
-        <div className={styles.brick} />
-
-        {/* GRAFFITI — real logo image centered on wall */}
-        <div className={styles.graffiti}>
-          <img
-            src="/whoelse-logo.png"
-            alt="Who Else"
-            className={styles.graffitiImg}
-            draggable={false}
-          />
-        </div>
-
-        {/* SPOTLIGHT cone from ceiling */}
-        <div className={styles.spotlight} aria-hidden="true" />
-        {/* warm ground pool under light */}
-        <div className={styles.groundLight} aria-hidden="true" />
-        {/* tiny fixture dot at ceiling */}
-        <div className={styles.spotlightFixture} aria-hidden="true" />
-
-        {/* CRT COMPUTER — photo image in cardboard box */}
-        <div
-          className={`${styles.crt} ${phase !== 'wall' ? styles.crtFade : ''}`}
-          onClick={clickComputer}
-        >
-          <div className={styles.crtGlow} />
-          <div className={styles.crtHint}>click to enter ↓</div>
-
-          {/* Screen glow overlay */}
-          <div className={styles.screenGlow} />
-
-          {/* The real computer photo — black bg already stripped */}
-          <img
-            src="/computer.png"
-            alt="CRT Computer"
-            className={styles.crtImg}
-            draggable={false}
-          />
-
-          {/* Cardboard box SVG underneath */}
-          <svg className={styles.crtBox} viewBox="0 0 440 180" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="bt" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#c8a84a"/><stop offset="100%" stopColor="#9e7e28"/>
-              </linearGradient>
-              <linearGradient id="bf" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#b8942e"/><stop offset="100%" stopColor="#7e6018"/>
-              </linearGradient>
-              <linearGradient id="bs" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#8a6e1e"/><stop offset="100%" stopColor="#5e4c10"/>
-              </linearGradient>
-              <linearGradient id="bi" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stopColor="#d4b050" stopOpacity="0.4"/><stop offset="100%" stopColor="#8a6820" stopOpacity="0.15"/>
-              </linearGradient>
-            </defs>
-
-            {/* main box body */}
-            {/* top flap — open/torn */}
-            <polygon points="60,40 230,10 310,40 140,70" fill="url(#bt)"/>
-            {/* front face */}
-            <polygon points="60,40 140,70 140,165 60,135" fill="url(#bf)"/>
-            {/* side face */}
-            <polygon points="140,70 310,40 310,135 140,165" fill="url(#bs)"/>
-
-            {/* inner box visible from top */}
-            <polygon points="75,50 225,22 295,48 145,76" fill="#6a5018" opacity="0.6"/>
-
-            {/* brown packing paper crumpled in box */}
-            <path d="M80 62 Q110 55 130 65 Q155 58 175 67 Q200 60 220 68 Q240 55 265 64 Q285 56 295 62" 
-              fill="none" stroke="#a07830" strokeWidth="6" strokeLinecap="round" opacity="0.7"/>
-            <path d="M85 72 Q115 64 140 74 Q165 66 190 75 Q215 67 245 73 Q268 65 290 71"
-              fill="none" stroke="#8a6420" strokeWidth="5" strokeLinecap="round" opacity="0.5"/>
-
-            {/* tape strips */}
-            <polygon points="155,12 235,22 235,27 155,17" fill="rgba(200,180,100,0.45)"/>
-            <polygon points="60,40 140,70 140,76 60,46" fill="rgba(200,180,100,0.35)"/>
-
-            {/* box edge wear/creases */}
-            <line x1="140" y1="70" x2="140" y2="165" stroke="rgba(0,0,0,0.2)" strokeWidth="1.5"/>
-            <line x1="60" y1="40" x2="310" y2="40" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8"/>
-
-            {/* bottom shadow */}
-            <ellipse cx="185" cy="170" rx="155" ry="12" fill="rgba(0,0,0,0.45)"/>
-
-            {/* small cable dangling out of box */}
-            <path d="M290 90 Q330 85 360 100 Q390 112 410 108 Q430 104 435 115"
-              fill="none" stroke="#2a2824" strokeWidth="3" strokeLinecap="round"/>
-            <path d="M435 115 Q438 120 436 130"
-              fill="none" stroke="#2a2824" strokeWidth="3" strokeLinecap="round"/>
-          </svg>
-        </div>
-
-      </div>
-
-      {/* ── MONITOR FRAME OVERLAY ── */}
-      {phase === 'zoomed' && (
-        <div className={styles.overlay}>
-          <div className={styles.overlayBrick} />
-          <div className={styles.monitor}>
-            <div className={styles.monitorBezel}>
-              <div className={styles.monitorScreen}>
-                <WhoElseOS />
-              </div>
-            </div>
-            <div className={styles.monitorChin}>
-              <div className={styles.led} />
-              <span className={styles.ledLabel}>WHO ELSE OS</span>
-            </div>
-            <div className={styles.monitorNeck} />
-            <div className={styles.monitorBase} />
+          {/* who else wordmark above the desk */}
+          <div className={styles.wordmark}>
+            <span className={styles.wordmarkWho}>WHO</span>
+            <span className={styles.wordmarkElse}>ELSE</span>
           </div>
-          <button className={styles.exitBtn} onClick={exitOS}>← BACK TO WALL</button>
+
+          {/* tagline */}
+          <p className={styles.tagline}>— a faith-driven innovation collective</p>
+
+          {/* MacBook on desk */}
+          <div className={styles.deskScene}>
+            <MacBook onClickScreen={handleClick} zoomed={animating} />
+          </div>
         </div>
       )}
 
+      {/* ── OS: full screen portal ── */}
+      {open && <ScreenPortal onExit={handleExit} />}
     </div>
   )
 }
